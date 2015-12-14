@@ -42,3 +42,4 @@
 * ApiUtil.destroyNotebook
 
 ## Gems/Libraries
+* Cloudinary
