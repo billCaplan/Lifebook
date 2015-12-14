@@ -48,3 +48,8 @@ column name  | data type | details
 id           | integer   | not null, primary key
 follower_id  | integer   | not null, foreign key (references users), indexed
 followed_user| integer   | not null, foreign key (references users), indexed
+
+## images
+column name  | data type | details
+-------------|-----------|-----------------------
+id           | integer   | not null, primary key
