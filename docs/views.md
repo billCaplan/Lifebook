@@ -7,7 +7,7 @@
 ![new-session]
 
 ## PostIndex / PostIndexItem
-![posts]
+![posts],
 ![posts-with-notification]
 
 ## UserIndex / UserIndexItem
