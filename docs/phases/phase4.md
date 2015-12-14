@@ -1,4 +1,4 @@
-# Phase 4: Allow Complex Styling in Notes (1 day)
+# Phase 4: Profile Templates and News Stream
 
 ## Rails
 ### Models
@@ -9,10 +9,11 @@
 
 ## Flux
 ### Views (React Components)
+* api/users/show.json.jbuilder
 
 ### Stores
 
 ### Actions
 
 ## Gems/Libraries
-* react-quill (npm)
+* Cloudinary

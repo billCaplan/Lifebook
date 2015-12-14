@@ -1,40 +1,40 @@
-# Phase 5: Reminders and Garbage Collection
+# Phase 5: Notification
 
 ## Rails
 ### Models
-* Reminder
+* Notification
 
 ### Controllers
-* Api::RemindersController (create, destroy, index, show, update)
+* Api::NotificationsController (create, destroy, index, show, update)
 
 ### Views
-* reminders/index.json.jbuilder
+* notifications/index.json.jbuilder
 
 ## Flux
 ### Views (React Components)
-* RemindersIndex
-  - ReminderIndexItem
-* ReminderShow
-* ReminderForm
+* NotificationsIndex
+  - NotificationIndexItem
+* NotificationShow
+* NotificationForm
 
 ### Stores
-* Reminder
+* Notification
 
 ### Actions
-* ApiActions.receiveAllReminders -> triggered by ApiUtil
-* ApiActions.receiveSingleReminder
-* ApiActions.deleteReminder
-* ReminderActions.fetchAllReminders -> triggers ApiUtil
-* ReminderActions.fetchSingleReminder
-* ReminderActions.createReminder
-* ReminderActions.updateReminder
-* ReminderActions.destroyReminder
+* ApiActions.receiveAllNotifications -> triggered by ApiUtil
+* ApiActions.receiveSingleNotification
+* ApiActions.deleteNotification
+* NotificationActions.fetchAllNotifications -> triggers ApiUtil
+* NotificationActions.fetchSingleNotification
+* NotificationActions.createNotification
+* NotificationActions.updateNotification
+* NotificationActions.destroyNotification
 
 ### ApiUtil
-* ApiUtil.fetchAllReminders
-* ApiUtil.fetchSingleReminder
-* ApiUtil.createReminder
-* ApiUtil.updateReminder
-* ApiUtil.destroyReminder
+* ApiUtil.fetchAllNotifications
+* ApiUtil.fetchSingleNotification
+* ApiUtil.createNotification
+* ApiUtil.updateNotification
+* ApiUtil.destroyNotification
 
 ## Gems/Libraries

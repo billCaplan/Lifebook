@@ -1,45 +1,44 @@
-# Phase 3: Notebooks and Tags (2 days)
+# Phase 3: Comments, Follows, and Likes
 
 ## Rails
 ### Models
-* Notebook
-* Tag
-* Tagging
+* Comments
+* Follows
+* Likes
 
 ### Controllers
-* Api::NotebooksController (create, destroy, index, show, update)
+* Api::CommentsController (create, destroy, index, show, update)
 
 ### Views
-* notebooks/index.json.jbuilder
-* notebooks/show.json.jbuilder
+* comments/index.json.jbuilder
+* comments/show.json.jbuilder
 * tags/show.json.jbuilder
 
 ## Flux
 ### Views (React Components)
-* NotebooksIndex
-  - NotebookIndexItem
-* NotebookForm
+* CommentsIndex
+  - CommentIndexItem
+* CommentForm
 * SearchIndex
 
 ### Stores
-* Notebook
+* Comment
 
 ### Actions
-* ApiActions.receiveAllNotebooks -> triggered by ApiUtil
-* ApiActions.receiveSingleNotebook
-* ApiActions.deleteNotebook
-* NotebookActions.fetchAllNotebooks -> triggers ApiUtil
-* NotebookActions.fetchSingleNotebook
-* NotebookActions.createNotebook
-* NotebookActions.editNotebook
-* NotebookActions.destroyNotebook
+* ApiActions.receiveAllComments -> triggered by ApiUtil
+* ApiActions.receiveSingleComment
+* ApiActions.deleteComment
+* CommentActions.fetchAllComments -> triggers ApiUtil
+* CommentActions.fetchSingleComment
+* CommentActions.createComment
+* CommentActions.editComment
+* CommentActions.destroyComment
 
 ### ApiUtil
-* ApiUtil.fetchAllNotebooks
-* ApiUtil.fetchSingleNotebook
-* ApiUtil.createNotebook
-* ApiUtil.editNotebook
-* ApiUtil.destroyNotebook
+* ApiUtil.fetchAllComments
+* ApiUtil.fetchSingleComment
+* ApiUtil.createComment
+* ApiUtil.editComment
+* ApiUtil.destroyComment
 
 ## Gems/Libraries
-* Cloudinary
