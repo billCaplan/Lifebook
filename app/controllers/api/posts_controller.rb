@@ -4,6 +4,10 @@ class Api::PostsController < ApplicationController
 
   end
 
+  def index
+    @posts = Post.all
+  end
+
   def create
     @post = Post.new(post_params)
 
@@ -12,6 +16,7 @@ class Api::PostsController < ApplicationController
     else
       render json: @post.errors.full_messages, status: 422
     end
+  end
 
     def show
       @post = Post.find(params[:id])
@@ -21,7 +26,7 @@ class Api::PostsController < ApplicationController
      @post = Post.find(params[:id])
      @post.destroy
      render :show
-   end
+    end
 
   private
 

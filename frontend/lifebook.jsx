@@ -7,13 +7,18 @@ var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
 var IndexRoute = ReactRouter.IndexRoute;
 
+var Feed = require('./components/Feed');
+var UserProfile = require('./components/UserProfile');
+var PostPage = require('./components/PostPage');
+
+
 var App = React.createClass({
   render: function(){
 
     return (
       <div>
         <header><h1>Bench BnB</h1></header>
-        <div>This is my App page</div>
+        <div>Your Feed</div>
         {this.props.children}
       </div>
     );
@@ -21,6 +26,9 @@ var App = React.createClass({
 });
 var routes = (
   <Route path="/" component={App}>
+    <IndexRoute component={Feed}/>
+    <Route path="user/:userId" component={UserProfile}></Route>
+    <Route path="post/:postId" component={PostPage}></Route>
 
   </Route>
 );

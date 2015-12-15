@@ -8,9 +8,8 @@ class User < ActiveRecord::Base
   validates :session_token, :email, uniqueness: true
 
   has_many(
-    :follows,
-    foreign_key: :author_id,
-    primary_key: :id,
+    :usersFollowing,
+    through: :userToFollow,
     class_name: "Follow"
   )
 
