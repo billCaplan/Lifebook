@@ -19,7 +19,6 @@ type        | string    | not null
 column name | data type | details
 ------------|-----------|-----------------------
 id          | integer   | not null, primary key
-title       | string    | not null
 body        | text      | not null
 author_id   | integer   | not null, foreign key (references users), indexed
 target_id   | integer   | not null, foreign key (references users), indexed
@@ -34,22 +33,24 @@ author_id   | integer   | not null, foreign key (references users), indexed
 post_id     | integer   | not null, foreign key (references users), indexed
 
 ## comments
-column name | data type | details
-------------|-----------|-----------------------
-id          | integer   | not null, primary key
-title       | string    | not null
-body        | text      | not null
-author_id   | integer   | not null, foreign key (references users), indexed
-target_id   | integer   | not null, foreign key (references users), indexed
+column name       | data type | details
+------------------|-----------|-----------------------
+id                | integer   | not null, primary key
+body              | text      | not null
+author_id         | integer   | not null, foreign key (references users), indexed
+post_id           | integer   | not null, foreign key (references users), indexed
+parent_comment_id | integer   |
 
-## followed_users
-column name  | data type | details
--------------|-----------|-----------------------
-id           | integer   | not null, primary key
-follower_id  | integer   | not null, foreign key (references users), indexed
-followed_user| integer   | not null, foreign key (references users), indexed
+
+## follows
+column name      | data type | details
+-----------------|-----------|-----------------------
+id               | integer   | not null, primary key
+author_id        | integer   | not null, foreign key (references users), indexed
+followed_user_id | integer   | not null, foreign key (references users), indexed
 
 ## images
 column name  | data type | details
 -------------|-----------|-----------------------
 id           | integer   | not null, primary key
+image_path   | text      | not null
