@@ -24543,7 +24543,7 @@
 	var Store = __webpack_require__(213).Store;
 	var CHANGE_EVENT = "change";
 	var PostConstants = __webpack_require__(230);
-	var AppDispatcher = __webpack_require__(231);
+	var AppDispatcher = __webpack_require__(238);
 	
 	var PostStore = new Store(AppDispatcher);
 	
@@ -31384,6 +31384,14 @@
 	});
 	
 	module.exports = Post;
+
+/***/ },
+/* 238 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(232).Dispatcher;
+	
+	module.exports = new Dispatcher();
 
 /***/ }
 /******/ ]);
