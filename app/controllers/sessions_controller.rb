@@ -3,18 +3,20 @@ class SessionsController < ApplicationController
   before_action :require_signed_in!, only: [:destroy]
 
   def new
+    @user
     render :new
   end
 
   def create
+
     @user = User.find_by_credentials(
-      params[:email],
-      params[:password]
+      params[:user][:email],
+      params[:user][:password]
     )
 
     if @user
       sign_in(@user)
-      redirect_to subs_url
+      redirect_to root_url
     else
       flash.now[:errors] = ["Invalid username or password."]
       render :new

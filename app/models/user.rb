@@ -37,7 +37,9 @@ class User < ActiveRecord::Base
 
   def self.find_by_credentials(email, password)
     user = User.find_by(email: email)
-    user.try(:is_password?, password) ? user : nil
+
+    return nil unless user && user.is_password?(password)
+    user
   end
 
   def self.generate_session_token
@@ -48,12 +50,9 @@ class User < ActiveRecord::Base
     BCrypt::Password.new(self.password_digest).is_password?(unencrypted_password)
   end
 
-  def password=(unencrypted_password)
-
-    if unencrypted_password.present?
-      @password = unencrypted_password
-      self.password_digest = BCrypt::Password.create(unencrypted_password)
-    end
+  def password=(password)
+    @password = password
+    self.password_digest = BCrypt::Password.create(password)
   end
 
   def reset_session_token!
