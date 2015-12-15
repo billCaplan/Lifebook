@@ -9,7 +9,7 @@ var IndexRoute = ReactRouter.IndexRoute;
 
 var App = React.createClass({
   render: function(){
-    debugger
+
     return (
       <div>
         <header><h1>Bench BnB</h1></header>
@@ -24,4 +24,6 @@ var routes = (
 
   </Route>
 );
+
+debugger
 ReactDOM.render(<Router>{routes}</Router>, root);

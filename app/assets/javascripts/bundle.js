@@ -57,7 +57,7 @@
 	  displayName: 'App',
 	
 	  render: function () {
-	    debugger;
+	
 	    return React.createElement(
 	      'div',
 	      null,
@@ -80,6 +80,8 @@
 	  }
 	});
 	var routes = React.createElement(Route, { path: '/', component: App });
+	
+	debugger;
 	ReactDOM.render(React.createElement(
 	  Router,
 	  null,
