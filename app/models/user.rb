@@ -3,9 +3,9 @@ class User < ActiveRecord::Base
 
   after_initialize :ensure_session_token
 
-  validates :name, :password_digest, :session_token, presence: true
+  validates :email, :real_name, :age, :password_digest, :session_token, :type_id, presence: true
   validates :password, length: { minimum: 6, allow_nil: true }
-  validates :session_token, :name, uniqueness: true
+  validates :session_token, :email, uniqueness: true
 
   has_many(
     :follows,
@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
     primary_key: :id,
     class_name: "Follow"
   )
-  
+
   has_many(
     :authored_posts,
     foreign_key: :author_id,
@@ -35,8 +35,8 @@ class User < ActiveRecord::Base
     class_name: "Like"
     )
 
-  def self.find_by_credentials(name, password)
-    user = User.find_by(name: name)
+  def self.find_by_credentials(email, password)
+    user = User.find_by(email: email)
     user.try(:is_password?, password) ? user : nil
   end
 
@@ -49,6 +49,7 @@ class User < ActiveRecord::Base
   end
 
   def password=(unencrypted_password)
+
     if unencrypted_password.present?
       @password = unencrypted_password
       self.password_digest = BCrypt::Password.create(unencrypted_password)
@@ -64,7 +65,6 @@ class User < ActiveRecord::Base
   private
 
   def ensure_session_token
-    # Lazy: very low probability of collision, but we should fix this.
     self.session_token ||= self.class.generate_session_token
   end
 
