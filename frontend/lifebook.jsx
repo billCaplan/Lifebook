@@ -25,5 +25,4 @@ var routes = (
   </Route>
 );
 
-debugger
 ReactDOM.render(<Router>{routes}</Router>, root);
