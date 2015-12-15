@@ -31001,14 +31001,7 @@
 	module.exports = PostConstants;
 
 /***/ },
-/* 231 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Dispatcher = __webpack_require__(232).Dispatcher;
-	
-	module.exports = new Dispatcher();
-
-/***/ },
+/* 231 */,
 /* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -31286,7 +31279,7 @@
 /* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var AppDispatcher = __webpack_require__(231);
+	var AppDispatcher = __webpack_require__(238);
 	var PostConstants = __webpack_require__(230);
 	
 	var ApiActions = {

@@ -6,7 +6,7 @@ Get hiroku running I think this works
 
 
 
-
+custom route api request on mount
 
 [#<User id: 4, email: "test2@gmail.com", type_id: 1,
 password_digest: "$2a$10$HysJeLK0RhP8UqAogoDonuiLvoj7wSZUQwR8jIJKZj8...",
