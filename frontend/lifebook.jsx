@@ -9,9 +9,11 @@ var IndexRoute = ReactRouter.IndexRoute;
 
 var App = React.createClass({
   render: function(){
+    debugger
     return (
       <div>
         <header><h1>Bench BnB</h1></header>
+        <div>This is my App page</div>
         {this.props.children}
       </div>
     );
@@ -19,11 +21,7 @@ var App = React.createClass({
 });
 var routes = (
   <Route path="/" component={App}>
-    <IndexRoute component={Search}/>
-    <Route path="benches/new" component={BenchForm}/>
-    <Route path="benches/:benchId" component={BenchShow}>
-      <Route path="review" components={ReviewForm}/>
-    </Route>
+
   </Route>
 );
 ReactDOM.render(<Router>{routes}</Router>, root);

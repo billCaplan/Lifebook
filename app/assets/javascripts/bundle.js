@@ -53,27 +53,38 @@
 	var Route = ReactRouter.Route;
 	var IndexRoute = ReactRouter.IndexRoute;
 	
-	// var App = React.createClass({
-	//   render: function(){
-	//     return (
-	//       <div>
-	//         <header><h1>Bench BnB</h1></header>
-	//         {this.props.children}
-	//       </div>
-	//     );
-	//   }
-	// });
-	//
-	// var routes = (
-	//   <Route path="/" component={App}>
-	//     <IndexRoute component={Search}/>
-	//     <Route path="benches/new" component={BenchForm}/>
-	//     <Route path="benches/:benchId" component={BenchShow}>
-	//       <Route path="review" components={ReviewForm}/>
-	//     </Route>
-	//   </Route>
-	// );
-	// ReactDOM.render(<Router>{routes}</Router>, root);
+	var App = React.createClass({
+	  displayName: 'App',
+	
+	  render: function () {
+	    debugger;
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'header',
+	        null,
+	        React.createElement(
+	          'h1',
+	          null,
+	          'Bench BnB'
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        'This is my App page'
+	      ),
+	      this.props.children
+	    );
+	  }
+	});
+	var routes = React.createElement(Route, { path: '/', component: App });
+	ReactDOM.render(React.createElement(
+	  Router,
+	  null,
+	  routes
+	), root);
 
 /***/ },
 /* 1 */
