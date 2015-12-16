@@ -19,14 +19,18 @@ PostStore.all = function () {
   return _posts.slice(0);
 };
 
-PostStore.getByUserId = function(userId) {
+PostStore.getByUserId = function(userIdString) {
+  var userId = parseInt(userIdString);
+  var posts = PostStore.all();
   var relevantPosts = [];
-  _posts.map(function(post){
+
+  posts.forEach(function(post){
+
     if (post.author_id === userId || post.target_id === userId){
       relevantPosts.push(post);
     }
   });
-  debugger
+
   return relevantPosts;
 };
 

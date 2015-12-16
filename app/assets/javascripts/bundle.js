@@ -59,12 +59,9 @@
 	var ApiUtil = __webpack_require__(234);
 	var UserStore = __webpack_require__(240);
 	var NewPost = __webpack_require__(237);
-	var History = __webpack_require__(159).History;
 	
 	var App = React.createClass({
 	  displayName: 'App',
-	
-	  mixins: [History],
 	
 	  componentWillMount: function () {
 	    var that = this;
@@ -24571,14 +24568,18 @@
 	  return _posts.slice(0);
 	};
 	
-	PostStore.getByUserId = function (userId) {
+	PostStore.getByUserId = function (userIdString) {
+	  var userId = parseInt(userIdString);
+	  var posts = PostStore.all();
 	  var relevantPosts = [];
-	  _posts.map(function (post) {
+	
+	  posts.forEach(function (post) {
+	
 	    if (post.author_id === userId || post.target_id === userId) {
 	      relevantPosts.push(post);
 	    }
 	  });
-	  debugger;
+	
 	  return relevantPosts;
 	};
 	
@@ -31302,10 +31303,12 @@
 	var PostStore = __webpack_require__(211);
 	
 	var ApiUtil = __webpack_require__(234);
+	var History = __webpack_require__(159).History;
 	
 	var Post = React.createClass({
 	  displayName: 'Post',
 	
+	  mixins: [History],
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
@@ -31323,10 +31326,10 @@
 	  //   this.postListener.remove();
 	  // },
 	  handleProfileClick: function (coords) {
-	    this.props.history.pushState(null, "users/" + author.id);
+	    this.history.pushState(null, "user/" + this.props.post.author.id);
 	  },
 	  handlePostClick: function (post) {
-	    this.props.history.pushState(null, "posts/" + post.id);
+	    this.props.history.pushState(null, "posts/" + this.props.post.id);
 	  },
 	  render: function () {
 	    return React.createElement(
@@ -31337,7 +31340,7 @@
 	        { className: 'feed-post' },
 	        React.createElement(
 	          'p',
-	          null,
+	          { onClick: this.handleProfileClick },
 	          'Name: ',
 	          this.props.post.author.real_name
 	        ),
@@ -31486,6 +31489,7 @@
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(234);
 	
@@ -31506,10 +31510,10 @@
 	      posts: _getRelevantPosts(user_id)
 	    };
 	  },
-	  componentDidMount: function () {
-	    this.postListener = PostStore.addListener(this._postsChanged);
-	    ApiUtil.fetchPosts();
-	  },
+	  // componentDidMount: function(){
+	  //   this.postListener = PostStore.addListener(this._postsChanged);
+	  //   ApiUtil.fetchPosts();
+	  // },
 	  // componentWillUnmount: function(){
 	  //   this.postListener.remove();
 	  // },
@@ -31522,7 +31526,6 @@
 	
 	  render: function () {
 	    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
-	
 	    var unorderedPosts = this.state.posts.reverse();
 	    var Posts = unorderedPosts.map(function (post) {
 	      return React.createElement(Post, { key: post.id, post: post });
