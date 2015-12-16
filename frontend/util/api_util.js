@@ -8,7 +8,7 @@ var ApiUtil = {
   },
   createPost: function(data){
     $.post('api/posts', { post: data }, function(post) {
-      ApiActions.receiveAll([post]);
+      ApiActions.receiveNewPost(post);
     });
   },
   getCurrentUser: function(){

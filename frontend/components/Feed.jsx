@@ -35,12 +35,12 @@ var Feed = React.createClass({
   },
 
   render: function(){
-    // Here I will attempt to filter the posts to only the ones that are being followed
+    // need to filter the posts to only the ones that are being followed
 
-
+    //  json does not have id
     var unorderedPosts = this.state.posts.reverse();
-    var Posts = unorderedPosts.map(function (post) {
-      return <Post key={post.id} post={post} />;
+    var Posts = unorderedPosts.map(function (post, i) {
+      return <Post key={i} post={post} />;
     });
 
     return(

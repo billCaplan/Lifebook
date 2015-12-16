@@ -16,7 +16,7 @@ class Api::PostsController < ApplicationController
 
 
     if @post.save
-      redirect_to root_url
+      render :create
     else
       render json: @post.errors.full_messages, status: 422
     end

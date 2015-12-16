@@ -15,7 +15,7 @@ var ApiActions = {
       currentUser: currentUser
     });
   },
-  recieveNewPost: function(newPost){
+  receiveNewPost: function(newPost){
     AppDispatcher.dispatch({
       actionType: PostConstants.NEW_POST_RECEIVED,
       newPost: newPost

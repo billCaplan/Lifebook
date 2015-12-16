@@ -12,13 +12,16 @@ var Post = React.createClass({
   // getInitialState: function(){
   //   debugger
   // },
-  componentDidMount: function(){
-    this.postListener = PostStore.addListener(this._postsChanged);
-    ApiUtil.fetchPosts();
-  },
-  componentWillUnmount: function(){
-    this.postListener.remove();
-  },
+  // componentDidMount: function(){
+  //   this.postListener = PostStore.addListener(this._postsChanged);
+  //   ApiUtil.fetchPosts();
+  // },
+  // _postsChanged: function(){
+  //
+  // },
+  // componentWillUnmount: function(){
+  //   this.postListener.remove();
+  // },
   handleProfileClick: function(coords){
     this.props.history.pushState(null, "users/" + author.id);
   },
@@ -26,7 +29,6 @@ var Post = React.createClass({
     this.props.history.pushState(null, "posts/" + post.id);
   },
   render: function(){
-    debugger
     return(
       <div>
         <div className="feed-post">

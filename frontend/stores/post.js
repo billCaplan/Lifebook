@@ -1,5 +1,5 @@
 var Store = require('flux/utils').Store;
-var CHANGE_EVENT = "change";
+
 var PostConstants = require('../constants/post_constants');
 var AppDispatcher = require('../dispatcher/Dispatcher');
 
@@ -19,14 +19,26 @@ PostStore.all = function () {
   return _posts.slice(0);
 };
 
+PostStore.getByUserId = function(userId) {
+  var relevantPosts = [];
+  _posts.map(function(post){
+    if (post.author_id === userId || post.target_id === userId){
+      relevantPosts.push(post);
+    }
+  });
+  debugger
+  return relevantPosts;
+};
+
 PostStore.__onDispatch = function (payload) {
+
   switch(payload.actionType) {
     case PostConstants.POSTS_RECEIVED:
       var result = resetPosts(payload.posts);
       PostStore.__emitChange();
       break;
     case PostConstants.NEW_POST_RECEIVED:
-      var result = addNewPost(payload.post);
+      var result = addNewPost(payload.newPost);
       PostStore.__emitChange();
       break;
   }
