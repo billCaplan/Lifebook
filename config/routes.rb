@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :posts
   end
   resources :users, except: [:show]
+  resources :current, only: [:index]
 
 
   root "static_pages#root"

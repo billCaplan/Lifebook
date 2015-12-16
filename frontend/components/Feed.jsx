@@ -13,19 +13,22 @@ var Feed = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
+  
   _postsChanged: function(){
-
     this.setState({posts: _getAllPosts()});
   },
+
   getInitialState: function(){
     return {
       posts: _getAllPosts(),
     };
   },
+
   componentDidMount: function(){
     this.postListener = PostStore.addListener(this._postsChanged);
     ApiUtil.fetchPosts();
   },
+
   componentWillUnmount: function(){
     this.postListener.remove();
   },

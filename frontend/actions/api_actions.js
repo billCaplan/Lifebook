@@ -7,6 +7,12 @@ var ApiActions = {
       actionType: PostConstants.POSTS_RECEIVED,
       posts: posts
     });
+  },
+  recieveCurrentUser: function(currentUser){
+    AppDispatcher.dispatch({
+      actionType: "CURRENT_USER_RECIEVED",
+      currentUser: currentUser
+    });
   }
 };
 

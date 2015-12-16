@@ -10,7 +10,14 @@ var ApiUtil = {
     $.post('api/posts', { bench: data }, function(post) {
       ApiActions.receiveAll([post]);
     });
-  }
+  },
+  getCurrentUser: function(){
+    //  Ajax request to fetch the current user so i need to write a custom route in the user controller
+
+    $.get('/current', function(currentUser){
+      ApiActions.recieveCurrentUser(currentUser);
+  });
+}
 };
 
 module.exports = ApiUtil;

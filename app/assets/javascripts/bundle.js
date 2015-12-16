@@ -56,12 +56,20 @@
 	var Feed = __webpack_require__(210);
 	var UserProfile = __webpack_require__(211);
 	var PostPage = __webpack_require__(236);
+	var ApiUtil = __webpack_require__(234);
 	
 	var App = React.createClass({
 	  displayName: 'App',
 	
-	  render: function () {
+	  componentWillMount: function () {
+	    var that = this;
 	
+	    $.get('/current', function (currentUser) {
+	      that.setState({ currentUser: currentUser });
+	    });
+	  },
+	
+	  render: function () {
 	    return React.createElement(
 	      'div',
 	      null,
@@ -83,6 +91,7 @@
 	    );
 	  }
 	});
+	
 	var routes = React.createElement(
 	  Route,
 	  { path: '/', component: App },
@@ -24470,19 +24479,22 @@
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
-	  _postsChanged: function () {
 	
+	  _postsChanged: function () {
 	    this.setState({ posts: _getAllPosts() });
 	  },
+	
 	  getInitialState: function () {
 	    return {
 	      posts: _getAllPosts()
 	    };
 	  },
+	
 	  componentDidMount: function () {
 	    this.postListener = PostStore.addListener(this._postsChanged);
 	    ApiUtil.fetchPosts();
 	  },
+	
 	  componentWillUnmount: function () {
 	    this.postListener.remove();
 	  },
@@ -31270,6 +31282,13 @@
 	    $.post('api/posts', { bench: data }, function (post) {
 	      ApiActions.receiveAll([post]);
 	    });
+	  },
+	  getCurrentUser: function () {
+	    //  Ajax request to fetch the current user so i need to write a custom route in the user controller
+	
+	    $.get('/current', function (currentUser) {
+	      ApiActions.recieveCurrentUser(currentUser);
+	    });
 	  }
 	};
 	
@@ -31287,6 +31306,12 @@
 	    AppDispatcher.dispatch({
 	      actionType: PostConstants.POSTS_RECEIVED,
 	      posts: posts
+	    });
+	  },
+	  recieveCurrentUser: function (currentUser) {
+	    AppDispatcher.dispatch({
+	      actionType: "CURRENT_USER_RECIEVED",
+	      currentUser: currentUser
 	    });
 	  }
 	};

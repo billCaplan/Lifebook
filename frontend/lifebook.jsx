@@ -10,11 +10,23 @@ var IndexRoute = ReactRouter.IndexRoute;
 var Feed = require('./components/Feed');
 var UserProfile = require('./components/UserProfile');
 var PostPage = require('./components/PostPage');
+var ApiUtil = require('./util/api_util');
+
+
 
 
 var App = React.createClass({
-  render: function(){
 
+  componentWillMount: function(){
+    var that = this;
+
+    $.get('/current', function(currentUser){
+      that.setState({currentUser: currentUser});
+    });
+
+  },
+
+  render: function(){
     return (
       <div>
         <header><h1>Bench BnB</h1></header>
@@ -24,6 +36,7 @@ var App = React.createClass({
     );
   }
 });
+
 var routes = (
   <Route path="/" component={App}>
     <IndexRoute component={Feed}/>
