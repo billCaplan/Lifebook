@@ -1,5 +1,6 @@
 var AppDispatcher = require('../dispatcher/Dispatcher');
 var PostConstants = require('../constants/post_constants');
+var UserConstants = require('../constants/user_constants');
 
 var ApiActions = {
   receiveAll: function(posts){
@@ -10,7 +11,7 @@ var ApiActions = {
   },
   recieveCurrentUser: function(currentUser){
     AppDispatcher.dispatch({
-      actionType: "CURRENT_USER_RECIEVED",
+      actionType: UserConstants.CURRENT_USER_RECEIVED,
       currentUser: currentUser
     });
   }

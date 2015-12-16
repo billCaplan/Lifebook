@@ -11,6 +11,7 @@ var Feed = require('./components/Feed');
 var UserProfile = require('./components/UserProfile');
 var PostPage = require('./components/PostPage');
 var ApiUtil = require('./util/api_util');
+var UserStore = require('./stores/user');
 
 
 
@@ -20,17 +21,27 @@ var App = React.createClass({
   componentWillMount: function(){
     var that = this;
 
-    $.get('/current', function(currentUser){
-      that.setState({currentUser: currentUser});
-    });
+    ApiUtil.getCurrentUser();
 
+    UserStore.addListener(this._onChange);
+  },
+
+  getInitialState: function(){
+    return {currentUser: {}};
+  },
+
+  _onChange: function(){
+    this.setState({currentUser: UserStore.getCurrentUser()});
   },
 
   render: function(){
+
+    var name = this.state.currentUser.real_name;
+
     return (
       <div>
-        <header><h1>Bench BnB</h1></header>
-        <div>Your Feed</div>
+        <header><h1>Lifebook</h1></header>
+        <div>{name}</div>
         {this.props.children}
       </div>
     );

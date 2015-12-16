@@ -57,6 +57,7 @@
 	var UserProfile = __webpack_require__(211);
 	var PostPage = __webpack_require__(236);
 	var ApiUtil = __webpack_require__(234);
+	var UserStore = __webpack_require__(239);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -64,12 +65,23 @@
 	  componentWillMount: function () {
 	    var that = this;
 	
-	    $.get('/current', function (currentUser) {
-	      that.setState({ currentUser: currentUser });
-	    });
+	    ApiUtil.getCurrentUser();
+	
+	    UserStore.addListener(this._onChange);
+	  },
+	
+	  getInitialState: function () {
+	    return { currentUser: {} };
+	  },
+	
+	  _onChange: function () {
+	    this.setState({ currentUser: UserStore.getCurrentUser() });
 	  },
 	
 	  render: function () {
+	
+	    var name = this.state.currentUser.real_name;
+	
 	    return React.createElement(
 	      'div',
 	      null,
@@ -79,13 +91,13 @@
 	        React.createElement(
 	          'h1',
 	          null,
-	          'Bench BnB'
+	          'Lifebook'
 	        )
 	      ),
 	      React.createElement(
 	        'div',
 	        null,
-	        'Your Feed'
+	        name
 	      ),
 	      this.props.children
 	    );
@@ -31300,6 +31312,7 @@
 
 	var AppDispatcher = __webpack_require__(238);
 	var PostConstants = __webpack_require__(230);
+	var UserConstants = __webpack_require__(240);
 	
 	var ApiActions = {
 	  receiveAll: function (posts) {
@@ -31310,7 +31323,7 @@
 	  },
 	  recieveCurrentUser: function (currentUser) {
 	    AppDispatcher.dispatch({
-	      actionType: "CURRENT_USER_RECIEVED",
+	      actionType: UserConstants.CURRENT_USER_RECEIVED,
 	      currentUser: currentUser
 	    });
 	  }
@@ -31410,6 +31423,59 @@
 	var Dispatcher = __webpack_require__(232).Dispatcher;
 	
 	module.exports = new Dispatcher();
+
+/***/ },
+/* 239 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(213).Store;
+	var CHANGE_EVENT = "change";
+	var UserConstants = __webpack_require__(240);
+	var AppDispatcher = __webpack_require__(238);
+	
+	var UserStore = new Store(AppDispatcher);
+	
+	var _users = [];
+	
+	var _currentUser = {};
+	
+	var resetUsers = function (users) {
+	  _users = users.slice(0);
+	};
+	
+	UserStore.all = function () {
+	  return _users.slice(0);
+	};
+	
+	UserStore.setCurrentUser = function (currentUser) {
+	  _currentUser = currentUser;
+	};
+	
+	UserStore.getCurrentUser = function () {
+	
+	  return _currentUser;
+	};
+	
+	UserStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case UserConstants.CURRENT_USER_RECEIVED:
+	      this.setCurrentUser(payload.currentUser);
+	      UserStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = UserStore;
+
+/***/ },
+/* 240 */
+/***/ function(module, exports) {
+
+	UserConstants = {
+	  USERS_RECEIVED: "CURRENT_USER_RECEIVED"
+	};
+	
+	module.exports = UserConstants;
 
 /***/ }
 /******/ ]);
