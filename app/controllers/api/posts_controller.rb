@@ -11,8 +11,13 @@ class Api::PostsController < ApplicationController
   def create
     @post = Post.new(post_params)
 
+    @post.author_id = current_user.id
+    @post.target_id = current_user.id
+
+
     if @post.save
-      render :show
+      console.log("Saved!")
+      redirect_to root_url
     else
       render json: @post.errors.full_messages, status: 422
     end

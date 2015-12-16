@@ -12,6 +12,7 @@ var UserProfile = require('./components/UserProfile');
 var PostPage = require('./components/PostPage');
 var ApiUtil = require('./util/api_util');
 var UserStore = require('./stores/user');
+var NewPost = require('./components/NewPost');
 
 
 
@@ -41,7 +42,7 @@ var App = React.createClass({
     return (
       <div>
         <header><h1>Lifebook</h1></header>
-        <div>{name}</div>
+        <div>Welcome Back, {name}</div>
         {this.props.children}
       </div>
     );
@@ -50,9 +51,10 @@ var App = React.createClass({
 
 var routes = (
   <Route path="/" component={App}>
-    <IndexRoute component={Feed}/>
+
+    <IndexRoute component={Feed}></IndexRoute>
+    <Route path="/post/new" component={NewPost}></Route>
     <Route path="user/:userId" component={UserProfile}></Route>
-    <Route path="post/:postId" component={PostPage}></Route>
 
   </Route>
 );

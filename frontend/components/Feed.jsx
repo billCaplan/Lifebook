@@ -3,6 +3,7 @@ var PostStore = require('../stores/post');
 var Post = require('../components/Post');
 
 var ApiUtil = require('../util/api_util');
+var NewPost = require('../components/NewPost');
 
 
 function _getAllPosts() {
@@ -13,7 +14,7 @@ var Feed = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
-  
+
   _postsChanged: function(){
     this.setState({posts: _getAllPosts()});
   },
@@ -38,15 +39,20 @@ var Feed = React.createClass({
 
 
     var unorderedPosts = this.state.posts.reverse();
+    var postForm = NewPost;
     var Posts = unorderedPosts.map(function (post) {
       return <Post key={post.id} post={post} />;
     });
 
     return(
       <div>
-      <ul>
-        {Posts}
-      </ul>
+        <div>
+          {this.props.children}
+        </div>
+        <br></br>
+          <ul>
+            {Posts}
+          </ul>
       </div>
     );
   }

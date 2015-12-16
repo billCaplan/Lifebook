@@ -58,6 +58,7 @@
 	var PostPage = __webpack_require__(236);
 	var ApiUtil = __webpack_require__(234);
 	var UserStore = __webpack_require__(239);
+	var NewPost = __webpack_require__(241);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -97,6 +98,7 @@
 	      React.createElement(
 	        'div',
 	        null,
+	        'Welcome Back, ',
 	        name
 	      ),
 	      this.props.children
@@ -108,8 +110,8 @@
 	  Route,
 	  { path: '/', component: App },
 	  React.createElement(IndexRoute, { component: Feed }),
-	  React.createElement(Route, { path: 'user/:userId', component: UserProfile }),
-	  React.createElement(Route, { path: 'post/:postId', component: PostPage })
+	  React.createElement(Route, { path: '/post/new', component: NewPost }),
+	  React.createElement(Route, { path: 'user/:userId', component: UserProfile })
 	);
 	
 	ReactDOM.render(React.createElement(
@@ -24480,6 +24482,7 @@
 	var Post = __webpack_require__(237);
 	
 	var ApiUtil = __webpack_require__(234);
+	var NewPost = __webpack_require__(241);
 	
 	function _getAllPosts() {
 	  return PostStore.all();
@@ -24515,6 +24518,7 @@
 	    // Here I will attempt to filter the posts to only the ones that are being followed
 	
 	    var unorderedPosts = this.state.posts.reverse();
+	    var postForm = NewPost;
 	    var Posts = unorderedPosts.map(function (post) {
 	      return React.createElement(Post, { key: post.id, post: post });
 	    });
@@ -24522,6 +24526,12 @@
 	    return React.createElement(
 	      'div',
 	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        this.props.children
+	      ),
+	      React.createElement('br', null),
 	      React.createElement(
 	        'ul',
 	        null,
@@ -31291,7 +31301,8 @@
 	    });
 	  },
 	  createPost: function (data) {
-	    $.post('api/posts', { bench: data }, function (post) {
+	
+	    $.post('api/posts', { post: data }, function (post) {
 	      ApiActions.receiveAll([post]);
 	    });
 	  },
@@ -31476,6 +31487,62 @@
 	};
 	
 	module.exports = UserConstants;
+
+/***/ },
+/* 241 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(212);
+	var Post = __webpack_require__(237);
+	
+	var ApiUtil = __webpack_require__(234);
+	
+	var NewPost = React.createClass({
+	  displayName: 'NewPost',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	
+	  // navigateToSearch: function(){
+	  //  this.props.history.pushState(null, "/");
+	  // },
+	
+	  handleSubmit: function (event) {
+	    event.preventDefault();
+	
+	    var post = { body: event.currentTarget[1].value };
+	    ApiUtil.createPost(post);
+	    // this.navigateToSearch();
+	  },
+	
+	  render: function () {
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'form',
+	        { onSubmit: this.handleSubmit },
+	        React.createElement('input', { type: 'hidden', name: 'authenticity_token',
+	          value: '<%= form_authenticity_token %>' }),
+	        React.createElement(
+	          'label',
+	          { 'for': 'post_body' },
+	          'What\'s on your mind?'
+	        ),
+	        React.createElement('textarea', {
+	          name: 'post[body]',
+	          id: 'post_body' }),
+	        React.createElement('br', null),
+	        React.createElement('input', { type: 'submit', value: 'Post' })
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = NewPost;
 
 /***/ }
 /******/ ]);

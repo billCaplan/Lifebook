@@ -7,7 +7,8 @@ var ApiUtil = {
     });
   },
   createPost: function(data){
-    $.post('api/posts', { bench: data }, function(post) {
+  
+    $.post('api/posts', { post: data }, function(post) {
       ApiActions.receiveAll([post]);
     });
   },
