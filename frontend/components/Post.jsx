@@ -20,12 +20,13 @@ var Post = React.createClass({
     this.postListener.remove();
   },
   handleProfileClick: function(coords){
-    this.props.history.pushState(null, "users/");
+    this.props.history.pushState(null, "users/" + author.id);
   },
   handlePostClick: function (post) {
     this.props.history.pushState(null, "posts/" + post.id);
   },
   render: function(){
+    debugger
     return(
       <div>
         <div className="feed-post">

@@ -4,23 +4,25 @@ var Post = require('../components/Post');
 
 var ApiUtil = require('../util/api_util');
 
+var History = require('react-router').History;
+
 
 
 var NewPost = React.createClass({
+  mixins: [History],
   contextTypes: {
     router: React.PropTypes.func
   },
 
-  // navigateToSearch: function(){
-  //  this.props.history.pushState(null, "/");
-  // },
+  navigateToFeed: function(){
+   this.props.history.pushState(null, "/");
+  },
 
   handleSubmit: function(event){
-  event.preventDefault();
+    event.preventDefault();
 
-  var post = {body: event.currentTarget[1].value};
-  ApiUtil.createPost(post);
-  // this.navigateToSearch();
+    var post = {body: event.currentTarget[1].value};
+    ApiUtil.createPost(post);
   },
 
   render: function(){
@@ -30,10 +32,12 @@ var NewPost = React.createClass({
         <form onSubmit={this.handleSubmit}>
           <input type="hidden" name="authenticity_token"
                  value="<%= form_authenticity_token %>"></input>
+               <br></br>
          <label for="post_body">What's on your mind?</label>
+         <br></br>
          <textarea
            name="post[body]"
-           id="post_body"></textarea>
+           id="post_body" rows="4" cols="50"></textarea>
          <br></br>
          <input type="submit" value="Post"/>
         </form>

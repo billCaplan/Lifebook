@@ -59,9 +59,12 @@
 	var ApiUtil = __webpack_require__(234);
 	var UserStore = __webpack_require__(239);
 	var NewPost = __webpack_require__(241);
+	var History = __webpack_require__(159).History;
 	
 	var App = React.createClass({
 	  displayName: 'App',
+	
+	  mixins: [History],
 	
 	  componentWillMount: function () {
 	    var that = this;
@@ -24518,7 +24521,6 @@
 	    // Here I will attempt to filter the posts to only the ones that are being followed
 	
 	    var unorderedPosts = this.state.posts.reverse();
-	    var postForm = NewPost;
 	    var Posts = unorderedPosts.map(function (post) {
 	      return React.createElement(Post, { key: post.id, post: post });
 	    });
@@ -24529,7 +24531,7 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        this.props.children
+	        React.createElement(NewPost, null)
 	      ),
 	      React.createElement('br', null),
 	      React.createElement(
@@ -24587,6 +24589,10 @@
 	  _posts = posts.slice(0);
 	};
 	
+	var addNewPost = function (newPost) {
+	  _posts.push(newPost);
+	};
+	
 	PostStore.all = function () {
 	  return _posts.slice(0);
 	};
@@ -24595,6 +24601,10 @@
 	  switch (payload.actionType) {
 	    case PostConstants.POSTS_RECEIVED:
 	      var result = resetPosts(payload.posts);
+	      PostStore.__emitChange();
+	      break;
+	    case PostConstants.NEW_POST_RECEIVED:
+	      var result = addNewPost(payload.post);
 	      PostStore.__emitChange();
 	      break;
 	  }
@@ -31029,7 +31039,8 @@
 /***/ function(module, exports) {
 
 	PostConstants = {
-	  POSTS_RECEIVED: "POSTS_RECEIVED"
+	  POSTS_RECEIVED: "POSTS_RECEIVED",
+	  NEW_POST_RECEIVED: "NEW_POST_RECEIVED"
 	};
 	
 	module.exports = PostConstants;
@@ -31301,14 +31312,11 @@
 	    });
 	  },
 	  createPost: function (data) {
-	
 	    $.post('api/posts', { post: data }, function (post) {
 	      ApiActions.receiveAll([post]);
 	    });
 	  },
 	  getCurrentUser: function () {
-	    //  Ajax request to fetch the current user so i need to write a custom route in the user controller
-	
 	    $.get('/current', function (currentUser) {
 	      ApiActions.recieveCurrentUser(currentUser);
 	    });
@@ -31336,6 +31344,12 @@
 	    AppDispatcher.dispatch({
 	      actionType: UserConstants.CURRENT_USER_RECEIVED,
 	      currentUser: currentUser
+	    });
+	  },
+	  recieveNewPost: function (newPost) {
+	    AppDispatcher.dispatch({
+	      actionType: PostConstants.NEW_POST_RECEIVED,
+	      newPost: newPost
 	    });
 	  }
 	};
@@ -31397,12 +31411,13 @@
 	    this.postListener.remove();
 	  },
 	  handleProfileClick: function (coords) {
-	    this.props.history.pushState(null, "users/");
+	    this.props.history.pushState(null, "users/" + author.id);
 	  },
 	  handlePostClick: function (post) {
 	    this.props.history.pushState(null, "posts/" + post.id);
 	  },
 	  render: function () {
+	    debugger;
 	    return React.createElement(
 	      'div',
 	      null,
@@ -31498,23 +31513,25 @@
 	
 	var ApiUtil = __webpack_require__(234);
 	
+	var History = __webpack_require__(159).History;
+	
 	var NewPost = React.createClass({
 	  displayName: 'NewPost',
 	
+	  mixins: [History],
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
 	
-	  // navigateToSearch: function(){
-	  //  this.props.history.pushState(null, "/");
-	  // },
+	  navigateToFeed: function () {
+	    this.props.history.pushState(null, "/");
+	  },
 	
 	  handleSubmit: function (event) {
 	    event.preventDefault();
 	
 	    var post = { body: event.currentTarget[1].value };
 	    ApiUtil.createPost(post);
-	    // this.navigateToSearch();
 	  },
 	
 	  render: function () {
@@ -31527,14 +31544,16 @@
 	        { onSubmit: this.handleSubmit },
 	        React.createElement('input', { type: 'hidden', name: 'authenticity_token',
 	          value: '<%= form_authenticity_token %>' }),
+	        React.createElement('br', null),
 	        React.createElement(
 	          'label',
 	          { 'for': 'post_body' },
 	          'What\'s on your mind?'
 	        ),
+	        React.createElement('br', null),
 	        React.createElement('textarea', {
 	          name: 'post[body]',
-	          id: 'post_body' }),
+	          id: 'post_body', rows: '4', cols: '50' }),
 	        React.createElement('br', null),
 	        React.createElement('input', { type: 'submit', value: 'Post' })
 	      )

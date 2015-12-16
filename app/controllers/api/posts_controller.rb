@@ -16,7 +16,6 @@ class Api::PostsController < ApplicationController
 
 
     if @post.save
-      console.log("Saved!")
       redirect_to root_url
     else
       render json: @post.errors.full_messages, status: 422

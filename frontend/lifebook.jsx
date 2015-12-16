@@ -13,11 +13,10 @@ var PostPage = require('./components/PostPage');
 var ApiUtil = require('./util/api_util');
 var UserStore = require('./stores/user');
 var NewPost = require('./components/NewPost');
-
-
-
+var History = require('react-router').History;
 
 var App = React.createClass({
+  mixins: [History],
 
   componentWillMount: function(){
     var that = this;
@@ -34,6 +33,7 @@ var App = React.createClass({
   _onChange: function(){
     this.setState({currentUser: UserStore.getCurrentUser()});
   },
+
 
   render: function(){
 

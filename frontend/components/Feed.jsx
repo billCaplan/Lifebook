@@ -39,7 +39,6 @@ var Feed = React.createClass({
 
 
     var unorderedPosts = this.state.posts.reverse();
-    var postForm = NewPost;
     var Posts = unorderedPosts.map(function (post) {
       return <Post key={post.id} post={post} />;
     });
@@ -47,7 +46,7 @@ var Feed = React.createClass({
     return(
       <div>
         <div>
-          {this.props.children}
+          <NewPost />
         </div>
         <br></br>
           <ul>
