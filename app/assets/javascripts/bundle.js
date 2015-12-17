@@ -78,6 +78,10 @@
 	  _onChange: function () {
 	    this.setState({ currentUser: UserStore.getCurrentUser() });
 	  },
+	  redirectToHome: function () {
+	
+	    this.props.history.pushState(null, "/");
+	  },
 	
 	  render: function () {
 	
@@ -91,7 +95,7 @@
 	        null,
 	        React.createElement(
 	          'h1',
-	          null,
+	          { onClick: this.redirectToHome },
 	          'Lifebook'
 	        )
 	      ),
@@ -24485,7 +24489,15 @@
 	var NewPost = __webpack_require__(237);
 	
 	function _getAllPosts() {
-	  return PostStore.all();
+	  var posts = PostStore.all();
+	  return posts.sort(function compare(a, b) {
+	    if (a.id < b.id) {
+	      return -1;
+	    }
+	    if (a.id > b.id) {
+	      return 1;
+	    }
+	  });
 	}
 	
 	var Feed = React.createClass({
@@ -24517,7 +24529,6 @@
 	  render: function () {
 	    // need to filter the posts to only the ones that are being followed
 	
-	    //  json does not have id
 	    var unorderedPosts = this.state.posts.reverse();
 	    var Posts = unorderedPosts.map(function (post, i) {
 	      return React.createElement(Post, { key: i, post: post });
@@ -24548,7 +24559,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
-	
 	var PostConstants = __webpack_require__(229);
 	var AppDispatcher = __webpack_require__(230);
 	
@@ -31377,6 +31387,12 @@
 	    $.get('/current', function (currentUser) {
 	      ApiActions.recieveCurrentUser(currentUser);
 	    });
+	  },
+	  fetchUsers: function () {
+	    console.log("in Api Util fetch");
+	    $.get('/api/users', function (users) {
+	      ApiActions.receiveAllUsers(users);
+	    });
 	  }
 	};
 	
@@ -31408,6 +31424,13 @@
 	      actionType: PostConstants.NEW_POST_RECEIVED,
 	      newPost: newPost
 	    });
+	  },
+	  receiveAllUsers: function (users) {
+	    console.log("In the actions");
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.USERS_RECEIVED,
+	      users: users
+	    });
 	  }
 	};
 	
@@ -31418,7 +31441,9 @@
 /***/ function(module, exports) {
 
 	UserConstants = {
-	  USERS_RECEIVED: "CURRENT_USER_RECEIVED"
+	  CURRENT_USER_RECEIVED: "CURRENT_USER_RECEIVED",
+	  USERS_RECEIVED: "USERS_RECEIVED"
+	
 	};
 	
 	module.exports = UserConstants;
@@ -31492,9 +31517,18 @@
 	var Post = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(234);
+	var UserProfileUserInfo = __webpack_require__(241);
 	
 	function _getRelevantPosts(userId) {
-	  return PostStore.getByUserId(userId);
+	  var posts = PostStore.getByUserId(userId);
+	  return posts.sort(function compare(a, b) {
+	    if (a.id < b.id) {
+	      return -1;
+	    }
+	    if (a.id > b.id) {
+	      return 1;
+	    }
+	  });
 	}
 	
 	var UserProfile = React.createClass({
@@ -31510,30 +31544,45 @@
 	      posts: _getRelevantPosts(user_id)
 	    };
 	  },
-	  // componentDidMount: function(){
-	  //   this.postListener = PostStore.addListener(this._postsChanged);
-	  //   ApiUtil.fetchPosts();
-	  // },
-	  // componentWillUnmount: function(){
-	  //   this.postListener.remove();
-	  // },
-	  // handleProfileClick: function(coords){
-	  //   this.props.history.pushState(null, "users/" + author.id);
-	  // },
+	  componentDidMount: function () {
+	    //ApiUtil to fetch users
+	    ApiUtil.fetchPosts();
+	    ApiUtil.fetchUsers();
+	    //Add listener to update state
+	    this.postListener = PostStore.addListener(this._postsChanged);
+	  },
+	  //Fixes navigating to new user id
+	  componentWillReceiveProps: function (newProps) {
+	    this.setState({ user_id: newProps.params.userId });
+	    ApiUtil.fetchPosts();
+	  },
+	
+	  _postsChanged: function () {
+	    this.setState({ posts: _getRelevantPosts(this.state.user_id) });
+	  },
 	  // handlePostClick: function (post) {
 	  //   this.props.history.pushState(null, "posts/" + post.id);
 	  // },
 	
 	  render: function () {
 	    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
-	    var unorderedPosts = this.state.posts.reverse();
-	    var Posts = unorderedPosts.map(function (post) {
+	
+	    var unorderedPosts = [];
+	
+	    this.state.posts.map(function (post) {
+	      unorderedPosts.push(post);
+	    });
+	
+	    var orderedPosts = unorderedPosts.reverse();
+	    var Posts = orderedPosts.map(function (post) {
+	
 	      return React.createElement(Post, { key: post.id, post: post });
 	    });
 	
 	    return React.createElement(
 	      'div',
 	      null,
+	      React.createElement(UserProfileUserInfo, { userId: this.state.user_id }),
 	      React.createElement(
 	        'div',
 	        null,
@@ -31577,7 +31626,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
-	var CHANGE_EVENT = "change";
 	var UserConstants = __webpack_require__(236);
 	var AppDispatcher = __webpack_require__(230);
 	
@@ -31588,6 +31636,7 @@
 	var _currentUser = {};
 	
 	var resetUsers = function (users) {
+	
 	  _users = users.slice(0);
 	};
 	
@@ -31604,16 +31653,126 @@
 	  return _currentUser;
 	};
 	
+	UserStore.findUser = function (userId) {
+	  var targetUserId = parseInt(userId);
+	  var users = UserStore.all();
+	  var targetUser = {};
+	
+	  users.forEach(function (user) {
+	    if (user.id === targetUserId) {
+	      targetUser = user;
+	    }
+	  });
+	  return targetUser;
+	};
+	
 	UserStore.__onDispatch = function (payload) {
+	
+	  console.log(payload);
 	  switch (payload.actionType) {
 	    case UserConstants.CURRENT_USER_RECEIVED:
 	      this.setCurrentUser(payload.currentUser);
+	      UserStore.__emitChange();
+	      break;
+	    case UserConstants.USERS_RECEIVED:
+	      var result = resetUsers(payload.users);
 	      UserStore.__emitChange();
 	      break;
 	  }
 	};
 	
 	module.exports = UserStore;
+
+/***/ },
+/* 241 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(233);
+	var UserStore = __webpack_require__(240);
+	
+	var ApiUtil = __webpack_require__(234);
+	
+	function _getApplicableUser(currentProfileUserId) {
+	  console.log("Should be the Applicable user");
+	  var user = UserStore.findUser(currentProfileUserId);
+	  console.log(user);
+	  return user;
+	}
+	
+	var UserProfileUserInfo = React.createClass({
+	  displayName: 'UserProfileUserInfo',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  getInitialState: function () {
+	    return {
+	      user: _getApplicableUser(this.props.userId)
+	    };
+	  },
+	  componentDidMount: function () {
+	    ApiUtil.fetchUsers();
+	    console.log("in component did mount the fetch should have just started");
+	    this.userListener = PostStore.addListener(this._usersChanged);
+	  },
+	  _usersChanged: function () {
+	    this.setState({ user: _getApplicableUser(this.props.userId) });
+	  },
+	  // // componentWillUnmount: function(){
+	  // //   this.setState({
+	  // //     user_id: {},
+	  // //     posts: {},
+	  // //   });
+	  // // },
+	  // _postsChanged: function(){
+	  //
+	  // },
+	
+	  render: function () {
+	
+	    console.log(this.state);
+	
+	    //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h2',
+	        null,
+	        'User Profile User Info'
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'profile-pic' },
+	        React.createElement('img', { src: 'http://placehold.it/150x150' })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.state.user.real_name
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.state.user.age
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.state.user.location
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.state.user.email
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = UserProfileUserInfo;
 
 /***/ }
 /******/ ]);

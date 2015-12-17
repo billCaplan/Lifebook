@@ -33,6 +33,10 @@ var App = React.createClass({
   _onChange: function(){
     this.setState({currentUser: UserStore.getCurrentUser()});
   },
+  redirectToHome: function(){
+
+    this.props.history.pushState(null, "/");
+  },
 
 
   render: function(){
@@ -41,7 +45,7 @@ var App = React.createClass({
 
     return (
       <div>
-        <header><h1>Lifebook</h1></header>
+        <header><h1 onClick={this.redirectToHome}>Lifebook</h1></header>
         <div>Welcome Back, {name}</div>
         {this.props.children}
       </div>

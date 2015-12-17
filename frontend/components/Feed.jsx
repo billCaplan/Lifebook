@@ -7,7 +7,15 @@ var NewPost = require('../components/NewPost');
 
 
 function _getAllPosts() {
-  return PostStore.all();
+  var posts = PostStore.all();
+  return posts.sort(function compare(a, b) {
+          if (a.id < b.id) {
+            return -1;
+          }
+          if (a.id > b.id) {
+            return 1;
+          }
+        });
 }
 
 var Feed = React.createClass({
@@ -37,7 +45,6 @@ var Feed = React.createClass({
   render: function(){
     // need to filter the posts to only the ones that are being followed
 
-    //  json does not have id
     var unorderedPosts = this.state.posts.reverse();
     var Posts = unorderedPosts.map(function (post, i) {
       return <Post key={i} post={post} />;

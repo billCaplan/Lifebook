@@ -15,7 +15,13 @@ var ApiUtil = {
     $.get('/current', function(currentUser){
       ApiActions.recieveCurrentUser(currentUser);
   });
-}
+},
+  fetchUsers: function(){
+    console.log("in Api Util fetch");
+    $.get('/api/users', function(users){
+      ApiActions.receiveAllUsers(users);
+    });
+  },
 };
 
 module.exports = ApiUtil;

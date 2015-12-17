@@ -20,6 +20,13 @@ var ApiActions = {
       actionType: PostConstants.NEW_POST_RECEIVED,
       newPost: newPost
     });
+  },
+  receiveAllUsers: function(users){
+    console.log("In the actions");
+    AppDispatcher.dispatch({
+      actionType: UserConstants.USERS_RECEIVED,
+      users: users
+    });
   }
 };
 
