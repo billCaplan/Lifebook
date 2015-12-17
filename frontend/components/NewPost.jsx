@@ -54,4 +54,4 @@ var NewPost = React.createClass({
   }
 });
 
-module.exports = NewPost
+module.exports = NewPost;

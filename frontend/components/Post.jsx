@@ -5,25 +5,14 @@ var PostStore = require('../stores/post');
 
 var ApiUtil = require('../util/api_util');
 var History = require('react-router').History;
+var NewComment = require('../components/NewComment');
+var Comment = require('../components/Comment');
 
 var Post = React.createClass({
   mixins: [History],
   contextTypes: {
     router: React.PropTypes.func
   },
-  // getInitialState: function(){
-  //   debugger
-  // },
-  // componentDidMount: function(){
-  //   this.postListener = PostStore.addListener(this._postsChanged);
-  //   ApiUtil.fetchPosts();
-  // },
-  // _postsChanged: function(){
-  //
-  // },
-  // componentWillUnmount: function(){
-  //   this.postListener.remove();
-  // },
   handleAuthorClick: function(destinationId){
     this.history.pushState(null, "user/" + this.props.post.author.id);
   },
@@ -48,11 +37,17 @@ var Post = React.createClass({
                 </p>;
     }
     return(
-      <div>
-        <div className="feed-post">
+      <div className="feed-post">
+        <div className="feed-post-body">
          {nameLine}
          <p>{this.props.post.body}</p>
        </div>
+       <div>
+          <Comment />
+      </div>
+      <div>
+          <NewComment parentCommentId={this.props.post.id}/>
+      </div>
       </div>
     );
   }

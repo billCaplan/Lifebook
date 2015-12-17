@@ -5,14 +5,13 @@ class Api::CommentsController < ApplicationController
   end
 
   def index
-    @comments = Comment.includes(:author).all.order('"created_at" DESC')
+    @comments = Comment.includes(:author).all.order('"created_at" ASC')
   end
 
   def create
     @comment = Comment.new(comment_params)
 
     @comment.author_id = current_user.id
-    @comment.target_id ||= current_user.id
 
 
     if @comment.save
@@ -36,7 +35,7 @@ class Api::CommentsController < ApplicationController
 
   def comment_params
     params.require(:comment).permit(
-      :body, :author_id, :target_id, :image_path, :link
+      :body, :author_id, :post_id, :parent_comment_id
     )
   end
 end

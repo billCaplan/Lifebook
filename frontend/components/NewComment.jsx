@@ -12,6 +12,11 @@ var NewComment = React.createClass({
   componentWillMount: function(){
     this.setState({currentUser: UserStore.getCurrentUser()});
   },
+  handleSubmit: function(event){
+    event.preventDefault();
+    var post = {body: event.currentTarget[1].value, post_id: this.props.parentCommentId};
+    ApiUtil.createComment(post);
+  },
 
   render: function(){
     return(
@@ -21,13 +26,13 @@ var NewComment = React.createClass({
             <input type="hidden" name="authenticity_token"
                    value="<%= form_authenticity_token %>"></input>
                  <br></br>
-           <label htmlFor="post_body">Leave a comment</label>
+           <label htmlFor="comment_body">Leave a comment</label>
            <br></br>
            <textarea
              name="comment[body]"
              id="comment_body" rows="4" cols="50"></textarea>
            <br></br>
-           <input type="submit" value="Post"/>
+           <input type="submit" value="Comment"/>
           </form>
         </div>
       </div>

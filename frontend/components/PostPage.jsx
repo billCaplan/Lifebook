@@ -1,3 +1,6 @@
+// This page is intended to be the page you go to when you are looking at that exact
+// single post.  May not make in into final production
+
 var React = require('react');
 var PostStore = require('../stores/post');
 

@@ -13,3 +13,17 @@
  *= require_tree .
  *= require_self
  */
+
+ .feed-post-body{
+   border-style: solid;
+   border-radius: 5px;
+   border-width: 1.5px;
+   padding: 2px;
+   width: 300px;
+ }
+ .feed-post{
+   border-style: solid;
+   border-radius: 5px;
+   border-width: 1.5px;
+   padding: 2px;
+ }

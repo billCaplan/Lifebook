@@ -26,6 +26,18 @@ var ApiActions = {
       actionType: UserConstants.USERS_RECEIVED,
       users: users
     });
+  },
+  receiveAllComments: function(comments){
+    AppDispatcher.dispatch({
+      actionType: CommentConstants.COMMENTS_RECEIVED,
+      comments: comments
+    });
+  },
+  receiveNewComment: function(newComment){
+    AppDispatcher.dispatch({
+      actionType: CommentConstants.NEW_COMMENT_RECEIVED,
+      newComment: newComment
+    });
   }
 };
 

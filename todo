@@ -1,17 +1,21 @@
 TODO:
 heroku run rails c
 
-Make user Store
 
 Add Profile Pic Column to user
 Integrate Photos
 
 Still need:
-  write posts on other peoples wall
-    have those posts have the applicable target_id
-  implement follows
+
+  Add Comments
+
+  Implement follows
     and alter the feed to have only those
-  Get rid of the login logout bar, do it in react
+    
+  Build a React Component Navbar
+    will have two different nav bars
+      one for the react pages
+      one for the html login pages
 
 
 

@@ -54,12 +54,12 @@
 	var IndexRoute = ReactRouter.IndexRoute;
 	
 	var Feed = __webpack_require__(210);
-	var UserProfile = __webpack_require__(238);
-	var PostPage = __webpack_require__(241);
+	var UserProfile = __webpack_require__(240);
+	var PostPage = __webpack_require__(242);
 	var ApiUtil = __webpack_require__(234);
-	var UserStore = __webpack_require__(240);
-	var NewPost = __webpack_require__(237);
-	var NewComment = __webpack_require__(242);
+	var UserStore = __webpack_require__(238);
+	var NewPost = __webpack_require__(239);
+	var NewComment = __webpack_require__(237);
 	var Comment = __webpack_require__(243);
 	
 	var App = React.createClass({
@@ -24488,7 +24488,7 @@
 	var Post = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(234);
-	var NewPost = __webpack_require__(237);
+	var NewPost = __webpack_require__(239);
 	
 	var Feed = React.createClass({
 	  displayName: 'Feed',
@@ -24518,6 +24518,7 @@
 	
 	  render: function () {
 	    // need to filter the posts to only the ones that are being followed
+	
 	    var Posts = this.state.posts.map(function (post, i) {
 	      return React.createElement(Post, { key: i, post: post });
 	    });
@@ -31301,6 +31302,8 @@
 	
 	var ApiUtil = __webpack_require__(234);
 	var History = __webpack_require__(159).History;
+	var NewComment = __webpack_require__(237);
+	var Comment = __webpack_require__(243);
 	
 	var Post = React.createClass({
 	  displayName: 'Post',
@@ -31309,19 +31312,6 @@
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
-	  // getInitialState: function(){
-	  //   debugger
-	  // },
-	  // componentDidMount: function(){
-	  //   this.postListener = PostStore.addListener(this._postsChanged);
-	  //   ApiUtil.fetchPosts();
-	  // },
-	  // _postsChanged: function(){
-	  //
-	  // },
-	  // componentWillUnmount: function(){
-	  //   this.postListener.remove();
-	  // },
 	  handleAuthorClick: function (destinationId) {
 	    this.history.pushState(null, "user/" + this.props.post.author.id);
 	  },
@@ -31361,16 +31351,26 @@
 	    }
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'feed-post' },
 	      React.createElement(
 	        'div',
-	        { className: 'feed-post' },
+	        { className: 'feed-post-body' },
 	        nameLine,
 	        React.createElement(
 	          'p',
 	          null,
 	          this.props.post.body
 	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(Comment, null)
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(NewComment, { parentCommentId: this.props.post.id })
 	      )
 	    );
 	  }
@@ -31403,6 +31403,16 @@
 	  fetchUsers: function () {
 	    $.get('/api/users', function (users) {
 	      ApiActions.receiveAllUsers(users);
+	    });
+	  },
+	  fetchComments: function () {
+	    $.get('/api/comments', function (comments) {
+	      ApiActions.receiveAllComments(comments);
+	    });
+	  },
+	  createComment: function (data) {
+	    $.post('api/comments', { comment: data }, function (comment) {
+	      ApiActions.receiveNewComment(comment);
 	    });
 	  }
 	};
@@ -31441,6 +31451,18 @@
 	      actionType: UserConstants.USERS_RECEIVED,
 	      users: users
 	    });
+	  },
+	  receiveAllComments: function (comments) {
+	    AppDispatcher.dispatch({
+	      actionType: CommentConstants.COMMENTS_RECEIVED,
+	      comments: comments
+	    });
+	  },
+	  receiveNewComment: function (newComment) {
+	    AppDispatcher.dispatch({
+	      actionType: CommentConstants.NEW_COMMENT_RECEIVED,
+	      newComment: newComment
+	    });
 	  }
 	};
 	
@@ -31465,9 +31487,128 @@
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
 	var Post = __webpack_require__(233);
+	var UserStore = __webpack_require__(238);
 	
 	var ApiUtil = __webpack_require__(234);
-	var UserStore = __webpack_require__(240);
+	
+	var NewComment = React.createClass({
+	  displayName: 'NewComment',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  componentWillMount: function () {
+	    this.setState({ currentUser: UserStore.getCurrentUser() });
+	  },
+	  handleSubmit: function (event) {
+	    event.preventDefault();
+	    var post = { body: event.currentTarget[1].value, post_id: this.props.parentCommentId };
+	    ApiUtil.createComment(post);
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'form',
+	          { onSubmit: this.handleSubmit },
+	          React.createElement('input', { type: 'hidden', name: 'authenticity_token',
+	            value: '<%= form_authenticity_token %>' }),
+	          React.createElement('br', null),
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'comment_body' },
+	            'Leave a comment'
+	          ),
+	          React.createElement('br', null),
+	          React.createElement('textarea', {
+	            name: 'comment[body]',
+	            id: 'comment_body', rows: '4', cols: '50' }),
+	          React.createElement('br', null),
+	          React.createElement('input', { type: 'submit', value: 'Comment' })
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = NewComment;
+
+/***/ },
+/* 238 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var UserConstants = __webpack_require__(236);
+	var AppDispatcher = __webpack_require__(230);
+	
+	var UserStore = new Store(AppDispatcher);
+	
+	var _users = [];
+	
+	var _currentUser = {};
+	
+	var resetUsers = function (users) {
+	
+	  _users = users.slice(0);
+	};
+	
+	UserStore.all = function () {
+	  return _users.slice(0);
+	};
+	
+	UserStore.setCurrentUser = function (currentUser) {
+	  _currentUser = currentUser;
+	};
+	
+	UserStore.getCurrentUser = function () {
+	  return _currentUser;
+	};
+	
+	UserStore.findUser = function (userId) {
+	
+	  var targetUserId = parseInt(userId);
+	  var users = UserStore.all();
+	  var targetUser = { string: "Bad User" };
+	
+	  users.forEach(function (user) {
+	    if (user.id === targetUserId) {
+	      targetUser = user;
+	    }
+	  });
+	  return targetUser;
+	};
+	
+	UserStore.__onDispatch = function (payload) {
+	
+	  switch (payload.actionType) {
+	    case UserConstants.CURRENT_USER_RECEIVED:
+	      this.setCurrentUser(payload.currentUser);
+	      UserStore.__emitChange();
+	      break;
+	    case UserConstants.USERS_RECEIVED:
+	      var result = resetUsers(payload.users);
+	      UserStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = UserStore;
+
+/***/ },
+/* 239 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(233);
+	
+	var ApiUtil = __webpack_require__(234);
+	var UserStore = __webpack_require__(238);
 	
 	var History = __webpack_require__(159).History;
 	
@@ -31527,7 +31668,7 @@
 	module.exports = NewPost;
 
 /***/ },
-/* 238 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -31535,9 +31676,9 @@
 	var Post = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(234);
-	var UserProfileUserInfo = __webpack_require__(239);
-	var NewPost = __webpack_require__(237);
-	var UserStore = __webpack_require__(240);
+	var UserProfileUserInfo = __webpack_require__(241);
+	var NewPost = __webpack_require__(239);
+	var UserStore = __webpack_require__(238);
 	
 	function _getRelevantPosts(userId) {
 	  return PostStore.getByUserId(userId);
@@ -31621,13 +31762,13 @@
 	module.exports = UserProfile;
 
 /***/ },
-/* 239 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
 	var Post = __webpack_require__(233);
-	var UserStore = __webpack_require__(240);
+	var UserStore = __webpack_require__(238);
 	
 	var ApiUtil = __webpack_require__(234);
 	
@@ -31684,70 +31825,12 @@
 	module.exports = UserProfileUserInfo;
 
 /***/ },
-/* 240 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Store = __webpack_require__(212).Store;
-	var UserConstants = __webpack_require__(236);
-	var AppDispatcher = __webpack_require__(230);
+	// This page is intended to be the page you go to when you are looking at that exact
+	// single post.  May not make in into final production
 	
-	var UserStore = new Store(AppDispatcher);
-	
-	var _users = [];
-	
-	var _currentUser = {};
-	
-	var resetUsers = function (users) {
-	
-	  _users = users.slice(0);
-	};
-	
-	UserStore.all = function () {
-	  return _users.slice(0);
-	};
-	
-	UserStore.setCurrentUser = function (currentUser) {
-	  _currentUser = currentUser;
-	};
-	
-	UserStore.getCurrentUser = function () {
-	  return _currentUser;
-	};
-	
-	UserStore.findUser = function (userId) {
-	
-	  var targetUserId = parseInt(userId);
-	  var users = UserStore.all();
-	  var targetUser = { string: "Bad User" };
-	
-	  users.forEach(function (user) {
-	    if (user.id === targetUserId) {
-	      targetUser = user;
-	    }
-	  });
-	  return targetUser;
-	};
-	
-	UserStore.__onDispatch = function (payload) {
-	
-	  switch (payload.actionType) {
-	    case UserConstants.CURRENT_USER_RECEIVED:
-	      this.setCurrentUser(payload.currentUser);
-	      UserStore.__emitChange();
-	      break;
-	    case UserConstants.USERS_RECEIVED:
-	      var result = resetUsers(payload.users);
-	      UserStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	module.exports = UserStore;
-
-/***/ },
-/* 241 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
 	
@@ -31772,85 +31855,134 @@
 	module.exports = PostPage;
 
 /***/ },
-/* 242 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(233);
-	var UserStore = __webpack_require__(240);
-	
-	var ApiUtil = __webpack_require__(234);
-	
-	var NewComment = React.createClass({
-	  displayName: 'NewComment',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  componentWillMount: function () {
-	    this.setState({ currentUser: UserStore.getCurrentUser() });
-	  },
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'form',
-	          { onSubmit: this.handleSubmit },
-	          React.createElement('input', { type: 'hidden', name: 'authenticity_token',
-	            value: '<%= form_authenticity_token %>' }),
-	          React.createElement('br', null),
-	          React.createElement(
-	            'label',
-	            { htmlFor: 'post_body' },
-	            'Leave a comment'
-	          ),
-	          React.createElement('br', null),
-	          React.createElement('textarea', {
-	            name: 'comment[body]',
-	            id: 'comment_body', rows: '4', cols: '50' }),
-	          React.createElement('br', null),
-	          React.createElement('input', { type: 'submit', value: 'Post' })
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = NewComment;
-
-/***/ },
 /* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
 	var Post = __webpack_require__(233);
-	var UserStore = __webpack_require__(240);
+	var UserStore = __webpack_require__(238);
+	var CommentStore = __webpack_require__(244);
 	
 	var ApiUtil = __webpack_require__(234);
 	
 	var Comment = React.createClass({
 	  displayName: 'Comment',
 	
-	  contextTypes: {
-	    router: React.PropTypes.func
+	  _commentsChanged: function () {
+	    this.setState({ comments: CommentStore.all() });
 	  },
+	
+	  getInitialState: function () {
+	    return {
+	      comments: CommentStore.all()
+	    };
+	  },
+	
+	  componentDidMount: function () {
+	    this.commentListener = CommentStore.addListener(this._commentsChanged);
+	    ApiUtil.fetchComments();
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.commentListener.remove();
+	  },
+	
 	  render: function () {
+	
+	    // need to filter the posts to only the ones that are being followed
+	    var Comments = this.state.comments.map(function (comment, i) {
+	      return React.createElement(
+	        'div',
+	        { key: comment.id },
+	        React.createElement(
+	          'div',
+	          null,
+	          comment.author.real_name
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          comment.body
+	        )
+	      );
+	    });
 	    return React.createElement(
 	      'div',
 	      null,
-	      'Words here'
+	      Comments
 	    );
 	  }
 	});
 	
+	// render the top level comment, then render its kids
+	
 	module.exports = Comment;
+
+/***/ },
+/* 244 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var CommentConstants = __webpack_require__(245);
+	var AppDispatcher = __webpack_require__(230);
+	
+	var CommentStore = new Store(AppDispatcher);
+	
+	var _comments = [];
+	
+	var resetComments = function (comments) {
+	  _comments = comments.slice(0);
+	};
+	
+	var addNewComment = function (newComment) {
+	  _comments.push(newComment);
+	};
+	
+	CommentStore.all = function () {
+	  return _comments.slice(0);
+	};
+	
+	CommentStore.getByUserId = function (userIdString) {
+	  var userId = parseInt(userIdString);
+	  var comments = CommentStore.all();
+	  var relevantComments = [];
+	
+	  comments.forEach(function (comment) {
+	
+	    if (comment.author_id === userId || comment.target_id === userId) {
+	      relevantComments.push(comment);
+	    }
+	  });
+	
+	  return relevantComments;
+	};
+	
+	CommentStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case CommentConstants.COMMENTS_RECEIVED:
+	      var result = resetComments(payload.comments);
+	      CommentStore.__emitChange();
+	      break;
+	    case CommentConstants.NEW_COMMENT_RECEIVED:
+	      var result = addNewComment(payload.newComment);
+	      CommentStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = CommentStore;
+
+/***/ },
+/* 245 */
+/***/ function(module, exports) {
+
+	CommentConstants = {
+	  COMMENTS_RECEIVED: "COMMENTS_RECEIVED",
+	  NEW_COMMENT_RECEIVED: "NEW_COMMENT_RECEIVED"
+	};
+	
+	module.exports = CommentConstants;
 
 /***/ }
 /******/ ]);

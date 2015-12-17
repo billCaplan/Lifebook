@@ -32,6 +32,7 @@ var Feed = React.createClass({
 
   render: function(){
     // need to filter the posts to only the ones that are being followed
+
     var Posts = this.state.posts.map(function (post, i) {
       return <Post key={i} post={post} />;
     });

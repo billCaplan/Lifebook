@@ -21,6 +21,16 @@ var ApiUtil = {
       ApiActions.receiveAllUsers(users);
     });
   },
+  fetchComments: function(){
+    $.get('/api/comments', function(comments){
+      ApiActions.receiveAllComments(comments);
+    });
+  },
+  createComment: function(data){
+    $.post('api/comments', { comment: data }, function(comment) {
+      ApiActions.receiveNewComment(comment);
+    });
+  }
 };
 
 module.exports = ApiUtil;
