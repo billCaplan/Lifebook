@@ -21,11 +21,12 @@ var NewPost = React.createClass({
   handleSubmit: function(event){
     event.preventDefault();
 
-    var post = {body: event.currentTarget[1].value};
+    var post = {body: event.currentTarget[1].value, target_id: event.currentTarget[2].value};
     ApiUtil.createPost(post);
   },
 
   render: function(){
+    var targetId = this.props.user.id;
 
     return(
       <div>
@@ -39,6 +40,7 @@ var NewPost = React.createClass({
            name="post[body]"
            id="post_body" rows="4" cols="50"></textarea>
          <br></br>
+         <input type="hidden" name="post[target_id]" id="post_target_id" value={targetId}></input>
          <input type="submit" value="Post"/>
         </form>
       </div>

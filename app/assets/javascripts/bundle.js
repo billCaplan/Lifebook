@@ -55,10 +55,12 @@
 	
 	var Feed = __webpack_require__(210);
 	var UserProfile = __webpack_require__(238);
-	var PostPage = __webpack_require__(239);
+	var PostPage = __webpack_require__(241);
 	var ApiUtil = __webpack_require__(234);
 	var UserStore = __webpack_require__(240);
 	var NewPost = __webpack_require__(237);
+	var NewComment = __webpack_require__(242);
+	var Comment = __webpack_require__(243);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -112,6 +114,8 @@
 	  { path: '/', component: App },
 	  React.createElement(IndexRoute, { component: Feed }),
 	  React.createElement(Route, { path: '/post/new', component: NewPost }),
+	  React.createElement(Route, { path: 'comments/new', component: NewComment }),
+	  React.createElement(Route, { path: 'comment/', component: Comment }),
 	  React.createElement(Route, { path: 'user/:userId', component: UserProfile })
 	);
 	
@@ -24493,6 +24497,7 @@
 	  },
 	
 	  _postsChanged: function () {
+	    debugger;
 	    this.setState({ posts: PostStore.all() });
 	  },
 	
@@ -24555,7 +24560,7 @@
 	};
 	
 	var addNewPost = function (newPost) {
-	  _posts.push(newPost);
+	  _posts.unshift(newPost);
 	};
 	
 	PostStore.all = function () {
@@ -31457,11 +31462,12 @@
 	  handleSubmit: function (event) {
 	    event.preventDefault();
 	
-	    var post = { body: event.currentTarget[1].value };
+	    var post = { body: event.currentTarget[1].value, target_id: event.currentTarget[2].value };
 	    ApiUtil.createPost(post);
 	  },
 	
 	  render: function () {
+	    var targetId = this.props.user.id;
 	
 	    return React.createElement(
 	      'div',
@@ -31482,6 +31488,7 @@
 	          name: 'post[body]',
 	          id: 'post_body', rows: '4', cols: '50' }),
 	        React.createElement('br', null),
+	        React.createElement('input', { type: 'hidden', name: 'post[target_id]', id: 'post_target_id', value: targetId }),
 	        React.createElement('input', { type: 'submit', value: 'Post' })
 	      )
 	    );
@@ -31499,20 +31506,12 @@
 	var Post = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(234);
-	var UserProfileUserInfo = __webpack_require__(241);
+	var UserProfileUserInfo = __webpack_require__(239);
 	var NewPost = __webpack_require__(237);
 	var UserStore = __webpack_require__(240);
 	
 	function _getRelevantPosts(userId) {
-	  var posts = PostStore.getByUserId(userId);
-	  return posts.sort(function compare(a, b) {
-	    if (a.id < b.id) {
-	      return -1;
-	    }
-	    if (a.id > b.id) {
-	      return 1;
-	    }
-	  });
+	  return PostStore.getByUserId(userId);
 	}
 	
 	function _getApplicableUser(currentProfileUserId) {
@@ -31575,7 +31574,7 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement(NewPost, null)
+	        React.createElement(NewPost, { user: this.state.user })
 	      ),
 	      React.createElement(
 	        'div',
@@ -31594,26 +31593,62 @@
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(233);
+	var UserStore = __webpack_require__(240);
 	
 	var ApiUtil = __webpack_require__(234);
 	
-	var PostPage = React.createClass({
-	  displayName: 'PostPage',
+	var UserProfileUserInfo = React.createClass({
+	  displayName: 'UserProfileUserInfo',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
 	
 	  render: function () {
+	    //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement(
 	        'div',
 	        null,
-	        'This is where the posts will go'
+	        React.createElement(
+	          'h2',
+	          null,
+	          'User Profile User Info'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'profile-pic' },
+	          React.createElement('img', { src: 'http://placehold.it/150x150' })
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.user.real_name
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.user.age
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.user.location
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.user.email
+	        )
 	      )
 	    );
 	  }
 	});
 	
-	module.exports = PostPage;
+	module.exports = UserProfileUserInfo;
 
 /***/ },
 /* 240 */
@@ -31683,20 +31718,46 @@
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
+	
+	var ApiUtil = __webpack_require__(234);
+	
+	var PostPage = React.createClass({
+	  displayName: 'PostPage',
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        'This is where the posts will go'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = PostPage;
+
+/***/ },
+/* 242 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
 	var Post = __webpack_require__(233);
 	var UserStore = __webpack_require__(240);
 	
 	var ApiUtil = __webpack_require__(234);
 	
-	var UserProfileUserInfo = React.createClass({
-	  displayName: 'UserProfileUserInfo',
+	var NewComment = React.createClass({
+	  displayName: 'NewComment',
 	
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
 	
 	  render: function () {
-	    //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts
 	    return React.createElement(
 	      'div',
 	      null,
@@ -31704,41 +31765,57 @@
 	        'div',
 	        null,
 	        React.createElement(
-	          'h2',
-	          null,
-	          'User Profile User Info'
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'profile-pic' },
-	          React.createElement('img', { src: 'http://placehold.it/150x150' })
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          this.props.user.real_name
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          this.props.user.age
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          this.props.user.location
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          this.props.user.email
+	          'form',
+	          { onSubmit: this.handleSubmit },
+	          React.createElement('input', { type: 'hidden', name: 'authenticity_token',
+	            value: '<%= form_authenticity_token %>' }),
+	          React.createElement('br', null),
+	          React.createElement(
+	            'label',
+	            { 'for': 'post_body' },
+	            'Leave a comment'
+	          ),
+	          React.createElement('br', null),
+	          React.createElement('textarea', {
+	            name: 'comment[body]',
+	            id: 'comment_body', rows: '4', cols: '50' }),
+	          React.createElement('br', null),
+	          React.createElement('input', { type: 'submit', value: 'Post' })
 	        )
 	      )
 	    );
 	  }
 	});
 	
-	module.exports = UserProfileUserInfo;
+	module.exports = NewComment;
+
+/***/ },
+/* 243 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(233);
+	var UserStore = __webpack_require__(240);
+	
+	var ApiUtil = __webpack_require__(234);
+	
+	var Comment = React.createClass({
+	  displayName: 'Comment',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      'Words here'
+	    );
+	  }
+	});
+	
+	module.exports = Comment;
 
 /***/ }
 /******/ ]);

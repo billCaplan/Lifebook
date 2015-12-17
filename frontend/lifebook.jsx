@@ -13,6 +13,8 @@ var PostPage = require('./components/PostPage');
 var ApiUtil = require('./util/api_util');
 var UserStore = require('./stores/user');
 var NewPost = require('./components/NewPost');
+var NewComment = require('./components/NewComment');
+var Comment = require('./components/Comment');
 
 
 var App = React.createClass({
@@ -52,6 +54,8 @@ var routes = (
   <Route path="/" component={App}>
     <IndexRoute component={Feed}></IndexRoute>
     <Route path="/post/new" component={NewPost}></Route>
+    <Route path="comments/new" component={NewComment}></Route>
+    <Route path="comment/" component={Comment}></Route>
     <Route path="user/:userId" component={UserProfile}></Route>
   </Route>
 );

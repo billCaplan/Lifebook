@@ -12,6 +12,7 @@ var Feed = React.createClass({
   },
 
   _postsChanged: function(){
+    debugger
     this.setState({posts: PostStore.all()});
   },
 

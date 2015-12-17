@@ -11,7 +11,7 @@ var resetPosts = function(posts){
 };
 
 var addNewPost = function(newPost){
-  _posts.push(newPost);
+  _posts.unshift(newPost);
 };
 
 PostStore.all = function () {

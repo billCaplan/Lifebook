@@ -9,15 +9,7 @@ var UserStore = require('../stores/user');
 
 
 function _getRelevantPosts(userId) {
-  var posts = PostStore.getByUserId(userId);
-  return posts.sort(function compare(a, b) {
-            if (a.id < b.id) {
-              return -1;
-            }
-            if (a.id > b.id) {
-              return 1;
-            }
-          });
+  return PostStore.getByUserId(userId);
 }
 
 function _getApplicableUser(currentProfileUserId){
@@ -77,7 +69,7 @@ var UserProfile = React.createClass({
           <UserProfileUserInfo userId={this.state.user_id}  user={this.state.user} />
         </div>
         <div>
-          <NewPost />
+          <NewPost user={this.state.user}/>
         </div>
         <div>
           {Posts}
