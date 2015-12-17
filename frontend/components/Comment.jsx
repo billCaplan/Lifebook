@@ -5,16 +5,18 @@ var UserStore = require('../stores/user');
 var CommentStore = require('../stores/comment');
 
 var ApiUtil = require('../util/api_util');
+var History = require('react-router').History;
 
 var Comment = React.createClass({
+    mixins: [History],
 
     _commentsChanged: function(){
-      this.setState({comments: CommentStore.all()});
+      this.setState({comments: CommentStore.getByPostId(this.props.postId)});
     },
 
     getInitialState: function(){
       return {
-        comments: CommentStore.all(),
+        comments: CommentStore.getByPostId(this.props.postId),
       };
     },
 
@@ -26,16 +28,23 @@ var Comment = React.createClass({
     componentWillUnmount: function(){
       this.commentListener.remove();
     },
+    handleAuthorClick: function(authorId){
+      debugger;
+      this.history.pushState(null, "user/" + authorId);
+    },
 
     render: function(){
-
-      // need to filter the posts to only the ones that are being followed
+      var that=this;
       var Comments = this.state.comments.map(function (comment, i) {
         return(
-          <div key={comment.id}>
-            <div>{comment.author.real_name}</div>
+          <div key={comment.id} className="post-comment">
+            <div  onClick={that.handleAuthorClick.bind(null, comment.author.id)}>
+                  {comment.author.real_name}
+            </div>
+
             <div>{comment.body}</div>
           </div>
+
         );
       });
     return(

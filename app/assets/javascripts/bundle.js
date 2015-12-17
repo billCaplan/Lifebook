@@ -31365,11 +31365,11 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement(Comment, null)
+	        React.createElement(Comment, { postId: this.props.post.id })
 	      ),
 	      React.createElement(
 	        'div',
-	        null,
+	        { className: 'feed-post-new-comment' },
 	        React.createElement(NewComment, { parentCommentId: this.props.post.id })
 	      )
 	    );
@@ -31522,7 +31522,7 @@
 	          React.createElement(
 	            'label',
 	            { htmlFor: 'comment_body' },
-	            'Leave a comment'
+	            'Leave a new comment'
 	          ),
 	          React.createElement('br', null),
 	          React.createElement('textarea', {
@@ -31865,17 +31865,20 @@
 	var CommentStore = __webpack_require__(244);
 	
 	var ApiUtil = __webpack_require__(234);
+	var History = __webpack_require__(159).History;
 	
 	var Comment = React.createClass({
 	  displayName: 'Comment',
 	
+	  mixins: [History],
+	
 	  _commentsChanged: function () {
-	    this.setState({ comments: CommentStore.all() });
+	    this.setState({ comments: CommentStore.getByPostId(this.props.postId) });
 	  },
 	
 	  getInitialState: function () {
 	    return {
-	      comments: CommentStore.all()
+	      comments: CommentStore.getByPostId(this.props.postId)
 	    };
 	  },
 	
@@ -31887,17 +31890,20 @@
 	  componentWillUnmount: function () {
 	    this.commentListener.remove();
 	  },
+	  handleAuthorClick: function (authorId) {
+	    debugger;
+	    this.history.pushState(null, "user/" + authorId);
+	  },
 	
 	  render: function () {
-	
-	    // need to filter the posts to only the ones that are being followed
+	    var that = this;
 	    var Comments = this.state.comments.map(function (comment, i) {
 	      return React.createElement(
 	        'div',
-	        { key: comment.id },
+	        { key: comment.id, className: 'post-comment' },
 	        React.createElement(
 	          'div',
-	          null,
+	          { onClick: that.handleAuthorClick.bind(null, comment.author.id) },
 	          comment.author.real_name
 	        ),
 	        React.createElement(
@@ -31943,14 +31949,14 @@
 	  return _comments.slice(0);
 	};
 	
-	CommentStore.getByUserId = function (userIdString) {
-	  var userId = parseInt(userIdString);
+	CommentStore.getByPostId = function (postIdString) {
+	  var postId = parseInt(postIdString);
 	  var comments = CommentStore.all();
 	  var relevantComments = [];
 	
 	  comments.forEach(function (comment) {
 	
-	    if (comment.author_id === userId || comment.target_id === userId) {
+	    if (comment.post_id === postId) {
 	      relevantComments.push(comment);
 	    }
 	  });

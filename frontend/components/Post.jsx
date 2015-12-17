@@ -43,9 +43,9 @@ var Post = React.createClass({
          <p>{this.props.post.body}</p>
        </div>
        <div>
-          <Comment />
+          <Comment postId={this.props.post.id}/>
       </div>
-      <div>
+      <div className="feed-post-new-comment">
           <NewComment parentCommentId={this.props.post.id}/>
       </div>
       </div>

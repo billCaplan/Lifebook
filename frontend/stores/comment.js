@@ -18,14 +18,14 @@ CommentStore.all = function () {
   return _comments.slice(0);
 };
 
-CommentStore.getByUserId = function(userIdString) {
-  var userId = parseInt(userIdString);
+CommentStore.getByPostId = function(postIdString) {
+  var postId = parseInt(postIdString);
   var comments = CommentStore.all();
   var relevantComments = [];
 
   comments.forEach(function(comment){
 
-    if (comment.author_id === userId || comment.target_id === userId){
+    if (comment.post_id === postId){
       relevantComments.push(comment);
     }
   });

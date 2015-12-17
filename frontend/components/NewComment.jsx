@@ -26,7 +26,7 @@ var NewComment = React.createClass({
             <input type="hidden" name="authenticity_token"
                    value="<%= form_authenticity_token %>"></input>
                  <br></br>
-           <label htmlFor="comment_body">Leave a comment</label>
+           <label htmlFor="comment_body">Leave a new comment</label>
            <br></br>
            <textarea
              name="comment[body]"
