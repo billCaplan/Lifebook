@@ -24485,18 +24485,6 @@
 	var ApiUtil = __webpack_require__(234);
 	var NewPost = __webpack_require__(237);
 	
-	function _getAllPosts() {
-	  var posts = PostStore.all();
-	  return posts.sort(function compare(a, b) {
-	    if (a.id < b.id) {
-	      return -1;
-	    }
-	    if (a.id > b.id) {
-	      return 1;
-	    }
-	  });
-	}
-	
 	var Feed = React.createClass({
 	  displayName: 'Feed',
 	
@@ -24505,12 +24493,12 @@
 	  },
 	
 	  _postsChanged: function () {
-	    this.setState({ posts: _getAllPosts() });
+	    this.setState({ posts: PostStore.all() });
 	  },
 	
 	  getInitialState: function () {
 	    return {
-	      posts: _getAllPosts()
+	      posts: PostStore.all()
 	    };
 	  },
 	
@@ -24526,8 +24514,7 @@
 	  render: function () {
 	    // need to filter the posts to only the ones that are being followed
 	
-	    var unorderedPosts = this.state.posts.reverse();
-	    var Posts = unorderedPosts.map(function (post, i) {
+	    var Posts = this.state.posts.map(function (post, i) {
 	      return React.createElement(Post, { key: i, post: post });
 	    });
 	
@@ -31386,7 +31373,6 @@
 	    });
 	  },
 	  fetchUsers: function () {
-	    console.log("Fetch Users");
 	    $.get('/api/users', function (users) {
 	      ApiActions.receiveAllUsers(users);
 	    });
@@ -31530,7 +31516,6 @@
 	}
 	
 	function _getApplicableUser(currentProfileUserId) {
-	  console.log(currentProfileUserId);
 	  var user = UserStore.findUser(currentProfileUserId);
 	  return user;
 	}
@@ -31542,7 +31527,7 @@
 	    router: React.PropTypes.func
 	  },
 	  getInitialState: function () {
-	    var user_id = this.props.routeParams["userId"];
+	    var user_id = this.props.routeParams.userId;
 	    return {
 	      user_id: user_id,
 	      posts: _getRelevantPosts(user_id),
@@ -31559,32 +31544,23 @@
 	  },
 	  //Fixes navigating to new user id
 	  componentWillReceiveProps: function (newProps) {
-	    this.setState({ user_id: newProps.params.userId, user: newProps.user });
+	    var userId = this.props.routeParams.userId;
+	    this.setState({ user_id: userId, user: UserStore.findUser(userId) });
 	    ApiUtil.fetchPosts();
 	  },
 	
 	  _postsChanged: function () {
-	
 	    this.setState({ posts: _getRelevantPosts(this.state.user_id) });
 	  },
 	
 	  _usersChanged: function () {
-	
 	    this.setState({ user: _getApplicableUser(this.state.user_id) });
 	  },
 	
 	  render: function () {
 	    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
-	    console.log(this.state);
 	
-	    var unorderedPosts = [];
-	
-	    this.state.posts.map(function (post) {
-	      unorderedPosts.push(post);
-	    });
-	
-	    var orderedPosts = unorderedPosts.reverse();
-	    var Posts = orderedPosts.map(function (post) {
+	    var Posts = this.state.posts.map(function (post) {
 	      return React.createElement(Post, { key: post.id, post: post });
 	    });
 	
@@ -31678,11 +31654,7 @@
 	  var targetUser = { string: "Bad User" };
 	
 	  users.forEach(function (user) {
-	    debugger;
 	    if (user.id === targetUserId) {
-	      debugger;
-	      console.log("Found");
-	      console.log(user);
 	      targetUser = user;
 	    }
 	  });
@@ -31722,34 +31694,6 @@
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
-	  getInitialState: function () {
-	    return {
-	      user: this.props.user
-	    };
-	  },
-	  componentDidMount: function () {
-	    ApiUtil.fetchUsers();
-	    this.userListener = UserStore.addListener(this._usersChanged);
-	  },
-	  _usersChanged: function () {
-	    this.setState({ user: this.props.user });
-	  },
-	  componentWillUnmount: function () {
-	    this.setState({ user: null });
-	  },
-	
-	  componentWillReceiveProps: function (newProps) {
-	    this.setState({ user: newProps.user });
-	  },
-	  // // componentWillUnmount: function(){
-	  // //   this.setState({
-	  // //     user_id: {},
-	  // //     posts: {},
-	  // //   });
-	  // // },
-	  // _postsChanged: function(){
-	  //
-	  // },
 	
 	  render: function () {
 	    //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts

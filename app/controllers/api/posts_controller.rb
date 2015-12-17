@@ -5,7 +5,7 @@ class Api::PostsController < ApplicationController
   end
 
   def index
-    @posts = Post.all
+    @posts = Post.includes(:author).all.order('"created_at" DESC')
   end
 
   def create

@@ -5,41 +5,10 @@ var UserStore = require('../stores/user');
 
 var ApiUtil = require('../util/api_util');
 
-
-
-
 var UserProfileUserInfo = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
-  getInitialState: function(){
-    return {
-      user: this.props.user,
-    };
-  },
-  componentDidMount: function(){
-    ApiUtil.fetchUsers();
-    this.userListener = UserStore.addListener(this._usersChanged);
-  },
-  _usersChanged: function(){
-    this.setState({user: this.props.user});
-  },
-  componentWillUnmount: function(){
-    this.setState({user: null});
-  },
-
-  componentWillReceiveProps: function (newProps) {
-    this.setState({user: newProps.user});
-  },
-  // // componentWillUnmount: function(){
-  // //   this.setState({
-  // //     user_id: {},
-  // //     posts: {},
-  // //   });
-  // // },
-  // _postsChanged: function(){
-  //
-  // },
 
   render: function(){
     //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts

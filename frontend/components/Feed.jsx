@@ -6,30 +6,18 @@ var ApiUtil = require('../util/api_util');
 var NewPost = require('../components/NewPost');
 
 
-function _getAllPosts() {
-  var posts = PostStore.all();
-  return posts.sort(function compare(a, b) {
-          if (a.id < b.id) {
-            return -1;
-          }
-          if (a.id > b.id) {
-            return 1;
-          }
-        });
-}
-
 var Feed = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
 
   _postsChanged: function(){
-    this.setState({posts: _getAllPosts()});
+    this.setState({posts: PostStore.all()});
   },
 
   getInitialState: function(){
     return {
-      posts: _getAllPosts(),
+      posts: PostStore.all(),
     };
   },
 
@@ -45,8 +33,7 @@ var Feed = React.createClass({
   render: function(){
     // need to filter the posts to only the ones that are being followed
 
-    var unorderedPosts = this.state.posts.reverse();
-    var Posts = unorderedPosts.map(function (post, i) {
+    var Posts = this.state.posts.map(function (post, i) {
       return <Post key={i} post={post} />;
     });
 
@@ -64,4 +51,4 @@ var Feed = React.createClass({
   }
 });
 
-module.exports = Feed
+module.exports = Feed;

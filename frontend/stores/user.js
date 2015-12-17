@@ -33,11 +33,7 @@ UserStore.findUser = function(userId){
   var targetUser = {string: "Bad User"};
 
   users.forEach(function(user){
-    debugger
     if (user.id === targetUserId){
-      debugger
-      console.log("Found");
-      console.log(user);
       targetUser = user;
     }
   });

@@ -21,7 +21,6 @@ function _getRelevantPosts(userId) {
 }
 
 function _getApplicableUser(currentProfileUserId){
-  console.log(currentProfileUserId);
   var user = UserStore.findUser(currentProfileUserId);
   return user;
 }
@@ -33,7 +32,7 @@ var UserProfile = React.createClass({
     router: React.PropTypes.func
   },
   getInitialState: function(){
-    var user_id = this.props.routeParams["userId"];
+    var user_id = this.props.routeParams.userId;
     return {
       user_id: user_id,
       posts: _getRelevantPosts(user_id),
@@ -51,33 +50,23 @@ var UserProfile = React.createClass({
   },
   //Fixes navigating to new user id
   componentWillReceiveProps: function (newProps) {
-    this.setState({user_id: newProps.params.userId, user: newProps.user});
+    var userId = this.props.routeParams.userId;
+    this.setState({user_id: userId, user: UserStore.findUser(userId)});
     ApiUtil.fetchPosts();
   },
 
   _postsChanged: function(){
-
     this.setState({posts: _getRelevantPosts(this.state.user_id)});
   },
 
-
   _usersChanged: function(){
-
     this.setState({user: _getApplicableUser(this.state.user_id)});
   },
 
   render: function(){
     // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
-    console.log(this.state);
 
-    var unorderedPosts = [];
-
-    this.state.posts.map(function (post) {
-      unorderedPosts.push(post);
-    });
-
-    var orderedPosts = unorderedPosts.reverse();
-    var Posts = orderedPosts.map(function (post) {
+    var Posts = this.state.posts.map(function (post) {
       return <Post key={post.id} post={post}/>;
     });
 
