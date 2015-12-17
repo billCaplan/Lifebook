@@ -37,7 +37,7 @@ var NewPost = React.createClass({
           <input type="hidden" name="authenticity_token"
                  value="<%= form_authenticity_token %>"></input>
                <br></br>
-         <label for="post_body">What's on your mind?</label>
+         <label htmlFor="post_body">What's on your mind?</label>
          <br></br>
          <textarea
            name="post[body]"

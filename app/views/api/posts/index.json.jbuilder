@@ -6,5 +6,8 @@ json.array!(@posts) do |post|
   json.author do
     json.partial! 'api/users/user', user: post.author
   end
+  json.subject do
+    json.partial! 'api/users/user', user: post.subject
+  end
   json.created_at post.created_at
 end

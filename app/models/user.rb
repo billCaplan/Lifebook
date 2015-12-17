@@ -33,6 +33,12 @@ class User < ActiveRecord::Base
     primary_key: :id,
     class_name: "Like"
     )
+  has_many(
+  :subjectOfPosts,
+  foreign_key: :target_id,
+  primary_key: :id,
+  class_name: "Post"
+  )
 
   def self.find_by_credentials(email, password)
     user = User.find_by(email: email)

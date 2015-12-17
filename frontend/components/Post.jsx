@@ -24,17 +24,33 @@ var Post = React.createClass({
   // componentWillUnmount: function(){
   //   this.postListener.remove();
   // },
-  handleProfileClick: function(coords){
+  handleAuthorClick: function(destinationId){
     this.history.pushState(null, "user/" + this.props.post.author.id);
+  },
+  handleSubjectClick: function(destinationId){
+    this.history.pushState(null, "user/" + this.props.post.subject.id);
   },
   handlePostClick: function (post) {
     this.props.history.pushState(null, "posts/" + this.props.post.id);
   },
   render: function(){
+
+    var subjectName = this.props.post.subject.real_name;
+    var authorName = this.props.post.author.real_name;
+    var nameLine = {};
+    if (subjectName === authorName){
+      nameLine = <p onClick={this.handleAuthorClick}>{authorName}</p>;
+    } else {
+      nameLine = <p>
+                    <span onClick={this.handleAuthorClick}>{authorName}</span>
+                     --->>>
+                    <span onClick={this.handleSubjectClick}>{subjectName}</span>
+                </p>;
+    }
     return(
       <div>
         <div className="feed-post">
-         <p onClick={this.handleProfileClick}>Name: {this.props.post.author.real_name}</p>
+         {nameLine}
          <p>{this.props.post.body}</p>
        </div>
       </div>
@@ -42,4 +58,4 @@ var Post = React.createClass({
   }
 });
 
-module.exports = Post
+module.exports = Post;

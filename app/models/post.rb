@@ -15,5 +15,12 @@ class Post < ActiveRecord::Base
   class_name: "User"
   )
 
+  belongs_to(
+  :subject,
+  foreign_key: :target_id,
+  primary_key: :id,
+  class_name: "User"
+  )
+
 
 end

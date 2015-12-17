@@ -31322,25 +31322,50 @@
 	  // componentWillUnmount: function(){
 	  //   this.postListener.remove();
 	  // },
-	  handleProfileClick: function (coords) {
+	  handleAuthorClick: function (destinationId) {
 	    this.history.pushState(null, "user/" + this.props.post.author.id);
+	  },
+	  handleSubjectClick: function (destinationId) {
+	    this.history.pushState(null, "user/" + this.props.post.subject.id);
 	  },
 	  handlePostClick: function (post) {
 	    this.props.history.pushState(null, "posts/" + this.props.post.id);
 	  },
 	  render: function () {
+	
+	    var subjectName = this.props.post.subject.real_name;
+	    var authorName = this.props.post.author.real_name;
+	    var nameLine = {};
+	    if (subjectName === authorName) {
+	      nameLine = React.createElement(
+	        'p',
+	        { onClick: this.handleAuthorClick },
+	        authorName
+	      );
+	    } else {
+	      nameLine = React.createElement(
+	        'p',
+	        null,
+	        React.createElement(
+	          'span',
+	          { onClick: this.handleAuthorClick },
+	          authorName
+	        ),
+	        '--->>>',
+	        React.createElement(
+	          'span',
+	          { onClick: this.handleSubjectClick },
+	          subjectName
+	        )
+	      );
+	    }
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement(
 	        'div',
 	        { className: 'feed-post' },
-	        React.createElement(
-	          'p',
-	          { onClick: this.handleProfileClick },
-	          'Name: ',
-	          this.props.post.author.real_name
-	        ),
+	        nameLine,
 	        React.createElement(
 	          'p',
 	          null,
@@ -31481,7 +31506,7 @@
 	        React.createElement('br', null),
 	        React.createElement(
 	          'label',
-	          { 'for': 'post_body' },
+	          { htmlFor: 'post_body' },
 	          'What\'s on your mind?'
 	        ),
 	        React.createElement('br', null),
@@ -31686,7 +31711,6 @@
 	};
 	
 	UserStore.getCurrentUser = function () {
-	  debugger;
 	  return _currentUser;
 	};
 	
@@ -31764,6 +31788,9 @@
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
+	  componentWillMount: function () {
+	    this.setState({ currentUser: UserStore.getCurrentUser() });
+	  },
 	
 	  render: function () {
 	    return React.createElement(
@@ -31780,7 +31807,7 @@
 	          React.createElement('br', null),
 	          React.createElement(
 	            'label',
-	            { 'for': 'post_body' },
+	            { htmlFor: 'post_body' },
 	            'Leave a comment'
 	          ),
 	          React.createElement('br', null),

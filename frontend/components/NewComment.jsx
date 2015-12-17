@@ -9,6 +9,9 @@ var NewComment = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
+  componentWillMount: function(){
+    this.setState({currentUser: UserStore.getCurrentUser()});
+  },
 
   render: function(){
     return(
@@ -18,7 +21,7 @@ var NewComment = React.createClass({
             <input type="hidden" name="authenticity_token"
                    value="<%= form_authenticity_token %>"></input>
                  <br></br>
-           <label for="post_body">Leave a comment</label>
+           <label htmlFor="post_body">Leave a comment</label>
            <br></br>
            <textarea
              name="comment[body]"
