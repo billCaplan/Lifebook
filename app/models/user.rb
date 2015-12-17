@@ -33,11 +33,18 @@ class User < ActiveRecord::Base
     primary_key: :id,
     class_name: "Like"
     )
+
   has_many(
-  :subjectOfPosts,
-  foreign_key: :target_id,
-  primary_key: :id,
-  class_name: "Post"
+    :subjectOfPosts,
+    foreign_key: :target_id,
+    primary_key: :id,
+    class_name: "Post"
+  )
+  has_many(
+    :leftComments,
+    foreign_key: :author_id,
+    primary_key: :id,
+    class_name: "Comment"
   )
 
   def self.find_by_credentials(email, password)

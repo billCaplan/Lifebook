@@ -6,6 +6,7 @@ var ApiUtil = require('../util/api_util');
 var UserProfileUserInfo = require('../components/UserProfileUserInfo');
 var NewPost = require('../components/NewPost');
 var UserStore = require('../stores/user');
+var FriendsPane = require('../components/FriendsPane');
 
 
 function _getRelevantPosts(userId) {
@@ -61,7 +62,6 @@ var UserProfile = React.createClass({
 
   render: function(){
     // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
-
     var Posts = this.state.posts.map(function (post) {
       return <Post key={post.id} post={post}/>;
     });
@@ -71,6 +71,9 @@ var UserProfile = React.createClass({
       <div>
         <div>
           <UserProfileUserInfo userId={this.state.user_id}  user={this.state.user} />
+        </div>
+        <div>
+          <FriendsPane user={this.state.user}/>
         </div>
         <div>
           <NewPost targetUserId={this.state.user.id}/>

@@ -3,15 +3,14 @@ heroku run rails c
 
 
 Add Profile Pic Column to user
-Integrate Photos
 
 Still need:
 
-  Add Comments
+Integrate Photos
 
   Implement follows
     and alter the feed to have only those
-    
+
   Build a React Component Navbar
     will have two different nav bars
       one for the react pages

@@ -29,7 +29,6 @@ var Comment = React.createClass({
       this.commentListener.remove();
     },
     handleAuthorClick: function(authorId){
-      debugger;
       this.history.pushState(null, "user/" + authorId);
     },
 

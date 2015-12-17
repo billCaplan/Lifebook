@@ -39,3 +39,9 @@
  .feed-post-body{
    margin-left: 10px;
  }
+
+ .profile-friends-pane{
+   height: 50px;
+   width: 50px;
+   background-color: red;
+ }

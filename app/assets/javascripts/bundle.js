@@ -31679,6 +31679,7 @@
 	var UserProfileUserInfo = __webpack_require__(241);
 	var NewPost = __webpack_require__(239);
 	var UserStore = __webpack_require__(238);
+	var FriendsPane = __webpack_require__(246);
 	
 	function _getRelevantPosts(userId) {
 	  return PostStore.getByUserId(userId);
@@ -31732,7 +31733,6 @@
 	
 	  render: function () {
 	    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
-	
 	    var Posts = this.state.posts.map(function (post) {
 	      return React.createElement(Post, { key: post.id, post: post });
 	    });
@@ -31744,6 +31744,11 @@
 	        'div',
 	        null,
 	        React.createElement(UserProfileUserInfo, { userId: this.state.user_id, user: this.state.user })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(FriendsPane, { user: this.state.user })
 	      ),
 	      React.createElement(
 	        'div',
@@ -31891,7 +31896,6 @@
 	    this.commentListener.remove();
 	  },
 	  handleAuthorClick: function (authorId) {
-	    debugger;
 	    this.history.pushState(null, "user/" + authorId);
 	  },
 	
@@ -31989,6 +31993,41 @@
 	};
 	
 	module.exports = CommentConstants;
+
+/***/ },
+/* 246 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(233);
+	var UserStore = __webpack_require__(238);
+	
+	var ApiUtil = __webpack_require__(234);
+	
+	var FriendsPane = React.createClass({
+	  displayName: 'FriendsPane',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  componentWillMount: function () {
+	    this.setState({ user: this.props.user });
+	  },
+	  componentWillReceiveProps: function (newProps) {
+	    this.setState({ user: newProps.user });
+	  },
+	  render: function () {
+	    var User = this.state.user.real_name;
+	    return React.createElement(
+	      'div',
+	      { className: 'profile-friends-pane' },
+	      User
+	    );
+	  }
+	});
+	
+	module.exports = FriendsPane;
 
 /***/ }
 /******/ ]);

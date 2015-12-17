@@ -3,7 +3,7 @@ class Api::UsersController < ApplicationController
   end
 
   def index
-    @users = User.includes(:authored_posts, :subjectOfPosts).all
+    @users = User.includes(:authored_posts, :subjectOfPosts, :leftComments).all
     render :index
   end
 end
