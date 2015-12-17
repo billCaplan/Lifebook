@@ -17,7 +17,7 @@ var ApiUtil = {
   });
 },
   fetchUsers: function(){
-    console.log("in Api Util fetch");
+    console.log("Fetch Users");
     $.get('/api/users', function(users){
       ApiActions.receiveAllUsers(users);
     });

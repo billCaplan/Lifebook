@@ -65,9 +65,7 @@
 	
 	  componentWillMount: function () {
 	    var that = this;
-	
 	    ApiUtil.getCurrentUser();
-	
 	    UserStore.addListener(this._onChange);
 	  },
 	
@@ -78,13 +76,12 @@
 	  _onChange: function () {
 	    this.setState({ currentUser: UserStore.getCurrentUser() });
 	  },
-	  redirectToHome: function () {
 	
+	  redirectToHome: function () {
 	    this.props.history.pushState(null, "/");
 	  },
 	
 	  render: function () {
-	
 	    var name = this.state.currentUser.real_name;
 	
 	    return React.createElement(
@@ -31389,7 +31386,7 @@
 	    });
 	  },
 	  fetchUsers: function () {
-	    console.log("in Api Util fetch");
+	    console.log("Fetch Users");
 	    $.get('/api/users', function (users) {
 	      ApiActions.receiveAllUsers(users);
 	    });
@@ -31426,7 +31423,6 @@
 	    });
 	  },
 	  receiveAllUsers: function (users) {
-	    console.log("In the actions");
 	    AppDispatcher.dispatch({
 	      actionType: UserConstants.USERS_RECEIVED,
 	      users: users
@@ -31518,6 +31514,8 @@
 	
 	var ApiUtil = __webpack_require__(234);
 	var UserProfileUserInfo = __webpack_require__(241);
+	var NewPost = __webpack_require__(237);
+	var UserStore = __webpack_require__(240);
 	
 	function _getRelevantPosts(userId) {
 	  var posts = PostStore.getByUserId(userId);
@@ -31531,6 +31529,12 @@
 	  });
 	}
 	
+	function _getApplicableUser(currentProfileUserId) {
+	  console.log(currentProfileUserId);
+	  var user = UserStore.findUser(currentProfileUserId);
+	  return user;
+	}
+	
 	var UserProfile = React.createClass({
 	  displayName: 'UserProfile',
 	
@@ -31541,7 +31545,8 @@
 	    var user_id = this.props.routeParams["userId"];
 	    return {
 	      user_id: user_id,
-	      posts: _getRelevantPosts(user_id)
+	      posts: _getRelevantPosts(user_id),
+	      user: {}
 	    };
 	  },
 	  componentDidMount: function () {
@@ -31550,22 +31555,27 @@
 	    ApiUtil.fetchUsers();
 	    //Add listener to update state
 	    this.postListener = PostStore.addListener(this._postsChanged);
+	    this.userListener = UserStore.addListener(this._usersChanged);
 	  },
 	  //Fixes navigating to new user id
 	  componentWillReceiveProps: function (newProps) {
-	    this.setState({ user_id: newProps.params.userId });
+	    this.setState({ user_id: newProps.params.userId, user: newProps.user });
 	    ApiUtil.fetchPosts();
 	  },
 	
 	  _postsChanged: function () {
+	
 	    this.setState({ posts: _getRelevantPosts(this.state.user_id) });
 	  },
-	  // handlePostClick: function (post) {
-	  //   this.props.history.pushState(null, "posts/" + post.id);
-	  // },
+	
+	  _usersChanged: function () {
+	
+	    this.setState({ user: _getApplicableUser(this.state.user_id) });
+	  },
 	
 	  render: function () {
 	    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
+	    console.log(this.state);
 	
 	    var unorderedPosts = [];
 	
@@ -31575,14 +31585,22 @@
 	
 	    var orderedPosts = unorderedPosts.reverse();
 	    var Posts = orderedPosts.map(function (post) {
-	
 	      return React.createElement(Post, { key: post.id, post: post });
 	    });
 	
 	    return React.createElement(
 	      'div',
 	      null,
-	      React.createElement(UserProfileUserInfo, { userId: this.state.user_id }),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(UserProfileUserInfo, { userId: this.state.user_id, user: this.state.user })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(NewPost, null)
+	      ),
 	      React.createElement(
 	        'div',
 	        null,
@@ -31654,12 +31672,17 @@
 	};
 	
 	UserStore.findUser = function (userId) {
+	
 	  var targetUserId = parseInt(userId);
 	  var users = UserStore.all();
-	  var targetUser = {};
+	  var targetUser = { string: "Bad User" };
 	
 	  users.forEach(function (user) {
+	    debugger;
 	    if (user.id === targetUserId) {
+	      debugger;
+	      console.log("Found");
+	      console.log(user);
 	      targetUser = user;
 	    }
 	  });
@@ -31668,7 +31691,6 @@
 	
 	UserStore.__onDispatch = function (payload) {
 	
-	  console.log(payload);
 	  switch (payload.actionType) {
 	    case UserConstants.CURRENT_USER_RECEIVED:
 	      this.setCurrentUser(payload.currentUser);
@@ -31694,13 +31716,6 @@
 	
 	var ApiUtil = __webpack_require__(234);
 	
-	function _getApplicableUser(currentProfileUserId) {
-	  console.log("Should be the Applicable user");
-	  var user = UserStore.findUser(currentProfileUserId);
-	  console.log(user);
-	  return user;
-	}
-	
 	var UserProfileUserInfo = React.createClass({
 	  displayName: 'UserProfileUserInfo',
 	
@@ -31709,16 +31724,22 @@
 	  },
 	  getInitialState: function () {
 	    return {
-	      user: _getApplicableUser(this.props.userId)
+	      user: this.props.user
 	    };
 	  },
 	  componentDidMount: function () {
 	    ApiUtil.fetchUsers();
-	    console.log("in component did mount the fetch should have just started");
-	    this.userListener = PostStore.addListener(this._usersChanged);
+	    this.userListener = UserStore.addListener(this._usersChanged);
 	  },
 	  _usersChanged: function () {
-	    this.setState({ user: _getApplicableUser(this.props.userId) });
+	    this.setState({ user: this.props.user });
+	  },
+	  componentWillUnmount: function () {
+	    this.setState({ user: null });
+	  },
+	
+	  componentWillReceiveProps: function (newProps) {
+	    this.setState({ user: newProps.user });
 	  },
 	  // // componentWillUnmount: function(){
 	  // //   this.setState({
@@ -31731,42 +31752,43 @@
 	  // },
 	
 	  render: function () {
-	
-	    console.log(this.state);
-	
 	    //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement(
-	        'h2',
-	        null,
-	        'User Profile User Info'
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'profile-pic' },
-	        React.createElement('img', { src: 'http://placehold.it/150x150' })
-	      ),
-	      React.createElement(
 	        'div',
 	        null,
-	        this.state.user.real_name
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.state.user.age
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.state.user.location
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.state.user.email
+	        React.createElement(
+	          'h2',
+	          null,
+	          'User Profile User Info'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'profile-pic' },
+	          React.createElement('img', { src: 'http://placehold.it/150x150' })
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.user.real_name
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.user.age
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.user.location
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.user.email
+	        )
 	      )
 	    );
 	  }

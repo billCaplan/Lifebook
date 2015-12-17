@@ -22,7 +22,6 @@ var ApiActions = {
     });
   },
   receiveAllUsers: function(users){
-    console.log("In the actions");
     AppDispatcher.dispatch({
       actionType: UserConstants.USERS_RECEIVED,
       users: users

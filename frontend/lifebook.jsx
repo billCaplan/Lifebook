@@ -17,12 +17,9 @@ var NewPost = require('./components/NewPost');
 
 var App = React.createClass({
 
-
   componentWillMount: function(){
     var that = this;
-
     ApiUtil.getCurrentUser();
-
     UserStore.addListener(this._onChange);
   },
 
@@ -33,14 +30,12 @@ var App = React.createClass({
   _onChange: function(){
     this.setState({currentUser: UserStore.getCurrentUser()});
   },
-  redirectToHome: function(){
 
+  redirectToHome: function(){
     this.props.history.pushState(null, "/");
   },
 
-
   render: function(){
-
     var name = this.state.currentUser.real_name;
 
     return (
@@ -55,11 +50,9 @@ var App = React.createClass({
 
 var routes = (
   <Route path="/" component={App}>
-
     <IndexRoute component={Feed}></IndexRoute>
     <Route path="/post/new" component={NewPost}></Route>
     <Route path="user/:userId" component={UserProfile}></Route>
-
   </Route>
 );
 

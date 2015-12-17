@@ -27,12 +27,17 @@ UserStore.getCurrentUser = function(){
 };
 
 UserStore.findUser = function(userId){
+
   var targetUserId = parseInt(userId);
   var users = UserStore.all();
-  var targetUser = {};
+  var targetUser = {string: "Bad User"};
 
   users.forEach(function(user){
+    debugger
     if (user.id === targetUserId){
+      debugger
+      console.log("Found");
+      console.log(user);
       targetUser = user;
     }
   });
@@ -41,7 +46,6 @@ UserStore.findUser = function(userId){
 
 UserStore.__onDispatch = function (payload) {
 
-  console.log(payload);
   switch(payload.actionType) {
     case UserConstants.CURRENT_USER_RECEIVED:
       this.setCurrentUser(payload.currentUser);

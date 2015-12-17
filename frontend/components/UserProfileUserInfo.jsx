@@ -5,12 +5,7 @@ var UserStore = require('../stores/user');
 
 var ApiUtil = require('../util/api_util');
 
-function _getApplicableUser (currentProfileUserId){
-  console.log("Should be the Applicable user");
-  var user = UserStore.findUser(currentProfileUserId);
-  console.log(user);
-  return user;
-}
+
 
 
 var UserProfileUserInfo = React.createClass({
@@ -19,16 +14,22 @@ var UserProfileUserInfo = React.createClass({
   },
   getInitialState: function(){
     return {
-      user: _getApplicableUser(this.props.userId),
+      user: this.props.user,
     };
   },
   componentDidMount: function(){
     ApiUtil.fetchUsers();
-    console.log("in component did mount the fetch should have just started");
-    this.userListener = PostStore.addListener(this._usersChanged);
+    this.userListener = UserStore.addListener(this._usersChanged);
   },
   _usersChanged: function(){
-    this.setState({user: _getApplicableUser(this.props.userId)});
+    this.setState({user: this.props.user});
+  },
+  componentWillUnmount: function(){
+    this.setState({user: null});
+  },
+
+  componentWillReceiveProps: function (newProps) {
+    this.setState({user: newProps.user});
   },
   // // componentWillUnmount: function(){
   // //   this.setState({
@@ -41,18 +42,17 @@ var UserProfileUserInfo = React.createClass({
   // },
 
   render: function(){
-
-    console.log(this.state);
-
     //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts
     return(
       <div>
-        <h2>User Profile User Info</h2>
-        <div className="profile-pic"><img src="http://placehold.it/150x150"></img></div>
-        <div>{this.state.user.real_name}</div>
-        <div>{this.state.user.age}</div>
-        <div>{this.state.user.location}</div>
-        <div>{this.state.user.email}</div>
+        <div>
+          <h2>User Profile User Info</h2>
+          <div className="profile-pic"><img src="http://placehold.it/150x150"></img></div>
+          <div>{this.props.user.real_name}</div>
+          <div>{this.props.user.age}</div>
+          <div>{this.props.user.location}</div>
+          <div>{this.props.user.email}</div>
+        </div>
       </div>
     );
   }
