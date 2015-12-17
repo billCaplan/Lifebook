@@ -3,9 +3,9 @@ var PostStore = require('../stores/post');
 var Post = require('../components/Post');
 
 var ApiUtil = require('../util/api_util');
+var UserStore = require('../stores/user');
 
 var History = require('react-router').History;
-
 
 
 var NewPost = React.createClass({
@@ -17,6 +17,10 @@ var NewPost = React.createClass({
   navigateToFeed: function(){
    this.props.history.pushState(null, "/");
   },
+  componentWillMount: function(){
+    this.setState({currentUser: UserStore.getCurrentUser()});
+  },
+
 
   handleSubmit: function(event){
     event.preventDefault();
@@ -26,7 +30,6 @@ var NewPost = React.createClass({
   },
 
   render: function(){
-    var targetId = this.props.user.id;
 
     return(
       <div>
@@ -40,7 +43,10 @@ var NewPost = React.createClass({
            name="post[body]"
            id="post_body" rows="4" cols="50"></textarea>
          <br></br>
-         <input type="hidden" name="post[target_id]" id="post_target_id" value={targetId}></input>
+         <input type="hidden"
+                name="post[target_id]"
+                id="post_target_id"
+                value={this.props.targetUserId} />
          <input type="submit" value="Post"/>
         </form>
       </div>

@@ -12,7 +12,6 @@ var Feed = React.createClass({
   },
 
   _postsChanged: function(){
-    debugger
     this.setState({posts: PostStore.all()});
   },
 
@@ -33,15 +32,13 @@ var Feed = React.createClass({
 
   render: function(){
     // need to filter the posts to only the ones that are being followed
-
     var Posts = this.state.posts.map(function (post, i) {
       return <Post key={i} post={post} />;
     });
-
     return(
       <div>
         <div>
-          <NewPost />
+          <NewPost/>
         </div>
         <br></br>
           <ul>

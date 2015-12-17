@@ -80,12 +80,13 @@
 	  },
 	
 	  redirectToHome: function () {
+	
 	    this.props.history.pushState(null, "/");
 	  },
 	
 	  render: function () {
 	    var name = this.state.currentUser.real_name;
-	
+	    this.props.userName = this.state.userName;
 	    return React.createElement(
 	      'div',
 	      null,
@@ -24497,7 +24498,6 @@
 	  },
 	
 	  _postsChanged: function () {
-	    debugger;
 	    this.setState({ posts: PostStore.all() });
 	  },
 	
@@ -24518,11 +24518,9 @@
 	
 	  render: function () {
 	    // need to filter the posts to only the ones that are being followed
-	
 	    var Posts = this.state.posts.map(function (post, i) {
 	      return React.createElement(Post, { key: i, post: post });
 	    });
-	
 	    return React.createElement(
 	      'div',
 	      null,
@@ -31444,6 +31442,7 @@
 	var Post = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(234);
+	var UserStore = __webpack_require__(240);
 	
 	var History = __webpack_require__(159).History;
 	
@@ -31458,6 +31457,9 @@
 	  navigateToFeed: function () {
 	    this.props.history.pushState(null, "/");
 	  },
+	  componentWillMount: function () {
+	    this.setState({ currentUser: UserStore.getCurrentUser() });
+	  },
 	
 	  handleSubmit: function (event) {
 	    event.preventDefault();
@@ -31467,7 +31469,6 @@
 	  },
 	
 	  render: function () {
-	    var targetId = this.props.user.id;
 	
 	    return React.createElement(
 	      'div',
@@ -31488,7 +31489,10 @@
 	          name: 'post[body]',
 	          id: 'post_body', rows: '4', cols: '50' }),
 	        React.createElement('br', null),
-	        React.createElement('input', { type: 'hidden', name: 'post[target_id]', id: 'post_target_id', value: targetId }),
+	        React.createElement('input', { type: 'hidden',
+	          name: 'post[target_id]',
+	          id: 'post_target_id',
+	          value: this.props.targetUserId }),
 	        React.createElement('input', { type: 'submit', value: 'Post' })
 	      )
 	    );
@@ -31541,6 +31545,10 @@
 	    this.postListener = PostStore.addListener(this._postsChanged);
 	    this.userListener = UserStore.addListener(this._usersChanged);
 	  },
+	  componentWillUnmount: function () {
+	    this.postListener.remove();
+	    this.userListener.remove();
+	  },
 	  //Fixes navigating to new user id
 	  componentWillReceiveProps: function (newProps) {
 	    var userId = this.props.routeParams.userId;
@@ -31574,7 +31582,7 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement(NewPost, { user: this.state.user })
+	        React.createElement(NewPost, { targetUserId: this.state.user.id })
 	      ),
 	      React.createElement(
 	        'div',
@@ -31678,7 +31686,7 @@
 	};
 	
 	UserStore.getCurrentUser = function () {
-	
+	  debugger;
 	  return _currentUser;
 	};
 	

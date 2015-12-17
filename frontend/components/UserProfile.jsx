@@ -40,6 +40,10 @@ var UserProfile = React.createClass({
     this.userListener = UserStore.addListener(this._usersChanged);
 
   },
+  componentWillUnmount: function(){
+    this.postListener.remove();
+    this.userListener.remove();
+  },
   //Fixes navigating to new user id
   componentWillReceiveProps: function (newProps) {
     var userId = this.props.routeParams.userId;
@@ -69,7 +73,7 @@ var UserProfile = React.createClass({
           <UserProfileUserInfo userId={this.state.user_id}  user={this.state.user} />
         </div>
         <div>
-          <NewPost user={this.state.user}/>
+          <NewPost targetUserId={this.state.user.id}/>
         </div>
         <div>
           {Posts}

@@ -22,7 +22,7 @@ UserStore.setCurrentUser = function(currentUser){
 };
 
 UserStore.getCurrentUser = function(){
-
+  debugger
   return _currentUser;
 };
 
