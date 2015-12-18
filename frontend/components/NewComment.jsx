@@ -13,8 +13,9 @@ var NewComment = React.createClass({
     this.setState({currentUser: UserStore.getCurrentUser()});
   },
   handleSubmit: function(event){
+    debugger
     event.preventDefault();
-
+    debugger
     var post = {body: event.currentTarget[0].value, post_id: this.props.parentCommentId};
     ApiUtil.createComment(post);
   },

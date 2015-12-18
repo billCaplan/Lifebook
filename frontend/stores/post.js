@@ -57,6 +57,8 @@ PostStore.getUsersFollowedPosts = function(userIdString){
   posts.forEach(function(post){
     if (relevantUsers.indexOf(post.author_id) !== -1){
       relevantPosts.push(post);
+    } else if (userId === post.author_id){
+      relevantPosts.push(post);
     }
   });
   return relevantPosts;

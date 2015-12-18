@@ -24505,6 +24505,7 @@
 	  },
 	
 	  _postsChanged: function () {
+	    debugger;
 	    this.setState({ posts: PostStore.getUsersFollowedPosts(this.state.currentUser.id) });
 	  },
 	  _usersChanged: function () {
@@ -24627,6 +24628,8 @@
 	  // now we reference the posts against the
 	  posts.forEach(function (post) {
 	    if (relevantUsers.indexOf(post.author_id) !== -1) {
+	      relevantPosts.push(post);
+	    } else if (userId === post.author_id) {
 	      relevantPosts.push(post);
 	    }
 	  });
@@ -31649,8 +31652,9 @@
 	    this.setState({ currentUser: UserStore.getCurrentUser() });
 	  },
 	  handleSubmit: function (event) {
+	    debugger;
 	    event.preventDefault();
-	
+	    debugger;
 	    var post = { body: event.currentTarget[0].value, post_id: this.props.parentCommentId };
 	    ApiUtil.createComment(post);
 	  },
@@ -31850,7 +31854,7 @@
 	  handleSubmit: function (event) {
 	    event.preventDefault();
 	
-	    var post = { body: event.currentTarget[1].value, target_id: this.props.targetUserId };
+	    var post = { body: event.currentTarget[0].value, target_id: this.props.targetUserId };
 	    ApiUtil.createPost(post);
 	  },
 	
@@ -32045,6 +32049,18 @@
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
+	  _getProfilePic: function () {
+	    if (this.props.user.profile_image) {
+	      var profileLocation = this.buildUrl(this.props.user.profile_image);
+	    } else {
+	      var profileLocation = this.buildUrl("lifebook_default_pic");
+	    }
+	    return profileLocation;
+	  },
+	  buildUrl: function (image_path) {
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_168,w_168/v1450463928/" + image_path;
+	    return url;
+	  },
 	
 	  render: function () {
 	    //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts
@@ -32062,7 +32078,7 @@
 	        React.createElement(
 	          'div',
 	          { className: 'profile-pic' },
-	          React.createElement('img', { src: 'http://placehold.it/150x150' })
+	          React.createElement('img', { src: this._getProfilePic() })
 	        ),
 	        React.createElement(
 	          'div',
@@ -32458,6 +32474,7 @@
 	var PostStore = __webpack_require__(211);
 	var Post = __webpack_require__(237);
 	var UserStore = __webpack_require__(233);
+	var SearchBar = __webpack_require__(257);
 	
 	var ApiUtil = __webpack_require__(235);
 	
@@ -32473,10 +32490,22 @@
 	  componentWillReceiveProps: function (newProps) {
 	    this.setState({ user: newProps.currentUser });
 	  },
+	  _buildUrl: function (image_path) {
+	    var publicID;
+	    if (!image_path) {
+	      var publicID = "lifebook_default_pic.jpg";
+	    } else {
+	      var publicID = image_path;
+	    }
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + publicID;
+	    return url;
+	  },
 	
 	  render: function () {
+	
 	    if (this.state.user.real_name) {
 	      var name = this.state.user.real_name;
+	      var profile_image = this.state.user.profile_image;
 	    } else {
 	      var name = "Loading";
 	    }
@@ -32485,7 +32514,12 @@
 	      'div',
 	      { className: 'header-bar' },
 	      React.createElement(
-	        'div',
+	        'span',
+	        { className: 'header-bar-profile-pic' },
+	        React.createElement('img', { src: this._buildUrl(profile_image) })
+	      ),
+	      React.createElement(
+	        'span',
 	        { className: 'header-bar-real-name' },
 	        name
 	      )
@@ -32560,6 +32594,71 @@
 	});
 	
 	module.exports = ImagesBody;
+
+/***/ },
+/* 257 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SearchBar = React.createClass({
+	  displayName: "SearchBar",
+	
+	  getInitialState: function () {
+	    return { inputVal: "" };
+	  },
+	
+	  handleInput: function (event) {
+	    this.setState({ inputVal: event.currentTarget.value });
+	  },
+	
+	  matches: function () {
+	    var matches = [];
+	    if (this.state.inputVal.length === 0) {
+	      return this.props.names;
+	    }
+	
+	    this.props.names.forEach((function (name) {
+	      var sub = name.slice(0, this.state.inputVal.length);
+	      if (sub.toLowerCase() === this.state.inputVal.toLowerCase()) {
+	        matches.push(name);
+	      }
+	    }).bind(this));
+	
+	    if (matches.length === 0) {
+	      matches.push("No matches");
+	    }
+	
+	    return matches;
+	  },
+	
+	  selectName: function (event) {
+	    var name = event.currentTarget.innerText;
+	    this.setState({ inputVal: name });
+	  },
+	
+	  render: function () {
+	    var results = this.matches();
+	    return React.createElement(
+	      "div",
+	      null,
+	      React.createElement("input", { onChange: this.handleInput, value: this.state.inputVal }),
+	      React.createElement(
+	        "ul",
+	        null,
+	        results.map((function (result, i) {
+	          return React.createElement(
+	            "li",
+	            { key: i, onClick: this.selectName },
+	            result
+	          );
+	        }).bind(this))
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = SearchBar;
 
 /***/ }
 /******/ ]);

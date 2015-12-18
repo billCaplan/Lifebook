@@ -65,9 +65,17 @@
    background-color: green;
    border-bottom-left-radius: 5px;
    border-bottom-right-radius: 5px;
+   color: white;
+   padding: 3px;
+   bottom: 30px;
  }
 
 /*not really centering*/
  .app-body{
    margin: auto;
  }
+ .header-bar:after {
+  content: "";
+  display: block;
+  clear: both;
+}

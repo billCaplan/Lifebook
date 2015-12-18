@@ -25,7 +25,7 @@ var NewPost = React.createClass({
   handleSubmit: function(event){
     event.preventDefault();
 
-    var post = {body: event.currentTarget[1].value, target_id: this.props.targetUserId};
+    var post = {body: event.currentTarget[0].value, target_id: this.props.targetUserId};
     ApiUtil.createPost(post);
   },
 

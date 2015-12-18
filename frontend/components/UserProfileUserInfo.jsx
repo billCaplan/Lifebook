@@ -9,6 +9,19 @@ var UserProfileUserInfo = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
+  _getProfilePic: function(){
+    if(this.props.user.profile_image){
+      var profileLocation = this.buildUrl(this.props.user.profile_image);
+    } else {
+      var profileLocation = this.buildUrl("lifebook_default_pic");
+    }
+    return profileLocation;
+
+  },
+  buildUrl: function(image_path){
+    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_168,w_168/v1450463928/" + image_path;
+    return url;
+  },
 
   render: function(){
     //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts
@@ -16,7 +29,7 @@ var UserProfileUserInfo = React.createClass({
       <div>
         <div>
           <h2>User Profile User Info</h2>
-          <div className="profile-pic"><img src="http://placehold.it/150x150"></img></div>
+          <div className="profile-pic"><img src={this._getProfilePic()}></img></div>
           <div>{this.props.user.real_name}</div>
           <div>{this.props.user.age}</div>
           <div>{this.props.user.location}</div>
