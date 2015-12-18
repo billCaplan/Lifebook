@@ -9,8 +9,15 @@ class User < ActiveRecord::Base
 
   has_many(
     :usersFollowing,
-    through: :userToFollow,
-    class_name: "Follow"
+    through: :follows,
+    source: :usersToFollow
+  )
+
+  has_many(
+  :follows,
+  foreign_key: :author_id,
+  primary_key: :id,
+  class_name: "Follow"
   )
 
   has_many(

@@ -9,17 +9,25 @@ var FriendsPane = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
-  componentWillMount: function(){
-    this.setState({user: this.props.user});
+  getInitialState: function(){
+    return {user: {}};
   },
   componentWillReceiveProps: function (newProps) {
     this.setState({user: newProps.user});
   },
+
   render: function(){
-    var User = this.state.user.real_name;
+    if (!this.state.user.usersFollowing){
+      var users = <div></div>;
+    } else {
+    var users = this.state.user.usersFollowing.map(function (user) {
+      return <div key={user.id}>{user.real_name}</div>;
+      });
+    }
+
     return(
       <div className="profile-friends-pane">
-        {User}
+        {users}
       </div>
     );
   }

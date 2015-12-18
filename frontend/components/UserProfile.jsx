@@ -34,6 +34,7 @@ var UserProfile = React.createClass({
   },
   componentDidMount: function(){
     //ApiUtil to fetch users
+
       ApiUtil.fetchPosts();
       ApiUtil.fetchUsers();
     //Add listener to update state
@@ -57,6 +58,7 @@ var UserProfile = React.createClass({
   },
 
   _usersChanged: function(){
+
     this.setState({user: _getApplicableUser(this.state.user_id)});
   },
 
