@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     resources :users, only: [:show, :index]
     resources :posts
     resources :comments
+    resources :follows 
   end
   resources :users, except: [:show, :index]
   resources :current, only: [:index]

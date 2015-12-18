@@ -38,7 +38,12 @@ var ApiActions = {
       actionType: CommentConstants.NEW_COMMENT_RECEIVED,
       newComment: newComment
     });
-  }
+  },
+  receiveNewFollow: function(newPost){
+    AppDispatcher.dispatch({
+      actionType: UserConstants.FOLLOW_RECEIVED
+    });
+  },
 };
 
 module.exports = ApiActions;

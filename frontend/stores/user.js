@@ -1,6 +1,8 @@
 var Store = require('flux/utils').Store;
 var UserConstants = require('../constants/user_constants');
 var AppDispatcher = require('../dispatcher/Dispatcher');
+var ApiUtil = require('../util/api_util');
+
 
 var UserStore = new Store(AppDispatcher);
 
@@ -49,6 +51,9 @@ UserStore.__onDispatch = function (payload) {
     case UserConstants.USERS_RECEIVED:
       var result = resetUsers(payload.users);
       UserStore.__emitChange();
+      break;
+    case UserConstants.FOLLOW_RECEIVED:
+      ApiUtil.fetchUsers();
       break;
   }
 };

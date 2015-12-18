@@ -1,8 +1,7 @@
 UserConstants = {
   CURRENT_USER_RECEIVED: "CURRENT_USER_RECEIVED",
   USERS_RECEIVED: "USERS_RECEIVED",
-
-
+  FOLLOW_RECEIVED: "FOLLOW_RECEIVED",
 };
 
 module.exports = UserConstants;

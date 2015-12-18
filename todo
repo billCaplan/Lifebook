@@ -6,10 +6,12 @@ Add Profile Pic Column to user
 
 Still need:
 
+  WORK ON FOLLOW BUTTON
+    need to have an if conditional for follow / unfollow button
+    and alter the feed to have only those
+
 Integrate Photos
 
-  Implement follows
-    and alter the feed to have only those
 
   Build a React Component Navbar
     will have two different nav bars

@@ -1,6 +1,7 @@
 var Store = require('flux/utils').Store;
 var PostConstants = require('../constants/post_constants');
 var AppDispatcher = require('../dispatcher/Dispatcher');
+var UserStore = require('../stores/user');
 
 var PostStore = new Store(AppDispatcher);
 
@@ -18,6 +19,8 @@ PostStore.all = function () {
   return _posts.slice(0);
 };
 
+// for use on profile page, will return posts the user posted
+// or posts posted to their wall
 PostStore.getByUserId = function(userIdString) {
   var userId = parseInt(userIdString);
   var posts = PostStore.all();
@@ -32,6 +35,34 @@ PostStore.getByUserId = function(userIdString) {
 
   return relevantPosts;
 };
+
+// Used for populating the feed
+PostStore.getUsersFollowedPosts = function(userIdString){
+  var userId = parseInt(userIdString);
+  var user = UserStore.findUser(userId);
+  var posts = PostStore.all();
+  console.log(user);
+  console.log(posts);
+
+  if(posts === [] || user.string === "Bad User"){
+    return null;
+  }
+  var relevantPosts = [];
+  var relevantUsers = [];
+
+// now we get an array of good user ids
+    user.usersFollowing.forEach(function(user){
+      relevantUsers.push(user.id);
+    });
+
+// now we reference the posts against the
+  posts.forEach(function(post){
+    if (relevantUsers.indexOf(post.author_id) !== -1){
+      relevantPosts.push(post);
+    }
+  });
+  return relevantPosts;
+},
 
 PostStore.__onDispatch = function (payload) {
 

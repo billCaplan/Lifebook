@@ -4,6 +4,7 @@ var Post = require('../components/Post');
 
 var ApiUtil = require('../util/api_util');
 var NewPost = require('../components/NewPost');
+var UserStore = require('../stores/user');
 
 
 var Feed = React.createClass({
@@ -12,18 +13,25 @@ var Feed = React.createClass({
   },
 
   _postsChanged: function(){
-    this.setState({posts: PostStore.all()});
+    this.setState({posts: PostStore.getUsersFollowedPosts(this.state.currentUser.id)});
+  },
+  _usersChanged: function(){
+    this.setState({currentUser: UserStore.getCurrentUser()});
+    this.setState({posts: PostStore.getUsersFollowedPosts(this.state.currentUser.id)});
   },
 
   getInitialState: function(){
     return {
-      posts: PostStore.all(),
+      posts: PostStore.getUsersFollowedPosts(),
+      currentUser: UserStore.getCurrentUser()
     };
   },
 
   componentDidMount: function(){
-    this.postListener = PostStore.addListener(this._postsChanged);
     ApiUtil.fetchPosts();
+    ApiUtil.fetchUsers();
+    this.postListener = PostStore.addListener(this._postsChanged);
+    this.userListener = UserStore.addListener(this._usersChanged);
   },
 
   componentWillUnmount: function(){
@@ -32,10 +40,16 @@ var Feed = React.createClass({
 
   render: function(){
     // need to filter the posts to only the ones that are being followed
-
-    var Posts = this.state.posts.map(function (post, i) {
+    if (!this.state.posts){
+      var posts = <div>Loading</div>
+    }
+    else {
+    var posts = this.state.posts.map(function (post, i) {
       return <Post key={i} post={post} />;
     });
+  }
+
+
     return(
       <div>
         <div>
@@ -43,7 +57,7 @@ var Feed = React.createClass({
         </div>
         <br></br>
           <ul>
-            {Posts}
+            {posts}
           </ul>
       </div>
     );

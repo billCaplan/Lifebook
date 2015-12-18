@@ -24489,6 +24489,7 @@
 	
 	var ApiUtil = __webpack_require__(234);
 	var NewPost = __webpack_require__(239);
+	var UserStore = __webpack_require__(238);
 	
 	var Feed = React.createClass({
 	  displayName: 'Feed',
@@ -24498,18 +24499,25 @@
 	  },
 	
 	  _postsChanged: function () {
-	    this.setState({ posts: PostStore.all() });
+	    this.setState({ posts: PostStore.getUsersFollowedPosts(this.state.currentUser.id) });
+	  },
+	  _usersChanged: function () {
+	    this.setState({ currentUser: UserStore.getCurrentUser() });
+	    this.setState({ posts: PostStore.getUsersFollowedPosts(this.state.currentUser.id) });
 	  },
 	
 	  getInitialState: function () {
 	    return {
-	      posts: PostStore.all()
+	      posts: PostStore.getUsersFollowedPosts(),
+	      currentUser: UserStore.getCurrentUser()
 	    };
 	  },
 	
 	  componentDidMount: function () {
-	    this.postListener = PostStore.addListener(this._postsChanged);
 	    ApiUtil.fetchPosts();
+	    ApiUtil.fetchUsers();
+	    this.postListener = PostStore.addListener(this._postsChanged);
+	    this.userListener = UserStore.addListener(this._usersChanged);
 	  },
 	
 	  componentWillUnmount: function () {
@@ -24518,10 +24526,18 @@
 	
 	  render: function () {
 	    // need to filter the posts to only the ones that are being followed
+	    if (!this.state.posts) {
+	      var posts = React.createElement(
+	        'div',
+	        null,
+	        'Loading'
+	      );
+	    } else {
+	      var posts = this.state.posts.map(function (post, i) {
+	        return React.createElement(Post, { key: i, post: post });
+	      });
+	    }
 	
-	    var Posts = this.state.posts.map(function (post, i) {
-	      return React.createElement(Post, { key: i, post: post });
-	    });
 	    return React.createElement(
 	      'div',
 	      null,
@@ -24534,7 +24550,7 @@
 	      React.createElement(
 	        'ul',
 	        null,
-	        Posts
+	        posts
 	      )
 	    );
 	  }
@@ -24549,6 +24565,7 @@
 	var Store = __webpack_require__(212).Store;
 	var PostConstants = __webpack_require__(229);
 	var AppDispatcher = __webpack_require__(230);
+	var UserStore = __webpack_require__(238);
 	
 	var PostStore = new Store(AppDispatcher);
 	
@@ -24566,6 +24583,8 @@
 	  return _posts.slice(0);
 	};
 	
+	// for use on profile page, will return posts the user posted
+	// or posts posted to their wall
 	PostStore.getByUserId = function (userIdString) {
 	  var userId = parseInt(userIdString);
 	  var posts = PostStore.all();
@@ -24581,7 +24600,33 @@
 	  return relevantPosts;
 	};
 	
-	PostStore.__onDispatch = function (payload) {
+	// Used for populating the feed
+	PostStore.getUsersFollowedPosts = function (userIdString) {
+	  var userId = parseInt(userIdString);
+	  var user = UserStore.findUser(userId);
+	  var posts = PostStore.all();
+	  console.log(user);
+	  console.log(posts);
+	
+	  if (posts === [] || user.string === "Bad User") {
+	    return null;
+	  }
+	  var relevantPosts = [];
+	  var relevantUsers = [];
+	
+	  // now we get an array of good user ids
+	  user.usersFollowing.forEach(function (user) {
+	    relevantUsers.push(user.id);
+	  });
+	
+	  // now we reference the posts against the
+	  posts.forEach(function (post) {
+	    if (relevantUsers.indexOf(post.author_id) !== -1) {
+	      relevantPosts.push(post);
+	    }
+	  });
+	  return relevantPosts;
+	}, PostStore.__onDispatch = function (payload) {
 	
 	  switch (payload.actionType) {
 	    case PostConstants.POSTS_RECEIVED:
@@ -31414,6 +31459,11 @@
 	    $.post('api/comments', { comment: data }, function (comment) {
 	      ApiActions.receiveNewComment(comment);
 	    });
+	  },
+	  createFollow: function (data) {
+	    $.post('api/follows', { follow: data }, function (follow) {
+	      ApiActions.receiveNewFollow(follow);
+	    });
 	  }
 	};
 	
@@ -31463,6 +31513,11 @@
 	      actionType: CommentConstants.NEW_COMMENT_RECEIVED,
 	      newComment: newComment
 	    });
+	  },
+	  receiveNewFollow: function (newPost) {
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.FOLLOW_RECEIVED
+	    });
 	  }
 	};
 	
@@ -31474,8 +31529,8 @@
 
 	UserConstants = {
 	  CURRENT_USER_RECEIVED: "CURRENT_USER_RECEIVED",
-	  USERS_RECEIVED: "USERS_RECEIVED"
-	
+	  USERS_RECEIVED: "USERS_RECEIVED",
+	  FOLLOW_RECEIVED: "FOLLOW_RECEIVED"
 	};
 	
 	module.exports = UserConstants;
@@ -31545,6 +31600,7 @@
 	var Store = __webpack_require__(212).Store;
 	var UserConstants = __webpack_require__(236);
 	var AppDispatcher = __webpack_require__(230);
+	var ApiUtil = __webpack_require__(234);
 	
 	var UserStore = new Store(AppDispatcher);
 	
@@ -31593,6 +31649,9 @@
 	    case UserConstants.USERS_RECEIVED:
 	      var result = resetUsers(payload.users);
 	      UserStore.__emitChange();
+	      break;
+	    case UserConstants.FOLLOW_RECEIVED:
+	      ApiUtil.fetchUsers();
 	      break;
 	  }
 	};
@@ -31680,6 +31739,7 @@
 	var NewPost = __webpack_require__(239);
 	var UserStore = __webpack_require__(238);
 	var FriendsPane = __webpack_require__(246);
+	var FollowButton = __webpack_require__(247);
 	
 	function _getRelevantPosts(userId) {
 	  return PostStore.getByUserId(userId);
@@ -31729,7 +31789,6 @@
 	  },
 	
 	  _usersChanged: function () {
-	
 	    this.setState({ user: _getApplicableUser(this.state.user_id) });
 	  },
 	
@@ -31751,6 +31810,11 @@
 	        'div',
 	        null,
 	        React.createElement(FriendsPane, { user: this.state.user })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(FollowButton, { user: this.state.user })
 	      ),
 	      React.createElement(
 	        'div',
@@ -32036,12 +32100,70 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'profile-friends-pane' },
+	      React.createElement(
+	        'h2',
+	        null,
+	        'Following'
+	      ),
 	      users
 	    );
 	  }
 	});
 	
 	module.exports = FriendsPane;
+
+/***/ },
+/* 247 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(233);
+	var UserStore = __webpack_require__(238);
+	
+	var ApiUtil = __webpack_require__(234);
+	
+	var FollowButton = React.createClass({
+	  displayName: 'FollowButton',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  getInitialState: function () {
+	    return { user: {} };
+	  },
+	  componentWillReceiveProps: function (newProps) {
+	    this.setState({ user: newProps.user });
+	  },
+	
+	  handleSubmit: function (event) {
+	    event.preventDefault();
+	
+	    var follow = { followed_user_id: event.currentTarget[1].value };
+	    ApiUtil.createFollow(follow);
+	  },
+	
+	  render: function () {
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'follow-button' },
+	      React.createElement(
+	        'form',
+	        { onSubmit: this.handleSubmit },
+	        React.createElement('input', { type: 'hidden', name: 'authenticity_token',
+	          value: '<%= form_authenticity_token %>' }),
+	        React.createElement('input', { type: 'hidden',
+	          name: 'follow[followed_user_id]',
+	          id: 'post_followed_user_id',
+	          value: this.state.user.id }),
+	        React.createElement('input', { type: 'submit', value: 'Follow' })
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = FollowButton;
 
 /***/ }
 /******/ ]);

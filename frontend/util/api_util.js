@@ -30,6 +30,11 @@ var ApiUtil = {
     $.post('api/comments', { comment: data }, function(comment) {
       ApiActions.receiveNewComment(comment);
     });
+  },
+  createFollow: function(data){
+    $.post('api/follows', { follow: data }, function(follow) {
+      ApiActions.receiveNewFollow(follow);
+    });
   }
 };
 

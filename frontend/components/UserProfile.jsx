@@ -7,6 +7,7 @@ var UserProfileUserInfo = require('../components/UserProfileUserInfo');
 var NewPost = require('../components/NewPost');
 var UserStore = require('../stores/user');
 var FriendsPane = require('../components/FriendsPane');
+var FollowButton = require('../components/FollowButton');
 
 
 function _getRelevantPosts(userId) {
@@ -17,8 +18,6 @@ function _getApplicableUser(currentProfileUserId){
   var user = UserStore.findUser(currentProfileUserId);
   return user;
 }
-
-
 
 var UserProfile = React.createClass({
   contextTypes: {
@@ -58,7 +57,6 @@ var UserProfile = React.createClass({
   },
 
   _usersChanged: function(){
-
     this.setState({user: _getApplicableUser(this.state.user_id)});
   },
 
@@ -76,6 +74,9 @@ var UserProfile = React.createClass({
         </div>
         <div>
           <FriendsPane user={this.state.user}/>
+        </div>
+        <div>
+          <FollowButton user={this.state.user} />
         </div>
         <div>
           <NewPost targetUserId={this.state.user.id}/>
