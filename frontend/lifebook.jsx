@@ -15,6 +15,7 @@ var UserStore = require('./stores/user');
 var NewPost = require('./components/NewPost');
 var NewComment = require('./components/NewComment');
 var Comment = require('./components/Comment');
+var HeaderBar = require('./components/HeaderBar');
 
 
 var App = React.createClass({
@@ -42,7 +43,10 @@ var App = React.createClass({
     var name = this.state.currentUser.real_name;
     this.props.userName = this.state.userName;
     return (
-      <div>
+      <div className="app-body">
+        <div>
+          <HeaderBar currentUser={this.state.currentUser}/>
+        </div>
         <header><h1 onClick={this.redirectToHome}>Lifebook</h1></header>
         <div>Welcome Back, {name}</div>
         {this.props.children}

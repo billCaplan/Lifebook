@@ -9,6 +9,7 @@ var UserStore = require('../stores/user');
 var FriendsPane = require('../components/FriendsPane');
 var FollowButton = require('../components/FollowButton');
 var Images = require('../components/Images');
+var ImagesBody = require('../components/ImagesBody');
 
 
 function _getRelevantPosts(userId) {
@@ -29,7 +30,8 @@ var UserProfile = React.createClass({
     return {
       user_id: user_id,
       posts: _getRelevantPosts(user_id),
-      user: {}
+      user: {},
+      showing: "posts",
     };
   },
   componentDidMount: function(){
@@ -62,7 +64,10 @@ var UserProfile = React.createClass({
     this.setState({user: _getApplicableUser(this.state.user_id)});
   },
   _renderPicturePage: function(){
-    return <ImagesBody user={this.state.user.id}/>;
+    return <div>
+              <button onClick={this._setPostsPage}>Return to Profile</button>
+              <ImagesBody user={this.state.user.id} />
+          </div>;
   },
   _renderPostsPage: function(){
     var Posts = this.state.posts.map(function (post) {
@@ -71,15 +76,22 @@ var UserProfile = React.createClass({
 
     return Posts;
   },
+  _setPicturePage: function(){
+    this.setState({showing: "pictures"});
+  },
+  _setPostsPage: function(){
+    this.setState({showing: "posts"});
+  },
+
 
   render: function(){
     // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
 
-    var Posts = this.state.posts.map(function (post) {
-      return <Post key={post.id} post={post}/>;
-    });
-
-
+    if (this.state.showing === "posts"){
+      var content = this._renderPostsPage();
+    } else if (this.state.showing === "pictures"){
+      var content = this._renderPicturePage();
+    }
 
     return(
       <div>
@@ -94,12 +106,13 @@ var UserProfile = React.createClass({
         </div>
         <div>
           <Images user={this.state.user.id}/>
+          <button onClick={this._setPicturePage}>View All Picture</button>
         </div>
         <div>
           <NewPost targetUserId={this.state.user.id}/>
         </div>
         <div>
-          {Posts}
+          {content}
         </div>
       </div>
     );

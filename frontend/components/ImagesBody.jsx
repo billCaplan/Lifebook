@@ -9,13 +9,17 @@ var React = require('react'),
     ApiUtil = require('../util/api_util');
 
 var ImagesBody = React.createClass({
+  contextTypes: {
+    router: React.PropTypes.func
+  },
   getInitialState: function () {
     ApiUtil.fetchImages();
-    return { images: [], user: null };
+    return { images: ImageStore.getByUserId(this.props.user), user: this.props.user };
   },
 
   componentWillReceiveProps: function (newProps) {
     ApiUtil.fetchImages();
+    debugger
     this.setState({user: newProps.user});
     this.setState({images: ImageStore.getByUserId(newProps.user)});
 
@@ -36,10 +40,10 @@ var ImagesBody = React.createClass({
   } else {
         var images = <div> no images</div>;
   }
+    debugger
     return (
       <div className="profile-images-body">
         {images}
-        <UploadButton />
       </div>
     );
   }

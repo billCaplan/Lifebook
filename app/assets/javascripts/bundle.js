@@ -61,6 +61,7 @@
 	var NewPost = __webpack_require__(242);
 	var NewComment = __webpack_require__(238);
 	var Comment = __webpack_require__(239);
+	var HeaderBar = __webpack_require__(255);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -89,7 +90,12 @@
 	    this.props.userName = this.state.userName;
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'app-body' },
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(HeaderBar, { currentUser: this.state.currentUser })
+	      ),
 	      React.createElement(
 	        'header',
 	        null,
@@ -31889,6 +31895,7 @@
 	var FriendsPane = __webpack_require__(245);
 	var FollowButton = __webpack_require__(246);
 	var Images = __webpack_require__(251);
+	var ImagesBody = __webpack_require__(256);
 	
 	function _getRelevantPosts(userId) {
 	  return PostStore.getByUserId(userId);
@@ -31910,7 +31917,8 @@
 	    return {
 	      user_id: user_id,
 	      posts: _getRelevantPosts(user_id),
-	      user: {}
+	      user: {},
+	      showing: "posts"
 	    };
 	  },
 	  componentDidMount: function () {
@@ -31942,7 +31950,16 @@
 	    this.setState({ user: _getApplicableUser(this.state.user_id) });
 	  },
 	  _renderPicturePage: function () {
-	    return React.createElement(ImagesBody, { user: this.state.user.id });
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'button',
+	        { onClick: this._setPostsPage },
+	        'Return to Profile'
+	      ),
+	      React.createElement(ImagesBody, { user: this.state.user.id })
+	    );
 	  },
 	  _renderPostsPage: function () {
 	    var Posts = this.state.posts.map(function (post) {
@@ -31951,13 +31968,21 @@
 	
 	    return Posts;
 	  },
+	  _setPicturePage: function () {
+	    this.setState({ showing: "pictures" });
+	  },
+	  _setPostsPage: function () {
+	    this.setState({ showing: "posts" });
+	  },
 	
 	  render: function () {
 	    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
 	
-	    var Posts = this.state.posts.map(function (post) {
-	      return React.createElement(Post, { key: post.id, post: post });
-	    });
+	    if (this.state.showing === "posts") {
+	      var content = this._renderPostsPage();
+	    } else if (this.state.showing === "pictures") {
+	      var content = this._renderPicturePage();
+	    }
 	
 	    return React.createElement(
 	      'div',
@@ -31980,7 +32005,12 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement(Images, { user: this.state.user.id })
+	        React.createElement(Images, { user: this.state.user.id }),
+	        React.createElement(
+	          'button',
+	          { onClick: this._setPicturePage },
+	          'View All Picture'
+	        )
 	      ),
 	      React.createElement(
 	        'div',
@@ -31990,7 +32020,7 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        Posts
+	        content
 	      )
 	    );
 	  }
@@ -32419,6 +32449,117 @@
 	});
 	
 	module.exports = ImagePane;
+
+/***/ },
+/* 255 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(237);
+	var UserStore = __webpack_require__(233);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var HeaderBar = React.createClass({
+	  displayName: 'HeaderBar',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  getInitialState: function () {
+	    return { user: {} };
+	  },
+	  componentWillReceiveProps: function (newProps) {
+	    this.setState({ user: newProps.currentUser });
+	  },
+	
+	  render: function () {
+	    if (this.state.user.real_name) {
+	      var name = this.state.user.real_name;
+	    } else {
+	      var name = "Loading";
+	    }
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'header-bar' },
+	      React.createElement(
+	        'div',
+	        { className: 'header-bar-real-name' },
+	        name
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = HeaderBar;
+
+/***/ },
+/* 256 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Really the Image Pane, includes the individual images and Upload Button
+	
+	var React = __webpack_require__(1),
+	    ReactDOM = __webpack_require__(158),
+	    UploadButton = __webpack_require__(249),
+	    ImageModal = __webpack_require__(254),
+	    UserStore = __webpack_require__(233),
+	    ImageStore = __webpack_require__(252),
+	    ApiUtil = __webpack_require__(235);
+	
+	var ImagesBody = React.createClass({
+	  displayName: 'ImagesBody',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  getInitialState: function () {
+	    ApiUtil.fetchImages();
+	    return { images: ImageStore.getByUserId(this.props.user), user: this.props.user };
+	  },
+	
+	  componentWillReceiveProps: function (newProps) {
+	    ApiUtil.fetchImages();
+	    debugger;
+	    this.setState({ user: newProps.user });
+	    this.setState({ images: ImageStore.getByUserId(newProps.user) });
+	  },
+	  // componentWillUnmount: function(){
+	  //   this.setState({user: null});
+	  // },
+	  buildUrl: function (image_path) {
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_200,w_200/v1450463928/" + image_path;
+	    return url;
+	  },
+	  render: function () {
+	    var that = this;
+	    if (this.state.images) {
+	      var images = this.state.images.map(function (image) {
+	        return React.createElement(
+	          'div',
+	          { key: image.id },
+	          React.createElement('img', { src: that.buildUrl(image.image_path) })
+	        );
+	      });
+	    } else {
+	      var images = React.createElement(
+	        'div',
+	        null,
+	        ' no images'
+	      );
+	    }
+	    debugger;
+	    return React.createElement(
+	      'div',
+	      { className: 'profile-images-body' },
+	      images
+	    );
+	  }
+	});
+	
+	module.exports = ImagesBody;
 
 /***/ }
 /******/ ]);

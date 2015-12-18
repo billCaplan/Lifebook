@@ -2,8 +2,10 @@ TODO:
 heroku run rails c
 
 
-Add profile_image Column to user  will direct towards the image table
-AND add owner_id column to images
+NOTES:
+  body tag on app breaks all the things inside DO NOT DO
+
+  Need to migrate DB changes to Heroku
 
 Still need:
 
@@ -11,7 +13,9 @@ Still need:
     need to have an if conditional for follow / unfollow button
     and alter the feed to have only those
 
-Integrate Photos
+    Integrate Photos
+
+    PICTURE COMMENTS table, controller, class, model, store, React Component
 
 
   Build a React Component Navbar
