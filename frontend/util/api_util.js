@@ -35,7 +35,17 @@ var ApiUtil = {
     $.post('api/follows', { follow: data }, function(follow) {
       ApiActions.receiveNewFollow(follow);
     });
-  }
+  },
+  fetchImages: function(){
+    $.get("/api/images", function (images) {
+      ApiActions.receiveAllImages(images);
+    });
+  },
+  createImage: function(data){
+    $.post('api/images', { image: data }, function(image) {
+      ApiActions.receiveNewImage(image);
+    });
+  },
 };
 
 module.exports = ApiUtil;

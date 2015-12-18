@@ -36,6 +36,7 @@ var Feed = React.createClass({
 
   componentWillUnmount: function(){
     this.postListener.remove();
+    this.userListener.remove();
   },
 
   render: function(){

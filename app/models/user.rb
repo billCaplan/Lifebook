@@ -54,6 +54,13 @@ class User < ActiveRecord::Base
     class_name: "Comment"
   )
 
+  has_many(
+    :images,
+    foreign_key: :owner_id,
+    primary_key: :id,
+    class_name: "Image"
+  )
+
   def self.find_by_credentials(email, password)
     user = User.find_by(email: email)
 

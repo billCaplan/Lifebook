@@ -2,7 +2,8 @@ TODO:
 heroku run rails c
 
 
-Add Profile Pic Column to user
+Add profile_image Column to user  will direct towards the image table
+AND add owner_id column to images
 
 Still need:
 
@@ -17,6 +18,11 @@ Integrate Photos
     will have two different nav bars
       one for the react pages
       one for the html login pages
+
+  Followers count
+
+  Profile pictures next to posts
+
 
 
 

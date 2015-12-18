@@ -25,7 +25,7 @@ var NewPost = React.createClass({
   handleSubmit: function(event){
     event.preventDefault();
 
-    var post = {body: event.currentTarget[1].value, target_id: event.currentTarget[2].value};
+    var post = {body: event.currentTarget[1].value, target_id: this.props.targetUserId};
     ApiUtil.createPost(post);
   },
 
@@ -34,19 +34,12 @@ var NewPost = React.createClass({
     return(
       <div>
         <form onSubmit={this.handleSubmit}>
-          <input type="hidden" name="authenticity_token"
-                 value="<%= form_authenticity_token %>"></input>
-               <br></br>
          <label htmlFor="post_body">What's on your mind?</label>
          <br></br>
          <textarea
            name="post[body]"
            id="post_body" rows="4" cols="50"></textarea>
          <br></br>
-         <input type="hidden"
-                name="post[target_id]"
-                id="post_target_id"
-                value={this.props.targetUserId} />
          <input type="submit" value="Post"/>
         </form>
       </div>

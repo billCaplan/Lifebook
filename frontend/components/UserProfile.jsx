@@ -8,6 +8,7 @@ var NewPost = require('../components/NewPost');
 var UserStore = require('../stores/user');
 var FriendsPane = require('../components/FriendsPane');
 var FollowButton = require('../components/FollowButton');
+var Images = require('../components/Images');
 
 
 function _getRelevantPosts(userId) {
@@ -36,6 +37,7 @@ var UserProfile = React.createClass({
 
       ApiUtil.fetchPosts();
       ApiUtil.fetchUsers();
+      ApiUtil.fetchImages();
     //Add listener to update state
     this.postListener = PostStore.addListener(this._postsChanged);
     this.userListener = UserStore.addListener(this._usersChanged);
@@ -59,12 +61,24 @@ var UserProfile = React.createClass({
   _usersChanged: function(){
     this.setState({user: _getApplicableUser(this.state.user_id)});
   },
-
-  render: function(){
-    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
+  _renderPicturePage: function(){
+    return <ImagesBody user={this.state.user.id}/>;
+  },
+  _renderPostsPage: function(){
     var Posts = this.state.posts.map(function (post) {
       return <Post key={post.id} post={post}/>;
     });
+
+    return Posts;
+  },
+
+  render: function(){
+    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
+
+    var Posts = this.state.posts.map(function (post) {
+      return <Post key={post.id} post={post}/>;
+    });
+
 
 
     return(
@@ -77,6 +91,9 @@ var UserProfile = React.createClass({
         </div>
         <div>
           <FollowButton user={this.state.user} />
+        </div>
+        <div>
+          <Images user={this.state.user.id}/>
         </div>
         <div>
           <NewPost targetUserId={this.state.user.id}/>

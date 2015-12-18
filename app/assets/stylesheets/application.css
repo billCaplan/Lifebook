@@ -43,7 +43,18 @@
  }
 
  .profile-friends-pane{
-   height: 200px;
-   width: 150px;
+   height: auto;
+   width: 300px;
+   background-color: cornflowerblue;
+ }
+
+ .profile-images-pane{
+   height: auto;
+   width: 300px;
+   background-color: cornflowerblue;
+ }
+ .profile-images-body{
+   height: auto;
+   width: auto;
    background-color: cornflowerblue;
  }

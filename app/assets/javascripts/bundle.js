@@ -54,13 +54,13 @@
 	var IndexRoute = ReactRouter.IndexRoute;
 	
 	var Feed = __webpack_require__(210);
-	var UserProfile = __webpack_require__(240);
-	var PostPage = __webpack_require__(242);
-	var ApiUtil = __webpack_require__(234);
-	var UserStore = __webpack_require__(238);
-	var NewPost = __webpack_require__(239);
-	var NewComment = __webpack_require__(237);
-	var Comment = __webpack_require__(243);
+	var UserProfile = __webpack_require__(243);
+	var PostPage = __webpack_require__(247);
+	var ApiUtil = __webpack_require__(235);
+	var UserStore = __webpack_require__(233);
+	var NewPost = __webpack_require__(242);
+	var NewComment = __webpack_require__(238);
+	var Comment = __webpack_require__(239);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -24485,11 +24485,11 @@
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(233);
+	var Post = __webpack_require__(237);
 	
-	var ApiUtil = __webpack_require__(234);
-	var NewPost = __webpack_require__(239);
-	var UserStore = __webpack_require__(238);
+	var ApiUtil = __webpack_require__(235);
+	var NewPost = __webpack_require__(242);
+	var UserStore = __webpack_require__(233);
 	
 	var Feed = React.createClass({
 	  displayName: 'Feed',
@@ -24522,6 +24522,7 @@
 	
 	  componentWillUnmount: function () {
 	    this.postListener.remove();
+	    this.userListener.remove();
 	  },
 	
 	  render: function () {
@@ -24565,7 +24566,7 @@
 	var Store = __webpack_require__(212).Store;
 	var PostConstants = __webpack_require__(229);
 	var AppDispatcher = __webpack_require__(230);
-	var UserStore = __webpack_require__(238);
+	var UserStore = __webpack_require__(233);
 	
 	var PostStore = new Store(AppDispatcher);
 	
@@ -24605,8 +24606,6 @@
 	  var userId = parseInt(userIdString);
 	  var user = UserStore.findUser(userId);
 	  var posts = PostStore.all();
-	  console.log(user);
-	  console.log(posts);
 	
 	  if (posts === [] || user.string === "Bad User") {
 	    return null;
@@ -31340,15 +31339,215 @@
 /* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var Store = __webpack_require__(212).Store;
+	var UserConstants = __webpack_require__(234);
+	var AppDispatcher = __webpack_require__(230);
+	var ApiUtil = __webpack_require__(235);
+	
+	var UserStore = new Store(AppDispatcher);
+	
+	var _users = [];
+	
+	var _currentUser = {};
+	
+	var resetUsers = function (users) {
+	
+	  _users = users.slice(0);
+	};
+	
+	UserStore.all = function () {
+	  return _users.slice(0);
+	};
+	
+	UserStore.setCurrentUser = function (currentUser) {
+	  _currentUser = currentUser;
+	};
+	
+	UserStore.getCurrentUser = function () {
+	  return _currentUser;
+	};
+	
+	UserStore.findUser = function (userId) {
+	
+	  var targetUserId = parseInt(userId);
+	  var users = UserStore.all();
+	  var targetUser = { string: "Bad User" };
+	
+	  users.forEach(function (user) {
+	    if (user.id === targetUserId) {
+	      targetUser = user;
+	    }
+	  });
+	  return targetUser;
+	};
+	
+	UserStore.__onDispatch = function (payload) {
+	
+	  switch (payload.actionType) {
+	    case UserConstants.CURRENT_USER_RECEIVED:
+	      this.setCurrentUser(payload.currentUser);
+	      UserStore.__emitChange();
+	      break;
+	    case UserConstants.USERS_RECEIVED:
+	      var result = resetUsers(payload.users);
+	      UserStore.__emitChange();
+	      break;
+	    case UserConstants.FOLLOW_RECEIVED:
+	      ApiUtil.fetchUsers();
+	      break;
+	  }
+	};
+	
+	module.exports = UserStore;
+
+/***/ },
+/* 234 */
+/***/ function(module, exports) {
+
+	UserConstants = {
+	  CURRENT_USER_RECEIVED: "CURRENT_USER_RECEIVED",
+	  USERS_RECEIVED: "USERS_RECEIVED",
+	  FOLLOW_RECEIVED: "FOLLOW_RECEIVED"
+	};
+	
+	module.exports = UserConstants;
+
+/***/ },
+/* 235 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ApiActions = __webpack_require__(236);
+	
+	var ApiUtil = {
+	  fetchPosts: function () {
+	    $.get('/api/posts', function (posts) {
+	      ApiActions.receiveAll(posts);
+	    });
+	  },
+	  createPost: function (data) {
+	    $.post('api/posts', { post: data }, function (post) {
+	      ApiActions.receiveNewPost(post);
+	    });
+	  },
+	  getCurrentUser: function () {
+	    $.get('/current', function (currentUser) {
+	      ApiActions.recieveCurrentUser(currentUser);
+	    });
+	  },
+	  fetchUsers: function () {
+	    $.get('/api/users', function (users) {
+	      ApiActions.receiveAllUsers(users);
+	    });
+	  },
+	  fetchComments: function () {
+	    $.get('/api/comments', function (comments) {
+	      ApiActions.receiveAllComments(comments);
+	    });
+	  },
+	  createComment: function (data) {
+	    $.post('api/comments', { comment: data }, function (comment) {
+	      ApiActions.receiveNewComment(comment);
+	    });
+	  },
+	  createFollow: function (data) {
+	    $.post('api/follows', { follow: data }, function (follow) {
+	      ApiActions.receiveNewFollow(follow);
+	    });
+	  },
+	  fetchImages: function () {
+	    $.get("/api/images", function (images) {
+	      ApiActions.receiveAllImages(images);
+	    });
+	  },
+	  createImage: function (data) {
+	    $.post('api/images', { image: data }, function (image) {
+	      ApiActions.receiveNewImage(image);
+	    });
+	  }
+	};
+	
+	module.exports = ApiUtil;
+
+/***/ },
+/* 236 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(230);
+	var PostConstants = __webpack_require__(229);
+	var UserConstants = __webpack_require__(234);
+	
+	var ApiActions = {
+	  // receiveAllPosts
+	  receiveAll: function (posts) {
+	    AppDispatcher.dispatch({
+	      actionType: PostConstants.POSTS_RECEIVED,
+	      posts: posts
+	    });
+	  },
+	  recieveCurrentUser: function (currentUser) {
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.CURRENT_USER_RECEIVED,
+	      currentUser: currentUser
+	    });
+	  },
+	  receiveNewPost: function (newPost) {
+	    AppDispatcher.dispatch({
+	      actionType: PostConstants.NEW_POST_RECEIVED,
+	      newPost: newPost
+	    });
+	  },
+	  receiveAllUsers: function (users) {
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.USERS_RECEIVED,
+	      users: users
+	    });
+	  },
+	  receiveAllComments: function (comments) {
+	    AppDispatcher.dispatch({
+	      actionType: CommentConstants.COMMENTS_RECEIVED,
+	      comments: comments
+	    });
+	  },
+	  receiveNewComment: function (newComment) {
+	    AppDispatcher.dispatch({
+	      actionType: CommentConstants.NEW_COMMENT_RECEIVED,
+	      newComment: newComment
+	    });
+	  },
+	  receiveNewFollow: function (newPost) {
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.FOLLOW_RECEIVED
+	    });
+	  },
+	  receiveAllImages: function (images) {
+	    AppDispatcher.dispatch({
+	      actionType: ImageConstants.IMAGES_RECEIVED,
+	      images: images
+	    });
+	  },
+	  receiveNewImage: function (newImage) {
+	    AppDispatcher.dispatch({
+	      actionType: ImageConstants.NEW_IMAGE_RECEIVED,
+	      newImage: newImage
+	    });
+	  }
+	};
+	
+	module.exports = ApiActions;
+
+/***/ },
+/* 237 */
+/***/ function(module, exports, __webpack_require__) {
+
 	// Note: this is the page for posts that appear in the FEED
 	
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
 	
-	var ApiUtil = __webpack_require__(234);
+	var ApiUtil = __webpack_require__(235);
 	var History = __webpack_require__(159).History;
-	var NewComment = __webpack_require__(237);
-	var Comment = __webpack_require__(243);
+	var NewComment = __webpack_require__(238);
+	var Comment = __webpack_require__(239);
 	
 	var Post = React.createClass({
 	  displayName: 'Post',
@@ -31424,127 +31623,15 @@
 	module.exports = Post;
 
 /***/ },
-/* 234 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ApiActions = __webpack_require__(235);
-	
-	var ApiUtil = {
-	  fetchPosts: function () {
-	    $.get('/api/posts', function (posts) {
-	      ApiActions.receiveAll(posts);
-	    });
-	  },
-	  createPost: function (data) {
-	    $.post('api/posts', { post: data }, function (post) {
-	      ApiActions.receiveNewPost(post);
-	    });
-	  },
-	  getCurrentUser: function () {
-	    $.get('/current', function (currentUser) {
-	      ApiActions.recieveCurrentUser(currentUser);
-	    });
-	  },
-	  fetchUsers: function () {
-	    $.get('/api/users', function (users) {
-	      ApiActions.receiveAllUsers(users);
-	    });
-	  },
-	  fetchComments: function () {
-	    $.get('/api/comments', function (comments) {
-	      ApiActions.receiveAllComments(comments);
-	    });
-	  },
-	  createComment: function (data) {
-	    $.post('api/comments', { comment: data }, function (comment) {
-	      ApiActions.receiveNewComment(comment);
-	    });
-	  },
-	  createFollow: function (data) {
-	    $.post('api/follows', { follow: data }, function (follow) {
-	      ApiActions.receiveNewFollow(follow);
-	    });
-	  }
-	};
-	
-	module.exports = ApiUtil;
-
-/***/ },
-/* 235 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var AppDispatcher = __webpack_require__(230);
-	var PostConstants = __webpack_require__(229);
-	var UserConstants = __webpack_require__(236);
-	
-	var ApiActions = {
-	  receiveAll: function (posts) {
-	    AppDispatcher.dispatch({
-	      actionType: PostConstants.POSTS_RECEIVED,
-	      posts: posts
-	    });
-	  },
-	  recieveCurrentUser: function (currentUser) {
-	    AppDispatcher.dispatch({
-	      actionType: UserConstants.CURRENT_USER_RECEIVED,
-	      currentUser: currentUser
-	    });
-	  },
-	  receiveNewPost: function (newPost) {
-	    AppDispatcher.dispatch({
-	      actionType: PostConstants.NEW_POST_RECEIVED,
-	      newPost: newPost
-	    });
-	  },
-	  receiveAllUsers: function (users) {
-	    AppDispatcher.dispatch({
-	      actionType: UserConstants.USERS_RECEIVED,
-	      users: users
-	    });
-	  },
-	  receiveAllComments: function (comments) {
-	    AppDispatcher.dispatch({
-	      actionType: CommentConstants.COMMENTS_RECEIVED,
-	      comments: comments
-	    });
-	  },
-	  receiveNewComment: function (newComment) {
-	    AppDispatcher.dispatch({
-	      actionType: CommentConstants.NEW_COMMENT_RECEIVED,
-	      newComment: newComment
-	    });
-	  },
-	  receiveNewFollow: function (newPost) {
-	    AppDispatcher.dispatch({
-	      actionType: UserConstants.FOLLOW_RECEIVED
-	    });
-	  }
-	};
-	
-	module.exports = ApiActions;
-
-/***/ },
-/* 236 */
-/***/ function(module, exports) {
-
-	UserConstants = {
-	  CURRENT_USER_RECEIVED: "CURRENT_USER_RECEIVED",
-	  USERS_RECEIVED: "USERS_RECEIVED",
-	  FOLLOW_RECEIVED: "FOLLOW_RECEIVED"
-	};
-	
-	module.exports = UserConstants;
-
-/***/ },
-/* 237 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(233);
-	var UserStore = __webpack_require__(238);
+	var Post = __webpack_require__(237);
+	var UserStore = __webpack_require__(233);
 	
-	var ApiUtil = __webpack_require__(234);
+	var ApiUtil = __webpack_require__(235);
 	
 	var NewComment = React.createClass({
 	  displayName: 'NewComment',
@@ -31557,7 +31644,8 @@
 	  },
 	  handleSubmit: function (event) {
 	    event.preventDefault();
-	    var post = { body: event.currentTarget[1].value, post_id: this.props.parentCommentId };
+	
+	    var post = { body: event.currentTarget[0].value, post_id: this.props.parentCommentId };
 	    ApiUtil.createComment(post);
 	  },
 	
@@ -31571,9 +31659,6 @@
 	        React.createElement(
 	          'form',
 	          { onSubmit: this.handleSubmit },
-	          React.createElement('input', { type: 'hidden', name: 'authenticity_token',
-	            value: '<%= form_authenticity_token %>' }),
-	          React.createElement('br', null),
 	          React.createElement(
 	            'label',
 	            { htmlFor: 'comment_body' },
@@ -31594,348 +31679,16 @@
 	module.exports = NewComment;
 
 /***/ },
-/* 238 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(212).Store;
-	var UserConstants = __webpack_require__(236);
-	var AppDispatcher = __webpack_require__(230);
-	var ApiUtil = __webpack_require__(234);
-	
-	var UserStore = new Store(AppDispatcher);
-	
-	var _users = [];
-	
-	var _currentUser = {};
-	
-	var resetUsers = function (users) {
-	
-	  _users = users.slice(0);
-	};
-	
-	UserStore.all = function () {
-	  return _users.slice(0);
-	};
-	
-	UserStore.setCurrentUser = function (currentUser) {
-	  _currentUser = currentUser;
-	};
-	
-	UserStore.getCurrentUser = function () {
-	  return _currentUser;
-	};
-	
-	UserStore.findUser = function (userId) {
-	
-	  var targetUserId = parseInt(userId);
-	  var users = UserStore.all();
-	  var targetUser = { string: "Bad User" };
-	
-	  users.forEach(function (user) {
-	    if (user.id === targetUserId) {
-	      targetUser = user;
-	    }
-	  });
-	  return targetUser;
-	};
-	
-	UserStore.__onDispatch = function (payload) {
-	
-	  switch (payload.actionType) {
-	    case UserConstants.CURRENT_USER_RECEIVED:
-	      this.setCurrentUser(payload.currentUser);
-	      UserStore.__emitChange();
-	      break;
-	    case UserConstants.USERS_RECEIVED:
-	      var result = resetUsers(payload.users);
-	      UserStore.__emitChange();
-	      break;
-	    case UserConstants.FOLLOW_RECEIVED:
-	      ApiUtil.fetchUsers();
-	      break;
-	  }
-	};
-	
-	module.exports = UserStore;
-
-/***/ },
 /* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(233);
+	var Post = __webpack_require__(237);
+	var UserStore = __webpack_require__(233);
+	var CommentStore = __webpack_require__(240);
 	
-	var ApiUtil = __webpack_require__(234);
-	var UserStore = __webpack_require__(238);
-	
-	var History = __webpack_require__(159).History;
-	
-	var NewPost = React.createClass({
-	  displayName: 'NewPost',
-	
-	  mixins: [History],
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	
-	  navigateToFeed: function () {
-	    this.props.history.pushState(null, "/");
-	  },
-	  componentWillMount: function () {
-	    this.setState({ currentUser: UserStore.getCurrentUser() });
-	  },
-	
-	  handleSubmit: function (event) {
-	    event.preventDefault();
-	
-	    var post = { body: event.currentTarget[1].value, target_id: event.currentTarget[2].value };
-	    ApiUtil.createPost(post);
-	  },
-	
-	  render: function () {
-	
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'form',
-	        { onSubmit: this.handleSubmit },
-	        React.createElement('input', { type: 'hidden', name: 'authenticity_token',
-	          value: '<%= form_authenticity_token %>' }),
-	        React.createElement('br', null),
-	        React.createElement(
-	          'label',
-	          { htmlFor: 'post_body' },
-	          'What\'s on your mind?'
-	        ),
-	        React.createElement('br', null),
-	        React.createElement('textarea', {
-	          name: 'post[body]',
-	          id: 'post_body', rows: '4', cols: '50' }),
-	        React.createElement('br', null),
-	        React.createElement('input', { type: 'hidden',
-	          name: 'post[target_id]',
-	          id: 'post_target_id',
-	          value: this.props.targetUserId }),
-	        React.createElement('input', { type: 'submit', value: 'Post' })
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = NewPost;
-
-/***/ },
-/* 240 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(233);
-	
-	var ApiUtil = __webpack_require__(234);
-	var UserProfileUserInfo = __webpack_require__(241);
-	var NewPost = __webpack_require__(239);
-	var UserStore = __webpack_require__(238);
-	var FriendsPane = __webpack_require__(246);
-	var FollowButton = __webpack_require__(247);
-	
-	function _getRelevantPosts(userId) {
-	  return PostStore.getByUserId(userId);
-	}
-	
-	function _getApplicableUser(currentProfileUserId) {
-	  var user = UserStore.findUser(currentProfileUserId);
-	  return user;
-	}
-	
-	var UserProfile = React.createClass({
-	  displayName: 'UserProfile',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  getInitialState: function () {
-	    var user_id = this.props.routeParams.userId;
-	    return {
-	      user_id: user_id,
-	      posts: _getRelevantPosts(user_id),
-	      user: {}
-	    };
-	  },
-	  componentDidMount: function () {
-	    //ApiUtil to fetch users
-	
-	    ApiUtil.fetchPosts();
-	    ApiUtil.fetchUsers();
-	    //Add listener to update state
-	    this.postListener = PostStore.addListener(this._postsChanged);
-	    this.userListener = UserStore.addListener(this._usersChanged);
-	  },
-	  componentWillUnmount: function () {
-	    this.postListener.remove();
-	    this.userListener.remove();
-	  },
-	  //Fixes navigating to new user id
-	  componentWillReceiveProps: function (newProps) {
-	    var userId = this.props.routeParams.userId;
-	    this.setState({ user_id: userId, user: UserStore.findUser(userId) });
-	    ApiUtil.fetchPosts();
-	  },
-	
-	  _postsChanged: function () {
-	    this.setState({ posts: _getRelevantPosts(this.state.user_id) });
-	  },
-	
-	  _usersChanged: function () {
-	    this.setState({ user: _getApplicableUser(this.state.user_id) });
-	  },
-	
-	  render: function () {
-	    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
-	    var Posts = this.state.posts.map(function (post) {
-	      return React.createElement(Post, { key: post.id, post: post });
-	    });
-	
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(UserProfileUserInfo, { userId: this.state.user_id, user: this.state.user })
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(FriendsPane, { user: this.state.user })
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(FollowButton, { user: this.state.user })
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(NewPost, { targetUserId: this.state.user.id })
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        Posts
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = UserProfile;
-
-/***/ },
-/* 241 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(233);
-	var UserStore = __webpack_require__(238);
-	
-	var ApiUtil = __webpack_require__(234);
-	
-	var UserProfileUserInfo = React.createClass({
-	  displayName: 'UserProfileUserInfo',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	
-	  render: function () {
-	    //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'h2',
-	          null,
-	          'User Profile User Info'
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'profile-pic' },
-	          React.createElement('img', { src: 'http://placehold.it/150x150' })
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          this.props.user.real_name
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          this.props.user.age
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          this.props.user.location
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          this.props.user.email
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = UserProfileUserInfo;
-
-/***/ },
-/* 242 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// This page is intended to be the page you go to when you are looking at that exact
-	// single post.  May not make in into final production
-	
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	
-	var ApiUtil = __webpack_require__(234);
-	
-	var PostPage = React.createClass({
-	  displayName: 'PostPage',
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        null,
-	        'This is where the posts will go'
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = PostPage;
-
-/***/ },
-/* 243 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(233);
-	var UserStore = __webpack_require__(238);
-	var CommentStore = __webpack_require__(244);
-	
-	var ApiUtil = __webpack_require__(234);
+	var ApiUtil = __webpack_require__(235);
 	var History = __webpack_require__(159).History;
 	
 	var Comment = React.createClass({
@@ -31996,11 +31749,11 @@
 	module.exports = Comment;
 
 /***/ },
-/* 244 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
-	var CommentConstants = __webpack_require__(245);
+	var CommentConstants = __webpack_require__(241);
 	var AppDispatcher = __webpack_require__(230);
 	
 	var CommentStore = new Store(AppDispatcher);
@@ -32050,7 +31803,7 @@
 	module.exports = CommentStore;
 
 /***/ },
-/* 245 */
+/* 241 */
 /***/ function(module, exports) {
 
 	CommentConstants = {
@@ -32061,15 +31814,263 @@
 	module.exports = CommentConstants;
 
 /***/ },
-/* 246 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(233);
-	var UserStore = __webpack_require__(238);
+	var Post = __webpack_require__(237);
 	
-	var ApiUtil = __webpack_require__(234);
+	var ApiUtil = __webpack_require__(235);
+	var UserStore = __webpack_require__(233);
+	
+	var History = __webpack_require__(159).History;
+	
+	var NewPost = React.createClass({
+	  displayName: 'NewPost',
+	
+	  mixins: [History],
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	
+	  navigateToFeed: function () {
+	    this.props.history.pushState(null, "/");
+	  },
+	  componentWillMount: function () {
+	    this.setState({ currentUser: UserStore.getCurrentUser() });
+	  },
+	
+	  handleSubmit: function (event) {
+	    event.preventDefault();
+	
+	    var post = { body: event.currentTarget[1].value, target_id: this.props.targetUserId };
+	    ApiUtil.createPost(post);
+	  },
+	
+	  render: function () {
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'form',
+	        { onSubmit: this.handleSubmit },
+	        React.createElement(
+	          'label',
+	          { htmlFor: 'post_body' },
+	          'What\'s on your mind?'
+	        ),
+	        React.createElement('br', null),
+	        React.createElement('textarea', {
+	          name: 'post[body]',
+	          id: 'post_body', rows: '4', cols: '50' }),
+	        React.createElement('br', null),
+	        React.createElement('input', { type: 'submit', value: 'Post' })
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = NewPost;
+
+/***/ },
+/* 243 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(237);
+	
+	var ApiUtil = __webpack_require__(235);
+	var UserProfileUserInfo = __webpack_require__(244);
+	var NewPost = __webpack_require__(242);
+	var UserStore = __webpack_require__(233);
+	var FriendsPane = __webpack_require__(245);
+	var FollowButton = __webpack_require__(246);
+	var Images = __webpack_require__(251);
+	
+	function _getRelevantPosts(userId) {
+	  return PostStore.getByUserId(userId);
+	}
+	
+	function _getApplicableUser(currentProfileUserId) {
+	  var user = UserStore.findUser(currentProfileUserId);
+	  return user;
+	}
+	
+	var UserProfile = React.createClass({
+	  displayName: 'UserProfile',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  getInitialState: function () {
+	    var user_id = this.props.routeParams.userId;
+	    return {
+	      user_id: user_id,
+	      posts: _getRelevantPosts(user_id),
+	      user: {}
+	    };
+	  },
+	  componentDidMount: function () {
+	    //ApiUtil to fetch users
+	
+	    ApiUtil.fetchPosts();
+	    ApiUtil.fetchUsers();
+	    ApiUtil.fetchImages();
+	    //Add listener to update state
+	    this.postListener = PostStore.addListener(this._postsChanged);
+	    this.userListener = UserStore.addListener(this._usersChanged);
+	  },
+	  componentWillUnmount: function () {
+	    this.postListener.remove();
+	    this.userListener.remove();
+	  },
+	  //Fixes navigating to new user id
+	  componentWillReceiveProps: function (newProps) {
+	    var userId = this.props.routeParams.userId;
+	    this.setState({ user_id: userId, user: UserStore.findUser(userId) });
+	    ApiUtil.fetchPosts();
+	  },
+	
+	  _postsChanged: function () {
+	    this.setState({ posts: _getRelevantPosts(this.state.user_id) });
+	  },
+	
+	  _usersChanged: function () {
+	    this.setState({ user: _getApplicableUser(this.state.user_id) });
+	  },
+	  _renderPicturePage: function () {
+	    return React.createElement(ImagesBody, { user: this.state.user.id });
+	  },
+	  _renderPostsPage: function () {
+	    var Posts = this.state.posts.map(function (post) {
+	      return React.createElement(Post, { key: post.id, post: post });
+	    });
+	
+	    return Posts;
+	  },
+	
+	  render: function () {
+	    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
+	
+	    var Posts = this.state.posts.map(function (post) {
+	      return React.createElement(Post, { key: post.id, post: post });
+	    });
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(UserProfileUserInfo, { userId: this.state.user_id, user: this.state.user })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(FriendsPane, { user: this.state.user })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(FollowButton, { user: this.state.user })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(Images, { user: this.state.user.id })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(NewPost, { targetUserId: this.state.user.id })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        Posts
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = UserProfile;
+
+/***/ },
+/* 244 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(237);
+	var UserStore = __webpack_require__(233);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var UserProfileUserInfo = React.createClass({
+	  displayName: 'UserProfileUserInfo',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	
+	  render: function () {
+	    //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'h2',
+	          null,
+	          'User Profile User Info'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'profile-pic' },
+	          React.createElement('img', { src: 'http://placehold.it/150x150' })
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.user.real_name
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.user.age
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.user.location
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.user.email
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = UserProfileUserInfo;
+
+/***/ },
+/* 245 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(237);
+	var UserStore = __webpack_require__(233);
+	
+	var ApiUtil = __webpack_require__(235);
 	
 	var FriendsPane = React.createClass({
 	  displayName: 'FriendsPane',
@@ -32113,15 +32114,15 @@
 	module.exports = FriendsPane;
 
 /***/ },
-/* 247 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(233);
-	var UserStore = __webpack_require__(238);
+	var Post = __webpack_require__(237);
+	var UserStore = __webpack_require__(233);
 	
-	var ApiUtil = __webpack_require__(234);
+	var ApiUtil = __webpack_require__(235);
 	
 	var FollowButton = React.createClass({
 	  displayName: 'FollowButton',
@@ -32139,31 +32140,285 @@
 	  handleSubmit: function (event) {
 	    event.preventDefault();
 	
-	    var follow = { followed_user_id: event.currentTarget[1].value };
+	    var follow = { followed_user_id: this.state.user.id };
 	    ApiUtil.createFollow(follow);
 	  },
 	
-	  render: function () {
+	  unfollowButton: function () {},
 	
+	  followButton: function () {},
+	
+	  render: function () {
 	    return React.createElement(
 	      'div',
-	      { className: 'follow-button' },
+	      null,
 	      React.createElement(
-	        'form',
-	        { onSubmit: this.handleSubmit },
-	        React.createElement('input', { type: 'hidden', name: 'authenticity_token',
-	          value: '<%= form_authenticity_token %>' }),
-	        React.createElement('input', { type: 'hidden',
-	          name: 'follow[followed_user_id]',
-	          id: 'post_followed_user_id',
-	          value: this.state.user.id }),
-	        React.createElement('input', { type: 'submit', value: 'Follow' })
+	        'button',
+	        { onClick: this.handleSubmit },
+	        'Follow'
 	      )
 	    );
 	  }
 	});
 	
 	module.exports = FollowButton;
+
+/***/ },
+/* 247 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// This page is intended to be the page you go to when you are looking at that exact
+	// single post.  May not make in into final production
+	
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var PostPage = React.createClass({
+	  displayName: 'PostPage',
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        'This is where the posts will go'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = PostPage;
+
+/***/ },
+/* 248 */,
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var ApiUtil = __webpack_require__(235);
+	
+	var UploadButton = React.createClass({
+	  displayName: "UploadButton",
+	
+	  upload: function (e) {
+	    e.preventDefault();
+	    cloudinary.openUploadWidget(CLOUDINARY_OPTIONS, (function (error, results) {
+	      if (!error) {
+	        ApiUtil.createImage(results[0]);
+	      }
+	    }).bind(this));
+	  },
+	  render: function () {
+	    return React.createElement(
+	      "div",
+	      { className: "upload-form" },
+	      React.createElement(
+	        "button",
+	        { onClick: this.upload },
+	        "Upload new image!"
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = UploadButton;
+	
+	// the postImage function will no longet exist.  Needs to be a store action I believe
+
+/***/ },
+/* 250 */,
+/* 251 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Really the Image Pane, includes the individual images and Upload Button
+	
+	var React = __webpack_require__(1),
+	    ReactDOM = __webpack_require__(158),
+	    UploadButton = __webpack_require__(249),
+	    ImageModal = __webpack_require__(254),
+	    UserStore = __webpack_require__(233),
+	    ImageStore = __webpack_require__(252),
+	    ApiUtil = __webpack_require__(235);
+	
+	var Images = React.createClass({
+	  displayName: 'Images',
+	
+	  getInitialState: function () {
+	    ApiUtil.fetchImages();
+	    return { images: [], user: null };
+	  },
+	
+	  componentWillReceiveProps: function (newProps) {
+	    ApiUtil.fetchImages();
+	    this.setState({ user: newProps.user });
+	    this.setState({ images: ImageStore.getByUserId(newProps.user) });
+	  },
+	  // componentWillUnmount: function(){
+	  //   this.setState({user: null});
+	  // },
+	  buildUrl: function (image_path) {
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + image_path;
+	    return url;
+	  },
+	  render: function () {
+	    var that = this;
+	    if (this.state.images) {
+	      var images = this.state.images.map(function (image) {
+	        return React.createElement(
+	          'div',
+	          { key: image.id },
+	          React.createElement('img', { src: that.buildUrl(image.image_path) })
+	        );
+	      });
+	    } else {
+	      var images = React.createElement(
+	        'div',
+	        null,
+	        ' no images'
+	      );
+	    }
+	    return React.createElement(
+	      'div',
+	      { className: 'profile-images-pane' },
+	      images,
+	      React.createElement(UploadButton, null)
+	    );
+	  }
+	});
+	
+	module.exports = Images;
+
+/***/ },
+/* 252 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var ImageConstants = __webpack_require__(253);
+	var AppDispatcher = __webpack_require__(230);
+	var UserStore = __webpack_require__(233);
+	
+	var ImageStore = new Store(AppDispatcher);
+	
+	var _images = [];
+	
+	var resetImages = function (images) {
+	  _images = images.slice(0);
+	};
+	
+	var addNewImage = function (newImage) {
+	  _images.unshift(newImage);
+	};
+	
+	ImageStore.all = function () {
+	  return _images.slice(0);
+	};
+	
+	// for use on profile page, will return images the user imageed
+	// or images imageed to their wall
+	ImageStore.getByUserId = function (userIdString) {
+	
+	  var userId = parseInt(userIdString);
+	  var images = ImageStore.all();
+	  var relevantImages = [];
+	
+	  images.forEach(function (image) {
+	
+	    if (image.owner_id === userId) {
+	      relevantImages.push(image);
+	    }
+	  });
+	
+	  return relevantImages;
+	};
+	
+	// Could be useful for putting images in the feed, not sure yet
+	// ImageStore.getUsersFollowedImages = function(userIdString){
+	//   var userId = parseInt(userIdString);
+	//   var user = UserStore.findUser(userId);
+	//   var images = ImageStore.all();
+	//
+	//   if(images === [] || user.string === "Bad User"){
+	//     return null;
+	//   }
+	//   var relevantImages = [];
+	//   var relevantUsers = [];
+	//
+	// // now we get an array of good user ids
+	//     user.usersFollowing.forEach(function(user){
+	//       relevantUsers.push(user.id);
+	//     });
+	//
+	// // now we reference the images against the
+	//   images.forEach(function(image){
+	//     if (relevantUsers.indexOf(image.author_id) !== -1){
+	//       relevantImages.push(image);
+	//     }
+	//   });
+	//   return relevantImages;
+	// },
+	
+	ImageStore.__onDispatch = function (payload) {
+	
+	  switch (payload.actionType) {
+	    case ImageConstants.IMAGES_RECEIVED:
+	      var result = resetImages(payload.images);
+	      ImageStore.__emitChange();
+	      break;
+	    case ImageConstants.NEW_IMAGE_RECEIVED:
+	      var result = addNewImage(payload.newImage);
+	      ImageStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = ImageStore;
+
+/***/ },
+/* 253 */
+/***/ function(module, exports) {
+
+	ImageConstants = {
+	  IMAGES_RECEIVED: "IMAGES_RECEIVED",
+	  NEW_IMAGE_RECEIVED: "NEW_IMAGE_RECEIVED"
+	};
+	module.exports = ImageConstants;
+
+/***/ },
+/* 254 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(237);
+	var UserStore = __webpack_require__(233);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var ImagePane = React.createClass({
+	  displayName: 'ImagePane',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  render: function () {
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h2',
+	        null,
+	        'Images'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = ImagePane;
 
 /***/ }
 /******/ ]);

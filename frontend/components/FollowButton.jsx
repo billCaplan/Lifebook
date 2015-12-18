@@ -19,23 +19,22 @@ var FollowButton = React.createClass({
   handleSubmit: function(event){
     event.preventDefault();
 
-    var follow = {followed_user_id: event.currentTarget[1].value};
+    var follow = {followed_user_id: this.state.user.id};
     ApiUtil.createFollow(follow);
   },
 
-  render: function(){
+  unfollowButton: function(){
 
-    return(
-      <div className="follow-button">
-        <form onSubmit={this.handleSubmit}>
-          <input type="hidden" name="authenticity_token"
-                 value="<%= form_authenticity_token %>"></input>
-         <input type="hidden"
-                name="follow[followed_user_id]"
-                id="post_followed_user_id"
-                value={this.state.user.id} />
-              <input type="submit" value="Follow"/>
-        </form>
+  },
+
+  followButton: function(){
+
+  },
+
+  render: function(){
+    return (
+      <div>
+        <button onClick={this.handleSubmit}>Follow</button>
       </div>
     );
   }

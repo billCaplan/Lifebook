@@ -41,8 +41,6 @@ PostStore.getUsersFollowedPosts = function(userIdString){
   var userId = parseInt(userIdString);
   var user = UserStore.findUser(userId);
   var posts = PostStore.all();
-  console.log(user);
-  console.log(posts);
 
   if(posts === [] || user.string === "Bad User"){
     return null;
