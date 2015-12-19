@@ -1,19 +1,34 @@
 var React = require('react');
 var UserStore = require('../stores/user.js');
+var History = require('react-router').History;
+var classNames = require('classnames');
 
 var SearchBar = React.createClass({
+  mixins: [History],
   getInitialState: function () {
     this.userListener = UserStore.addListener(this._usersChanged);
     return { inputVal: "",
-             users: UserStore.all()
+             users: UserStore.all(),
+             listVisible: false
            };
   },
   _usersChanged: function () {
     this.setState({users: UserStore.all()});
   },
+  handleSubjectClick: function(destinationId){
+    debugger
+    this.setState({listVisible: false});
+    this.history.pushState(null, "user/" + this.props.post.subject.id);
+  },
 
   handleInput: function (event) {
     this.setState({ inputVal: event.currentTarget.value });
+    if(event.currentTarget.value.length !== 0){
+     this.setState({listVisible: true});
+   } else {
+     this.setState({listVisible: false});
+   }
+
   },
 
   matches: function () {
@@ -23,10 +38,11 @@ var SearchBar = React.createClass({
     }
 
     this.state.users.forEach(function (user) {
+
       var name = user.real_name;
       var sub = name.slice(0, this.state.inputVal.length);
       if(sub.toLowerCase() === this.state.inputVal.toLowerCase()){
-        matches.push(name);
+        matches.push(user);
       }
     }.bind(this));
 
@@ -36,25 +52,39 @@ var SearchBar = React.createClass({
     return matches;
   },
 
-  selectName: function (event) {
+  selectName: function (result) {
     var name = event.currentTarget.innerText;
-    this.setState({ inputVal: name });
+    this.setState({listVisible: false, inputVal: ""});
+    this.history.pushState(null, "user/" + result.id);
+
   },
   _setContent: function(results){
   return  <div>
       <input onChange={this.handleInput} value={this.state.inputVal} />
-      <ul className="search-list">
+      <ul className={this.listClass()}>
         {
           results.map(function (result, i) {
-            return <li key={i} onClick={this.selectName}>{result.real_name}</li>
+            return <li key={i} onClick={this.selectName.bind(null, result)}>
+                    {result.real_name}
+                   </li>;
           }.bind(this))
         }
       </ul>
     </div>;
   },
+  componentWillUnmount: function(){
+    this.userListener.remove();
+  },
+  listClass: function(){
+    var listClass = classNames({
+      'search-list': true,
+      'search-list-hidden': this.state.listVisible === false,
+      'search-list-visible': this.state.listVisible
+    });
+    return listClass;
+  },
 
   render: function () {
-    debugger
     var results = this.matches();
 
     if (this.state.users && results){

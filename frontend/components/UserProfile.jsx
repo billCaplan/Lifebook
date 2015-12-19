@@ -94,24 +94,26 @@ var UserProfile = React.createClass({
     }
 
     return(
-      <div>
-        <div>
-          <UserProfileUserInfo userId={this.state.user_id}  user={this.state.user} />
+      <div className="user-profile">
+        <div className="user-profile-info">
+          <div>
+            <UserProfileUserInfo userId={this.state.user_id}  user={this.state.user} />
+          </div>
+          <div>
+            <FriendsPane user={this.state.user}/>
+          </div>
+          <div>
+            <FollowButton user={this.state.user} />
+          </div>
+          <div>
+            <Images user={this.state.user.id}/>
+            <button onClick={this._setPicturePage}>View All Picture</button>
+          </div>
         </div>
-        <div>
-          <FriendsPane user={this.state.user}/>
-        </div>
-        <div>
-          <FollowButton user={this.state.user} />
-        </div>
-        <div>
-          <Images user={this.state.user.id}/>
-          <button onClick={this._setPicturePage}>View All Picture</button>
-        </div>
-        <div>
+        <div className="user-profile-new-post">
           <NewPost targetUserId={this.state.user.id}/>
         </div>
-        <div>
+        <div className="user-profile-content">
           {content}
         </div>
       </div>

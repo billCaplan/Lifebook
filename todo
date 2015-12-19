@@ -9,6 +9,8 @@ NOTES:
 
 Still need:
 
+  Fix Sign Out Button
+
   WORK ON FOLLOW BUTTON
     need to have an if conditional for follow / unfollow button
     and alter the feed to have only those

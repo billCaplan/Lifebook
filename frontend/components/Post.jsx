@@ -20,7 +20,7 @@ var Post = React.createClass({
     this.history.pushState(null, "user/" + this.props.post.subject.id);
   },
   handlePostClick: function (post) {
-    this.props.history.pushState(null, "posts/" + this.props.post.id);
+    this.history.pushState(null, "posts/" + this.props.post.id);
   },
   render: function(){
 
@@ -28,7 +28,7 @@ var Post = React.createClass({
     var authorName = this.props.post.author.real_name;
     var nameLine = {};
     if (subjectName === authorName){
-      nameLine = <p onClick={this.handleAuthorClick}>{authorName}</p>;
+      nameLine = <div className="post-user-name" onClick={this.handleAuthorClick}>{authorName}</div>;
     } else {
       nameLine = <p>
                     <span onClick={this.handleAuthorClick}>{authorName}</span>
@@ -37,7 +37,7 @@ var Post = React.createClass({
                 </p>;
     }
     return(
-      <div className="feed-post">
+      <div className="whole-post">
         <div className="feed-post-body">
          {nameLine}
          <p>{this.props.post.body}</p>
@@ -48,6 +48,7 @@ var Post = React.createClass({
       <div className="feed-post-new-comment">
           <NewComment parentCommentId={this.props.post.id}/>
       </div>
+      <div className="post-seperator-black"></div>
       </div>
     );
   }

@@ -55,13 +55,13 @@
 	
 	var Feed = __webpack_require__(210);
 	var UserProfile = __webpack_require__(243);
-	var PostPage = __webpack_require__(247);
+	var PostPage = __webpack_require__(253);
 	var ApiUtil = __webpack_require__(235);
 	var UserStore = __webpack_require__(233);
 	var NewPost = __webpack_require__(242);
 	var NewComment = __webpack_require__(238);
 	var Comment = __webpack_require__(239);
-	var HeaderBar = __webpack_require__(255);
+	var HeaderBar = __webpack_require__(254);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -24527,16 +24527,16 @@
 	
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'feed' },
 	      React.createElement(
 	        'div',
-	        null,
+	        { className: 'feed-new-post' },
 	        React.createElement(NewPost, null)
 	      ),
 	      React.createElement('br', null),
 	      React.createElement(
 	        'ul',
-	        null,
+	        { className: 'feed-post' },
 	        posts
 	      )
 	    );
@@ -31552,7 +31552,7 @@
 	    this.history.pushState(null, "user/" + this.props.post.subject.id);
 	  },
 	  handlePostClick: function (post) {
-	    this.props.history.pushState(null, "posts/" + this.props.post.id);
+	    this.history.pushState(null, "posts/" + this.props.post.id);
 	  },
 	  render: function () {
 	
@@ -31561,8 +31561,8 @@
 	    var nameLine = {};
 	    if (subjectName === authorName) {
 	      nameLine = React.createElement(
-	        'p',
-	        { onClick: this.handleAuthorClick },
+	        'div',
+	        { className: 'post-user-name', onClick: this.handleAuthorClick },
 	        authorName
 	      );
 	    } else {
@@ -31584,7 +31584,7 @@
 	    }
 	    return React.createElement(
 	      'div',
-	      { className: 'feed-post' },
+	      { className: 'whole-post' },
 	      React.createElement(
 	        'div',
 	        { className: 'feed-post-body' },
@@ -31604,7 +31604,8 @@
 	        'div',
 	        { className: 'feed-post-new-comment' },
 	        React.createElement(NewComment, { parentCommentId: this.props.post.id })
-	      )
+	      ),
+	      React.createElement('div', { className: 'post-seperator-black' })
 	    );
 	  }
 	});
@@ -31842,7 +31843,7 @@
 	
 	    return React.createElement(
 	      'div',
-	      { className: 'feed-new-post' },
+	      null,
 	      React.createElement(
 	        'form',
 	        { onSubmit: this.handleSubmit },
@@ -31878,8 +31879,8 @@
 	var UserStore = __webpack_require__(233);
 	var FriendsPane = __webpack_require__(245);
 	var FollowButton = __webpack_require__(246);
-	var Images = __webpack_require__(251);
-	var ImagesBody = __webpack_require__(256);
+	var Images = __webpack_require__(247);
+	var ImagesBody = __webpack_require__(252);
 	
 	function _getRelevantPosts(userId) {
 	  return PostStore.getByUserId(userId);
@@ -31970,40 +31971,44 @@
 	
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'user-profile' },
 	      React.createElement(
 	        'div',
-	        null,
-	        React.createElement(UserProfileUserInfo, { userId: this.state.user_id, user: this.state.user })
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(FriendsPane, { user: this.state.user })
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(FollowButton, { user: this.state.user })
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(Images, { user: this.state.user.id }),
+	        { className: 'user-profile-info' },
 	        React.createElement(
-	          'button',
-	          { onClick: this._setPicturePage },
-	          'View All Picture'
+	          'div',
+	          null,
+	          React.createElement(UserProfileUserInfo, { userId: this.state.user_id, user: this.state.user })
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          React.createElement(FriendsPane, { user: this.state.user })
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          React.createElement(FollowButton, { user: this.state.user })
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          React.createElement(Images, { user: this.state.user.id }),
+	          React.createElement(
+	            'button',
+	            { onClick: this._setPicturePage },
+	            'View All Picture'
+	          )
 	        )
 	      ),
 	      React.createElement(
 	        'div',
-	        null,
+	        { className: 'user-profile-new-post' },
 	        React.createElement(NewPost, { targetUserId: this.state.user.id })
 	      ),
 	      React.createElement(
 	        'div',
-	        null,
+	        { className: 'user-profile-content' },
 	        content
 	      )
 	    );
@@ -32048,38 +32053,34 @@
 	      'div',
 	      null,
 	      React.createElement(
+	        'h2',
+	        null,
+	        'User Profile User Info'
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'profile-pic' },
+	        React.createElement('img', { src: this._getProfilePic() })
+	      ),
+	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement(
-	          'h2',
-	          null,
-	          'User Profile User Info'
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'profile-pic' },
-	          React.createElement('img', { src: this._getProfilePic() })
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          this.props.user.real_name
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          this.props.user.age
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          this.props.user.location
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          this.props.user.email
-	        )
+	        this.props.user.real_name
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.props.user.age
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.props.user.location
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.props.user.email
 	      )
 	    );
 	  }
@@ -32193,81 +32194,14 @@
 /* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// This page is intended to be the page you go to when you are looking at that exact
-	// single post.  May not make in into final production
-	
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var PostPage = React.createClass({
-	  displayName: 'PostPage',
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        null,
-	        'This is where the posts will go'
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = PostPage;
-
-/***/ },
-/* 248 */,
-/* 249 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var ApiUtil = __webpack_require__(235);
-	
-	var UploadButton = React.createClass({
-	  displayName: "UploadButton",
-	
-	  upload: function (e) {
-	    e.preventDefault();
-	    cloudinary.openUploadWidget(CLOUDINARY_OPTIONS, (function (error, results) {
-	      if (!error) {
-	        ApiUtil.createImage(results[0]);
-	      }
-	    }).bind(this));
-	  },
-	  render: function () {
-	    return React.createElement(
-	      "div",
-	      { className: "upload-form" },
-	      React.createElement(
-	        "button",
-	        { onClick: this.upload },
-	        "Upload new image!"
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = UploadButton;
-	
-	// the postImage function will no longet exist.  Needs to be a store action I believe
-
-/***/ },
-/* 250 */,
-/* 251 */
-/***/ function(module, exports, __webpack_require__) {
-
 	// Really the Image Pane, includes the individual images and Upload Button
 	
 	var React = __webpack_require__(1),
 	    ReactDOM = __webpack_require__(158),
-	    UploadButton = __webpack_require__(249),
-	    ImageModal = __webpack_require__(254),
+	    UploadButton = __webpack_require__(248),
+	    ImageModal = __webpack_require__(249),
 	    UserStore = __webpack_require__(233),
-	    ImageStore = __webpack_require__(252),
+	    ImageStore = __webpack_require__(250),
 	    ApiUtil = __webpack_require__(235);
 	
 	var Images = React.createClass({
@@ -32323,11 +32257,79 @@
 	module.exports = Images;
 
 /***/ },
-/* 252 */
+/* 248 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var ApiUtil = __webpack_require__(235);
+	
+	var UploadButton = React.createClass({
+	  displayName: "UploadButton",
+	
+	  upload: function (e) {
+	    e.preventDefault();
+	    cloudinary.openUploadWidget(CLOUDINARY_OPTIONS, (function (error, results) {
+	      if (!error) {
+	        ApiUtil.createImage(results[0]);
+	      }
+	    }).bind(this));
+	  },
+	  render: function () {
+	    return React.createElement(
+	      "div",
+	      { className: "upload-form" },
+	      React.createElement(
+	        "button",
+	        { onClick: this.upload },
+	        "Upload new image!"
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = UploadButton;
+	
+	// the postImage function will no longet exist.  Needs to be a store action I believe
+
+/***/ },
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(237);
+	var UserStore = __webpack_require__(233);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var ImagePane = React.createClass({
+	  displayName: 'ImagePane',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  render: function () {
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h2',
+	        null,
+	        'Images'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = ImagePane;
+
+/***/ },
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
-	var ImageConstants = __webpack_require__(253);
+	var ImageConstants = __webpack_require__(251);
 	var AppDispatcher = __webpack_require__(230);
 	var UserStore = __webpack_require__(233);
 	
@@ -32408,7 +32410,7 @@
 	module.exports = ImageStore;
 
 /***/ },
-/* 253 */
+/* 251 */
 /***/ function(module, exports) {
 
 	ImageConstants = {
@@ -32418,6 +32420,100 @@
 	module.exports = ImageConstants;
 
 /***/ },
+/* 252 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Really the Image Pane, includes the individual images and Upload Button
+	
+	var React = __webpack_require__(1),
+	    ReactDOM = __webpack_require__(158),
+	    UploadButton = __webpack_require__(248),
+	    ImageModal = __webpack_require__(249),
+	    UserStore = __webpack_require__(233),
+	    ImageStore = __webpack_require__(250),
+	    ApiUtil = __webpack_require__(235);
+	
+	var ImagesBody = React.createClass({
+	  displayName: 'ImagesBody',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  getInitialState: function () {
+	    ApiUtil.fetchImages();
+	    return { images: ImageStore.getByUserId(this.props.user), user: this.props.user };
+	  },
+	
+	  componentWillReceiveProps: function (newProps) {
+	    ApiUtil.fetchImages();
+	    this.setState({ user: newProps.user });
+	    this.setState({ images: ImageStore.getByUserId(newProps.user) });
+	  },
+	  // componentWillUnmount: function(){
+	  //   this.setState({user: null});
+	  // },
+	  buildUrl: function (image_path) {
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_200,w_200/v1450463928/" + image_path;
+	    return url;
+	  },
+	  render: function () {
+	    var that = this;
+	    if (this.state.images) {
+	      var images = this.state.images.map(function (image) {
+	        return React.createElement(
+	          'div',
+	          { key: image.id },
+	          React.createElement('img', { src: that.buildUrl(image.image_path) })
+	        );
+	      });
+	    } else {
+	      var images = React.createElement(
+	        'div',
+	        null,
+	        ' no images'
+	      );
+	    }
+	    return React.createElement(
+	      'div',
+	      { className: 'profile-images-body' },
+	      images
+	    );
+	  }
+	});
+	
+	module.exports = ImagesBody;
+
+/***/ },
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// This page is intended to be the page you go to when you are looking at that exact
+	// single post.  May not make in into final production
+	
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var PostPage = React.createClass({
+	  displayName: 'PostPage',
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        'This is where the posts will go'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = PostPage;
+
+/***/ },
 /* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -32425,41 +32521,9 @@
 	var PostStore = __webpack_require__(211);
 	var Post = __webpack_require__(237);
 	var UserStore = __webpack_require__(233);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var ImagePane = React.createClass({
-	  displayName: 'ImagePane',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  render: function () {
-	
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'h2',
-	        null,
-	        'Images'
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = ImagePane;
-
-/***/ },
-/* 255 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
-	var UserStore = __webpack_require__(233);
-	var SearchBar = __webpack_require__(257);
+	var SearchBar = __webpack_require__(255);
 	var History = __webpack_require__(159).History;
+	var SignoutButton = __webpack_require__(257);
 	
 	var ApiUtil = __webpack_require__(235);
 	
@@ -32534,93 +32598,41 @@
 	module.exports = HeaderBar;
 
 /***/ },
-/* 256 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Really the Image Pane, includes the individual images and Upload Button
-	
-	var React = __webpack_require__(1),
-	    ReactDOM = __webpack_require__(158),
-	    UploadButton = __webpack_require__(249),
-	    ImageModal = __webpack_require__(254),
-	    UserStore = __webpack_require__(233),
-	    ImageStore = __webpack_require__(252),
-	    ApiUtil = __webpack_require__(235);
-	
-	var ImagesBody = React.createClass({
-	  displayName: 'ImagesBody',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  getInitialState: function () {
-	    ApiUtil.fetchImages();
-	    return { images: ImageStore.getByUserId(this.props.user), user: this.props.user };
-	  },
-	
-	  componentWillReceiveProps: function (newProps) {
-	    ApiUtil.fetchImages();
-	    debugger;
-	    this.setState({ user: newProps.user });
-	    this.setState({ images: ImageStore.getByUserId(newProps.user) });
-	  },
-	  // componentWillUnmount: function(){
-	  //   this.setState({user: null});
-	  // },
-	  buildUrl: function (image_path) {
-	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_200,w_200/v1450463928/" + image_path;
-	    return url;
-	  },
-	  render: function () {
-	    var that = this;
-	    if (this.state.images) {
-	      var images = this.state.images.map(function (image) {
-	        return React.createElement(
-	          'div',
-	          { key: image.id },
-	          React.createElement('img', { src: that.buildUrl(image.image_path) })
-	        );
-	      });
-	    } else {
-	      var images = React.createElement(
-	        'div',
-	        null,
-	        ' no images'
-	      );
-	    }
-	    debugger;
-	    return React.createElement(
-	      'div',
-	      { className: 'profile-images-body' },
-	      images
-	    );
-	  }
-	});
-	
-	module.exports = ImagesBody;
-
-/***/ },
-/* 257 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var UserStore = __webpack_require__(233);
+	var History = __webpack_require__(159).History;
+	var classNames = __webpack_require__(256);
 	
 	var SearchBar = React.createClass({
 	  displayName: 'SearchBar',
 	
+	  mixins: [History],
 	  getInitialState: function () {
 	    this.userListener = UserStore.addListener(this._usersChanged);
 	    return { inputVal: "",
-	      users: UserStore.all()
+	      users: UserStore.all(),
+	      listVisible: false
 	    };
 	  },
 	  _usersChanged: function () {
 	    this.setState({ users: UserStore.all() });
 	  },
+	  handleSubjectClick: function (destinationId) {
+	    debugger;
+	    this.setState({ listVisible: false });
+	    this.history.pushState(null, "user/" + this.props.post.subject.id);
+	  },
 	
 	  handleInput: function (event) {
 	    this.setState({ inputVal: event.currentTarget.value });
+	    if (event.currentTarget.value.length !== 0) {
+	      this.setState({ listVisible: true });
+	    } else {
+	      this.setState({ listVisible: false });
+	    }
 	  },
 	
 	  matches: function () {
@@ -32630,10 +32642,11 @@
 	    }
 	
 	    this.state.users.forEach((function (user) {
+	
 	      var name = user.real_name;
 	      var sub = name.slice(0, this.state.inputVal.length);
 	      if (sub.toLowerCase() === this.state.inputVal.toLowerCase()) {
-	        matches.push(name);
+	        matches.push(user);
 	      }
 	    }).bind(this));
 	
@@ -32643,9 +32656,10 @@
 	    return matches;
 	  },
 	
-	  selectName: function (event) {
+	  selectName: function (result) {
 	    var name = event.currentTarget.innerText;
-	    this.setState({ inputVal: name });
+	    this.setState({ listVisible: false, inputVal: "" });
+	    this.history.pushState(null, "user/" + result.id);
 	  },
 	  _setContent: function (results) {
 	    return React.createElement(
@@ -32654,20 +32668,30 @@
 	      React.createElement('input', { onChange: this.handleInput, value: this.state.inputVal }),
 	      React.createElement(
 	        'ul',
-	        { className: 'search-list' },
+	        { className: this.listClass() },
 	        results.map((function (result, i) {
 	          return React.createElement(
 	            'li',
-	            { key: i, onClick: this.selectName },
+	            { key: i, onClick: this.selectName.bind(null, result) },
 	            result.real_name
 	          );
 	        }).bind(this))
 	      )
 	    );
 	  },
+	  componentWillUnmount: function () {
+	    this.userListener.remove();
+	  },
+	  listClass: function () {
+	    var listClass = classNames({
+	      'search-list': true,
+	      'search-list-hidden': this.state.listVisible === false,
+	      'search-list-visible': this.state.listVisible
+	    });
+	    return listClass;
+	  },
 	
 	  render: function () {
-	    debugger;
 	    var results = this.matches();
 	
 	    if (this.state.users && results) {
@@ -32688,6 +32712,109 @@
 	});
 	
 	module.exports = SearchBar;
+
+/***/ },
+/* 256 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2015 Jed Watson.
+	  Licensed under the MIT License (MIT), see
+	  http://jedwatson.github.io/classnames
+	*/
+	/* global define */
+	
+	(function () {
+		'use strict';
+	
+		var hasOwn = {}.hasOwnProperty;
+	
+		function classNames () {
+			var classes = '';
+	
+			for (var i = 0; i < arguments.length; i++) {
+				var arg = arguments[i];
+				if (!arg) continue;
+	
+				var argType = typeof arg;
+	
+				if (argType === 'string' || argType === 'number') {
+					classes += ' ' + arg;
+				} else if (Array.isArray(arg)) {
+					classes += ' ' + classNames.apply(null, arg);
+				} else if (argType === 'object') {
+					for (var key in arg) {
+						if (hasOwn.call(arg, key) && arg[key]) {
+							classes += ' ' + key;
+						}
+					}
+				}
+			}
+	
+			return classes.substr(1);
+		}
+	
+		if (typeof module !== 'undefined' && module.exports) {
+			module.exports = classNames;
+		} else if (true) {
+			// register as 'classnames', consistent with npm package name
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+				return classNames;
+			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		} else {
+			window.classNames = classNames;
+		}
+	}());
+
+
+/***/ },
+/* 257 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(237);
+	var UserStore = __webpack_require__(233);
+	var History = __webpack_require__(159).History;
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var SignoutButton = React.createClass({
+	  displayName: 'SignoutButton',
+	
+	  mixins: [History],
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  logout: function () {},
+	  handleSignout: function () {
+	    var that = this;
+	    $.ajax({
+	      method: 'DELETE',
+	      url: 'session/',
+	      success: function (resp) {
+	        $("content").hide().show(0);
+	      },
+	      error: function (xhr, ajaxOptions, thrownError) {
+	        that.history.pushState(null, "/");
+	      }
+	    });
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'header-bar-signout-button' },
+	      React.createElement(
+	        'button',
+	        { onClick: this.handleSignout },
+	        'Sign Out'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = SignoutButton;
 
 /***/ }
 /******/ ]);

@@ -53,12 +53,12 @@ var Feed = React.createClass({
 
 
     return(
-      <div>
-        <div>
+      <div className="feed">
+        <div className="feed-new-post">
           <NewPost/>
         </div>
         <br></br>
-          <ul>
+          <ul className="feed-post">
             {posts}
           </ul>
       </div>

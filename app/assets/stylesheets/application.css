@@ -14,14 +14,51 @@
  *= require_self
  */
 
+ html {
+   background-color: green;
+ }
+ .body{
+    position: relative;
+    margin: 0 auto;
+    background: #fff;
+    width: 900px;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+ }
+
+ .body:after {
+   content: "";
+   display: block;
+   clear: both;
+ }
+ .feed{
+   width: auto;
+   float: left;
+
+ }
+ .feed:after {
+   content: "";
+   display: block;
+   clear: both;
+ }
+ .feed-new-post{
+   z-index: 1;
+   display: block;
+   margin-left: 288px;
+
+ }
+
+
  .feed-post{
    border-style: solid;
    border-radius: 5px;
    border-width: 1.5px;
-   margin: 10px;
+   margin-left: 150px;
    padding: 3px;
    width: 500px;
    display: block;
+   background-color: white;
  }
  .feed-post-body{
    border-style: solid;
@@ -29,6 +66,12 @@
    border-width: 1.5px;
    padding: 5px;
    width: 300px;
+   margin-top: 5px;
+ }
+
+ .post-user-name{
+   text-decoration: underline;
+
  }
  .post-comment{
    border-style: solid;
@@ -44,13 +87,14 @@
 
  .profile-friends-pane{
    height: auto;
-   width: 300px;
+   width: auto;
    background-color: cornflowerblue;
+   border: 3px solid black;
  }
 
  .profile-images-pane{
    height: auto;
-   width: 300px;
+   width: auto;
    background-color: cornflowerblue;
  }
  .profile-images-body{
@@ -59,27 +103,10 @@
    background-color: cornflowerblue;
  }
 
- .header-bar{
-   width: 800px;
-   height: 50px;
-   background-color: green;
-   border-bottom-left-radius: 5px;
-   border-bottom-right-radius: 5px;
-   color: white;
-   padding: 3px;
-   padding-bottom: 5px;
-   bottom: 30px;
- }
-
- .header-bar-go-home{
-
-
- }
-
  .profile-images-pane {
   margin: 30px auto;
-  width: 200px;
-  border: 5px solid black;
+  width: auto;
+  border: 3px solid black;
   float: left;
   display: block;
 
@@ -90,6 +117,8 @@
   width: 50px;
   height: 50px;
   border: 5px solid black;
+  margin: 5px;
+  position: relative;
   background: gray;
   cursor: pointer;
 }
@@ -99,6 +128,23 @@
   float: left;
   padding-left: 10px;
   padding-right: 10px;
+}
+
+.header-bar{
+  width: auto;
+  height: 50px;
+  background-color: green;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  color: white;
+  padding: 3px;
+  padding-bottom: 5px;
+  bottom: 30px;
+}
+
+.header-bar-go-home{
+
+
 }
 
 .header-bar-search-bar .search-list-hidden {
@@ -116,26 +162,94 @@
 }*/
 
 /*not really centering*/
-.app-body{
-  margin: auto;
-}
+
 .header-bar:after {
   content: "";
   display: block;
   clear: both;
 }
 
+
+.header-bar-signout-button {
+  right: 10px;
+  float:left;
+  padding-left: 300px
+}
+
+
 .search-list{
+  visibility: hidden;
   background-color: red;
-  width: 100px;
+  width: 90px;
+  z-index: 2;
+}
+
+.search-list-hidden{
+  visibility: hidden;
+}
+
+.user-profile{
+  width: 900px;
+  float: left;
+
+}
+.user-profile:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.user-profile-content{
+  width: 600px;
+  float:left;
+  border: 2px;
+  border-color: black;
+}
+.user-profile:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+
+.user-profile-info{
+  border: 1px solid #ccc;
+  width: 250px;
+  float:left;
+  margin-left: 20px;
+
+}
+.user-profile-new-post{
+  border: 1px solid #ccc;
+  width: 500px;
+  float:left;
+}
+
+.post-seperator-black{
+  background-color: black;
+  height: 1px;
+  width: auto;
+},
+.post-seperator-white{
+  opacity: 0;
+  height: 2px;
+  width: auto;
+  margin: 5px;
+  background-color: blue;
+},
+
+.whole-post{
+  padding-top: 5px;
+}
+
+.search-list-visible{
+  visibility: visible;
+  background-color: red;
+
   float:none;
   z-index: 2;
 }
 
-.feed-new-post{
-  z-index: 1;
-  left: 30px;
-}
+
 
 .feed-post-new-comment{
   padding: 5px;

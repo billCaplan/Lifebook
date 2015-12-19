@@ -19,7 +19,6 @@ var ImagesBody = React.createClass({
 
   componentWillReceiveProps: function (newProps) {
     ApiUtil.fetchImages();
-    debugger
     this.setState({user: newProps.user});
     this.setState({images: ImageStore.getByUserId(newProps.user)});
 
@@ -40,7 +39,6 @@ var ImagesBody = React.createClass({
   } else {
         var images = <div> no images</div>;
   }
-    debugger
     return (
       <div className="profile-images-body">
         {images}

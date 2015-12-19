@@ -4,6 +4,7 @@ var Post = require('../components/Post');
 var UserStore = require('../stores/user');
 var SearchBar = require('../components/SearchBar');
 var History = require('react-router').History;
+var SignoutButton = require('../components/SignoutButton');
 
 var ApiUtil = require('../util/api_util');
 

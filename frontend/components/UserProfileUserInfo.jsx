@@ -27,14 +27,12 @@ var UserProfileUserInfo = React.createClass({
     //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts
     return(
       <div>
-        <div>
           <h2>User Profile User Info</h2>
           <div className="profile-pic"><img src={this._getProfilePic()}></img></div>
           <div>{this.props.user.real_name}</div>
           <div>{this.props.user.age}</div>
           <div>{this.props.user.location}</div>
           <div>{this.props.user.email}</div>
-        </div>
       </div>
     );
   }
