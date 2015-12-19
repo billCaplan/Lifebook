@@ -32300,7 +32300,7 @@
 	      var images = this.state.images.map(function (image) {
 	        return React.createElement(
 	          'div',
-	          { key: image.id },
+	          { key: image.id, className: 'pictures-in-pane' },
 	          React.createElement('img', { src: that.buildUrl(image.image_path) })
 	        );
 	      });
@@ -32520,7 +32520,7 @@
 	      ),
 	      React.createElement(
 	        'div',
-	        null,
+	        { className: 'header-bar-go-home' },
 	        React.createElement(
 	          'h1',
 	          { onClick: this.redirectToHome },

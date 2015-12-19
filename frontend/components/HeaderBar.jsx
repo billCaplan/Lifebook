@@ -47,7 +47,7 @@ var HeaderBar = React.createClass({
         <div className="header-bar-profile-pic"><img src={this._buildUrl(profile_image)}></img></div>
         <div className="header-bar-real-name">{name}</div>
         <div className="header-bar-search-bar"><SearchBar /></div>
-        <div><h1 onClick={this.redirectToHome}>Lifebook</h1></div>
+        <div className="header-bar-go-home"><h1 onClick={this.redirectToHome}>Lifebook</h1></div>
       </div>
     );
   }

@@ -34,7 +34,7 @@ var Images = React.createClass({
     var that = this;
     if (this.state.images){
       var images = this.state.images.map(function(image){
-        return <div key={image.id}><img src={that.buildUrl(image.image_path)}></img></div>;
+        return <div key={image.id} className="pictures-in-pane"><img src={that.buildUrl(image.image_path)}></img></div>;
       });
   } else {
         var images = <div> no images</div>;

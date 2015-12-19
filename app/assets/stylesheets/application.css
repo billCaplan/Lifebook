@@ -71,17 +71,49 @@
    bottom: 30px;
  }
 
-.header-bar > div {
+ .header-bar-go-home{
+
+
+ }
+
+ .profile-images-pane {
+  margin: 30px auto;
+  width: 200px;
+  border: 5px solid black;
   float: left;
+  display: block;
+
 }
 
-.header-bar-search-bar .search-list {
+.pictures-in-pane {
+  float: left;
+  width: 50px;
+  height: 50px;
+  border: 5px solid black;
+  background: gray;
+  cursor: pointer;
+}
+
+
+.header-bar > div {
+  float: left;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.header-bar-search-bar .search-list-hidden {
   display: none;
 }
 
-.header-bar-search-bar:hover .search-list {
+.header-bar-search-bar .search-list-shown {
   display: block;
 }
+
+
+
+/*.header-bar-search-bar:focus > LI:only-child {
+  display: block;
+}*/
 
 /*not really centering*/
 .app-body{
@@ -97,8 +129,15 @@
   background-color: red;
   width: 100px;
   float:none;
+  z-index: 2;
 }
 
 .feed-new-post{
+  z-index: 1;
   left: 30px;
+}
+
+.feed-post-new-comment{
+  padding: 5px;
+  padding-left: 10px;
 }
