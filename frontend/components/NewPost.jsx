@@ -32,7 +32,7 @@ var NewPost = React.createClass({
   render: function(){
 
     return(
-      <div>
+      <div className="feed-new-post">
         <form onSubmit={this.handleSubmit}>
          <label htmlFor="post_body">What's on your mind?</label>
          <br></br>

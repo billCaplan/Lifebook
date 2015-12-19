@@ -11,18 +11,21 @@ var React = require('react'),
 var Images = React.createClass({
   getInitialState: function () {
     ApiUtil.fetchImages();
-    return { images: [], user: null };
+    this.imageListener = ImageStore.addListener(this._imagesChanged);
+    return { images: [], user: this.props.user };
   },
 
   componentWillReceiveProps: function (newProps) {
     ApiUtil.fetchImages();
     this.setState({user: newProps.user});
     this.setState({images: ImageStore.getByUserId(newProps.user)});
-
   },
-  // componentWillUnmount: function(){
-  //   this.setState({user: null});
-  // },
+  _imagesChanged: function(){
+    this.setState({images: ImageStore.getByUserId(this.state.user)});
+  },
+  componentWillUnmount: function(){
+    this.imageListener.remove();
+  },
   buildUrl: function(image_path){
     var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + image_path;
     return url;

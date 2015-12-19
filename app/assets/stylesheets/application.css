@@ -67,15 +67,38 @@
    border-bottom-right-radius: 5px;
    color: white;
    padding: 3px;
+   padding-bottom: 5px;
    bottom: 30px;
  }
 
+.header-bar > div {
+  float: left;
+}
+
+.header-bar-search-bar .search-list {
+  display: none;
+}
+
+.header-bar-search-bar:hover .search-list {
+  display: block;
+}
+
 /*not really centering*/
- .app-body{
-   margin: auto;
- }
- .header-bar:after {
+.app-body{
+  margin: auto;
+}
+.header-bar:after {
   content: "";
   display: block;
   clear: both;
+}
+
+.search-list{
+  background-color: red;
+  width: 100px;
+  float:none;
+}
+
+.feed-new-post{
+  left: 30px;
 }

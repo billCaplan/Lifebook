@@ -13,7 +13,7 @@ var Feed = React.createClass({
   },
 
   _postsChanged: function(){
-    debugger
+
     this.setState({posts: PostStore.getUsersFollowedPosts(this.state.currentUser.id)});
   },
   _usersChanged: function(){

@@ -80,14 +80,8 @@
 	    this.setState({ currentUser: UserStore.getCurrentUser() });
 	  },
 	
-	  redirectToHome: function () {
-	
-	    this.props.history.pushState(null, "/");
-	  },
-	
 	  render: function () {
-	    var name = this.state.currentUser.real_name;
-	    this.props.userName = this.state.userName;
+	
 	    return React.createElement(
 	      'div',
 	      { className: 'app-body' },
@@ -95,21 +89,6 @@
 	        'div',
 	        null,
 	        React.createElement(HeaderBar, { currentUser: this.state.currentUser })
-	      ),
-	      React.createElement(
-	        'header',
-	        null,
-	        React.createElement(
-	          'h1',
-	          { onClick: this.redirectToHome },
-	          'Lifebook'
-	        )
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        'Welcome Back, ',
-	        name
 	      ),
 	      this.props.children
 	    );
@@ -24505,7 +24484,7 @@
 	  },
 	
 	  _postsChanged: function () {
-	    debugger;
+	
 	    this.setState({ posts: PostStore.getUsersFollowedPosts(this.state.currentUser.id) });
 	  },
 	  _usersChanged: function () {
@@ -31469,7 +31448,8 @@
 	    });
 	  },
 	  createImage: function (data) {
-	    $.post('api/images', { image: data }, function (image) {
+	
+	    $.post('api/images', { image: { image_path: data.public_id } }, function (image) {
 	      ApiActions.receiveNewImage(image);
 	    });
 	  }
@@ -31862,7 +31842,7 @@
 	
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'feed-new-post' },
 	      React.createElement(
 	        'form',
 	        { onSubmit: this.handleSubmit },
@@ -32295,7 +32275,8 @@
 	
 	  getInitialState: function () {
 	    ApiUtil.fetchImages();
-	    return { images: [], user: null };
+	    this.imageListener = ImageStore.addListener(this._imagesChanged);
+	    return { images: [], user: this.props.user };
 	  },
 	
 	  componentWillReceiveProps: function (newProps) {
@@ -32303,9 +32284,12 @@
 	    this.setState({ user: newProps.user });
 	    this.setState({ images: ImageStore.getByUserId(newProps.user) });
 	  },
-	  // componentWillUnmount: function(){
-	  //   this.setState({user: null});
-	  // },
+	  _imagesChanged: function () {
+	    this.setState({ images: ImageStore.getByUserId(this.state.user) });
+	  },
+	  componentWillUnmount: function () {
+	    this.imageListener.remove();
+	  },
 	  buildUrl: function (image_path) {
 	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + image_path;
 	    return url;
@@ -32475,17 +32459,22 @@
 	var Post = __webpack_require__(237);
 	var UserStore = __webpack_require__(233);
 	var SearchBar = __webpack_require__(257);
+	var History = __webpack_require__(159).History;
 	
 	var ApiUtil = __webpack_require__(235);
 	
 	var HeaderBar = React.createClass({
 	  displayName: 'HeaderBar',
 	
+	  mixins: [History],
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
 	  getInitialState: function () {
 	    return { user: {} };
+	  },
+	  redirectToHome: function () {
+	    this.history.pushState(null, "/");
 	  },
 	  componentWillReceiveProps: function (newProps) {
 	    this.setState({ user: newProps.currentUser });
@@ -32493,35 +32482,50 @@
 	  _buildUrl: function (image_path) {
 	    var publicID;
 	    if (!image_path) {
-	      var publicID = "lifebook_default_pic.jpg";
+	      publicID = "lifebook_default_pic.jpg";
 	    } else {
-	      var publicID = image_path;
+	      publicID = image_path;
 	    }
 	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + publicID;
 	    return url;
 	  },
 	
 	  render: function () {
+	    var name, profile_image;
 	
 	    if (this.state.user.real_name) {
-	      var name = this.state.user.real_name;
-	      var profile_image = this.state.user.profile_image;
+	      name = this.state.user.real_name;
+	      profile_image = this.state.user.profile_image;
 	    } else {
-	      var name = "Loading";
+	      name = "Loading";
 	    }
 	
 	    return React.createElement(
 	      'div',
 	      { className: 'header-bar' },
 	      React.createElement(
-	        'span',
+	        'div',
 	        { className: 'header-bar-profile-pic' },
 	        React.createElement('img', { src: this._buildUrl(profile_image) })
 	      ),
 	      React.createElement(
-	        'span',
+	        'div',
 	        { className: 'header-bar-real-name' },
 	        name
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'header-bar-search-bar' },
+	        React.createElement(SearchBar, null)
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'h1',
+	          { onClick: this.redirectToHome },
+	          'Lifebook'
+	        )
 	      )
 	    );
 	  }
@@ -32600,12 +32604,19 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
+	var UserStore = __webpack_require__(233);
 	
 	var SearchBar = React.createClass({
-	  displayName: "SearchBar",
+	  displayName: 'SearchBar',
 	
 	  getInitialState: function () {
-	    return { inputVal: "" };
+	    this.userListener = UserStore.addListener(this._usersChanged);
+	    return { inputVal: "",
+	      users: UserStore.all()
+	    };
+	  },
+	  _usersChanged: function () {
+	    this.setState({ users: UserStore.all() });
 	  },
 	
 	  handleInput: function (event) {
@@ -32615,10 +32626,11 @@
 	  matches: function () {
 	    var matches = [];
 	    if (this.state.inputVal.length === 0) {
-	      return this.props.names;
+	      return this.state.users;
 	    }
 	
-	    this.props.names.forEach((function (name) {
+	    this.state.users.forEach((function (user) {
+	      var name = user.real_name;
 	      var sub = name.slice(0, this.state.inputVal.length);
 	      if (sub.toLowerCase() === this.state.inputVal.toLowerCase()) {
 	        matches.push(name);
@@ -32628,7 +32640,6 @@
 	    if (matches.length === 0) {
 	      matches.push("No matches");
 	    }
-	
 	    return matches;
 	  },
 	
@@ -32636,24 +32647,42 @@
 	    var name = event.currentTarget.innerText;
 	    this.setState({ inputVal: name });
 	  },
-	
-	  render: function () {
-	    var results = this.matches();
+	  _setContent: function (results) {
 	    return React.createElement(
-	      "div",
+	      'div',
 	      null,
-	      React.createElement("input", { onChange: this.handleInput, value: this.state.inputVal }),
+	      React.createElement('input', { onChange: this.handleInput, value: this.state.inputVal }),
 	      React.createElement(
-	        "ul",
-	        null,
+	        'ul',
+	        { className: 'search-list' },
 	        results.map((function (result, i) {
 	          return React.createElement(
-	            "li",
+	            'li',
 	            { key: i, onClick: this.selectName },
-	            result
+	            result.real_name
 	          );
 	        }).bind(this))
 	      )
+	    );
+	  },
+	
+	  render: function () {
+	    debugger;
+	    var results = this.matches();
+	
+	    if (this.state.users && results) {
+	      var content = this._setContent(results);
+	    } else {
+	      var content = React.createElement(
+	        'div',
+	        null,
+	        'Loading'
+	      );
+	    }
+	    return React.createElement(
+	      'div',
+	      null,
+	      content
 	    );
 	  }
 	});

@@ -34,21 +34,15 @@ var App = React.createClass({
     this.setState({currentUser: UserStore.getCurrentUser()});
   },
 
-  redirectToHome: function(){
 
-    this.props.history.pushState(null, "/");
-  },
 
   render: function(){
-    var name = this.state.currentUser.real_name;
-    this.props.userName = this.state.userName;
+  
     return (
       <div className="app-body">
         <div>
           <HeaderBar currentUser={this.state.currentUser}/>
         </div>
-        <header><h1 onClick={this.redirectToHome}>Lifebook</h1></header>
-        <div>Welcome Back, {name}</div>
         {this.props.children}
       </div>
     );

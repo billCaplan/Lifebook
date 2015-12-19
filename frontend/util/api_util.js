@@ -42,7 +42,8 @@ var ApiUtil = {
     });
   },
   createImage: function(data){
-    $.post('api/images', { image: data }, function(image) {
+
+    $.post('api/images', { image: {image_path: data.public_id} }, function(image) {
       ApiActions.receiveNewImage(image);
     });
   },
