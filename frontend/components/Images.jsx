@@ -7,7 +7,7 @@ var React = require('react'),
     UserStore = require("../stores/user"),
     ImageStore = require("../stores/image"),
     ApiUtil = require('../util/api_util'),
-    Modal = require('react-modal');
+    Modal = require('react-modal'),
     ImageModal = require('../components/ImageModal');
 
     var customStyles = {
@@ -64,8 +64,7 @@ var Images = React.createClass({
     if (this.state.images){
       var images = this.state.images.map(function(image){
         return <div key={image.id}
-                    className="pictures-in-pane"
-                    >
+                    className="pictures-in-pane">
                     <img onClick={this.openModal.bind(null, image)}
                          src={that.buildUrl(image.image_path)}>
                     </img>

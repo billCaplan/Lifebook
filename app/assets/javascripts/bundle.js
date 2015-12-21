@@ -32318,8 +32318,8 @@
 	    UserStore = __webpack_require__(233),
 	    ImageStore = __webpack_require__(250),
 	    ApiUtil = __webpack_require__(235),
-	    Modal = __webpack_require__(260);
-	ImageModal = __webpack_require__(249);
+	    Modal = __webpack_require__(260),
+	    ImageModal = __webpack_require__(249);
 	
 	var customStyles = {
 	  content: {
@@ -32379,8 +32379,7 @@
 	        return React.createElement(
 	          'div',
 	          { key: image.id,
-	            className: 'pictures-in-pane'
-	          },
+	            className: 'pictures-in-pane' },
 	          React.createElement('img', { onClick: this.openModal.bind(null, image),
 	            src: that.buildUrl(image.image_path) })
 	        );
@@ -32673,7 +32672,19 @@
 	    ImageModal = __webpack_require__(249),
 	    UserStore = __webpack_require__(233),
 	    ImageStore = __webpack_require__(250),
+	    Modal = __webpack_require__(260),
 	    ApiUtil = __webpack_require__(235);
+	
+	var customStyles = {
+	  content: {
+	    top: '50%',
+	    left: '50%',
+	    right: 'auto',
+	    bottom: 'auto',
+	    marginRight: '-50%',
+	    transform: 'translate(-50%, -50%)'
+	  }
+	};
 	
 	var ImagesBody = React.createClass({
 	  displayName: 'ImagesBody',
@@ -32683,7 +32694,18 @@
 	  },
 	  getInitialState: function () {
 	    ApiUtil.fetchImages();
-	    return { images: ImageStore.getByUserId(this.props.user), user: this.props.user };
+	    return { images: ImageStore.getByUserId(this.props.user),
+	      user: this.props.user,
+	      modalIsOpen: false,
+	      selectedImage: "" };
+	  },
+	  openModal: function (event) {
+	    this.setState({ modalIsOpen: true,
+	      selectedImage: event.image_path });
+	  },
+	
+	  closeModal: function () {
+	    this.setState({ modalIsOpen: false, selectedImage: "" });
 	  },
 	
 	  componentWillReceiveProps: function (newProps) {
@@ -32698,16 +32720,26 @@
 	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_200,w_200/v1450463928/" + image_path;
 	    return url;
 	  },
+	  buildModalUrl: function (image_path) {
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/v1450463928/" + image_path;
+	    return url;
+	  },
+	  modal: function () {
+	    return;
+	  },
+	
 	  render: function () {
 	    var that = this;
 	    if (this.state.images) {
-	      var images = this.state.images.map(function (image) {
+	      var images = this.state.images.map((function (image) {
 	        return React.createElement(
 	          'div',
-	          { key: image.id, className: 'image-body-image' },
-	          React.createElement('img', { src: that.buildUrl(image.image_path) })
+	          { key: image.id,
+	            className: 'image-body-image' },
+	          React.createElement('img', { onClick: this.openModal.bind(null, image),
+	            src: that.buildUrl(image.image_path) })
 	        );
-	      });
+	      }).bind(this));
 	    } else {
 	      var images = React.createElement(
 	        'div',
@@ -32722,7 +32754,33 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement(ImageModal, null)
+	        React.createElement(
+	          'div',
+	          null,
+	          React.createElement(
+	            Modal,
+	            {
+	              isOpen: this.state.modalIsOpen,
+	              onRequestClose: this.closeModal,
+	              style: customStyles },
+	            React.createElement(
+	              'h2',
+	              null,
+	              'Picture'
+	            ),
+	            React.createElement(
+	              'button',
+	              { onClick: this.closeModal },
+	              'close'
+	            ),
+	            React.createElement(
+	              'div',
+	              null,
+	              'I am a modal'
+	            ),
+	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage) })
+	          )
+	        )
 	      )
 	    );
 	  }
