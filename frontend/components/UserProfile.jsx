@@ -10,7 +10,7 @@ var FriendsPane = require('../components/FriendsPane');
 var FollowButton = require('../components/FollowButton');
 var Images = require('../components/Images');
 var ImagesBody = require('../components/ImagesBody');
-
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 function _getRelevantPosts(userId) {
   return PostStore.getByUserId(userId);
@@ -95,6 +95,11 @@ var UserProfile = React.createClass({
     }
 
     return(
+    <ReactCSSTransitionGroup transitionName="example"
+                              transitionAppear={true}
+                              transitionAppearTimeout={500}
+                              transitionEnterTimeout={500}
+                              transitionLeaveTimeout={500}>
       <div className="user-profile">
         <div className="user-profile-info">
           <div>
@@ -118,6 +123,7 @@ var UserProfile = React.createClass({
           {content}
         </div>
       </div>
+    </ReactCSSTransitionGroup>
     );
   }
 });

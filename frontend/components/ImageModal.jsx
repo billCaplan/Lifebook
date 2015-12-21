@@ -20,6 +20,7 @@ var customStyles = {
 var ImageModal = React.createClass({
 
    getInitialState: function() {
+
      return { modalIsOpen: false };
    },
 
@@ -34,7 +35,6 @@ var ImageModal = React.createClass({
    render: function() {
      return (
        <div>
-         <button onClick={this.openModal}>Open Modal</button>
          <Modal
            isOpen={this.state.modalIsOpen}
            onRequestClose={this.closeModal}

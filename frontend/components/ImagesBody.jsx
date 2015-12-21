@@ -44,7 +44,7 @@ var ImagesBody = React.createClass({
     return (
       <div className="profile-images-body">
         {images}
-        <ImageModal />
+        <div><ImageModal /></div>
       </div>
     );
   }

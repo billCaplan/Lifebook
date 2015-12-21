@@ -14,6 +14,27 @@
  *= require_self
  */
 
+ .example-appear {
+   opacity: 0.01;
+ }
+
+ .example-appear.example-appear-active {
+   opacity: 1;
+   transition: opacity .5s ease-in;
+ }
+
+  .example-leave {
+     opacity: 1;
+     height: 16px;
+     transition: opacity 500ms ease-out,
+                 padding 500ms ease-out,
+                 height 500ms ease-out;
+ }
+ .example-leave.demo-leave-active {
+     opacity: 0;
+     height: 0px;
+     padding: 0px 10px !important;
+ }
 
  html {
    background-color: green;
@@ -26,14 +47,15 @@
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
+    top: 0px;
 
  }
-
  .body:after {
    content: "";
    display: block;
    clear: both;
  }
+ 
  .feed{
    width: auto;
    float: left;
@@ -153,13 +175,7 @@
 
 }
 
-.header-bar-search-bar .search-list-hidden {
-  display: none;
-}
 
-.header-bar-search-bar .search-list-shown {
-  display: block;
-}
 
 
 
@@ -184,14 +200,33 @@
 
 
 .search-list{
+  position: relative;
   visibility: hidden;
-  background-color: red;
+  background-color: white;
   width: 90px;
+  color: black;
+  border-left: 2px;
+  border-bottom: 2px;
+  border-right: 2px;
+  border-color: gray;
+  border-radius: 5px;
+
   z-index: 2;
+}
+
+.search-list-visible{
+  visibility: visible;
 }
 
 .search-list-hidden{
   visibility: hidden;
+}
+.header-bar-search-bar .search-list-hidden {
+  display: none;
+}
+
+.header-bar-search-bar .search-list-shown {
+  display: block;
 }
 
 .user-profile{
@@ -210,6 +245,7 @@
   float:left;
   border: 2px;
   border-color: black;
+  padding: 10px;
 }
 .user-profile:after {
   content: "";
@@ -223,12 +259,17 @@
   width: 250px;
   float:left;
   margin-left: 20px;
+  border-radius: 5px;
+  border-color: grey;
+  padding: 3px;
 
 }
 .user-profile-new-post{
-  border: 1px solid #ccc;
+
   width: 500px;
   float:left;
+  left: 300px;
+  padding-left: 10px;
 }
 
 .post-seperator-black{
@@ -252,14 +293,6 @@
   padding: 5px;
   margin-bottom: 13px;
   box-shadow: 10px 10px 5px grey;
-}
-
-.search-list-visible{
-  visibility: visible;
-  background-color: red;
-
-  float:none;
-  z-index: 2;
 }
 
 .feed-post-new-comment{

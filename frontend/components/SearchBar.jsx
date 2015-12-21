@@ -16,7 +16,6 @@ var SearchBar = React.createClass({
     this.setState({users: UserStore.all()});
   },
   handleSubjectClick: function(destinationId){
-    debugger
     this.setState({listVisible: false});
     this.history.pushState(null, "user/" + this.props.post.subject.id);
   },
@@ -60,6 +59,7 @@ var SearchBar = React.createClass({
   },
   _setContent: function(results){
   return  <div>
+      <label>Search:</label>
       <input onChange={this.handleInput} value={this.state.inputVal} />
       <ul className={this.listClass()}>
         {

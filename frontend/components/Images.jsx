@@ -7,15 +7,35 @@ var React = require('react'),
     UserStore = require("../stores/user"),
     ImageStore = require("../stores/image"),
     ApiUtil = require('../util/api_util'),
+    Modal = require('react-modal');
     ImageModal = require('../components/ImageModal');
+
+    var customStyles = {
+      content : {
+        top                   : '50%',
+        left                  : '50%',
+        right                 : 'auto',
+        bottom                : 'auto',
+        marginRight           : '-50%',
+        transform             : 'translate(-50%, -50%)'
+      }
+    };
 
 var Images = React.createClass({
   getInitialState: function () {
     ApiUtil.fetchImages();
     this.imageListener = ImageStore.addListener(this._imagesChanged);
-    return { images: [], user: this.props.user };
+    return { images: [], user: this.props.user, modalIsOpen: false, selectedImage: "" };
+  },
+  openModal: function(event) {
+
+    this.setState({modalIsOpen: true,
+                  selectedImage: event.image_path });
   },
 
+  closeModal: function() {
+    this.setState({modalIsOpen: false, selectedImage: ""});
+  },
   componentWillReceiveProps: function (newProps) {
     ApiUtil.fetchImages();
     this.setState({user: newProps.user});
@@ -31,24 +51,48 @@ var Images = React.createClass({
     var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + image_path;
     return url;
   },
-  handleClick: function(){
-    return <ImageModal />;
+  buildModalUrl: function(image_path){
+    var url = "http://res.cloudinary.com/lifebook/image/upload/v1450463928/" + image_path;
+    return url;
   },
+  modal: function(){
+    return ;
+  },
+
   render: function () {
     var that = this;
     if (this.state.images){
       var images = this.state.images.map(function(image){
         return <div key={image.id}
-                    className="pictures-in-pane"><img
-                    src={that.buildUrl(image.image_path)}
-                    onClick={this.handleClick}></img></div>;
-      });
+                    className="pictures-in-pane"
+                    >
+                    <img onClick={this.openModal.bind(null, image)}
+                         src={that.buildUrl(image.image_path)}>
+                    </img>
+              </div>;
+      }.bind(this));
   } else {
         var images = <div> no images</div>;
   }
+
+
     return (
       <div className="profile-images-pane">
         {images}
+        <div>
+          <div>
+             <Modal
+               isOpen={this.state.modalIsOpen}
+               onRequestClose={this.closeModal}
+               style={customStyles} >
+
+               <h2>Picture</h2>
+               <button onClick={this.closeModal}>close</button>
+               <div>I am a modal</div>
+               <img src={that.buildModalUrl(that.state.selectedImage)}></img>
+             </Modal>
+           </div>
+        </div>
         <UploadButton />
       </div>
     );

@@ -7,6 +7,7 @@ var ApiUtil = require('../util/api_util');
 var History = require('react-router').History;
 var NewComment = require('../components/NewComment');
 var Comment = require('../components/Comment');
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 var Post = React.createClass({
   mixins: [History],
@@ -31,12 +32,17 @@ var Post = React.createClass({
       nameLine = <div className="post-user-name" onClick={this.handleAuthorClick}>{authorName}</div>;
     } else {
       nameLine = <p>
-                    <span onClick={this.handleAuthorClick}>{authorName}</span>
+                    <span className="post-user-name" onClick={this.handleAuthorClick}>{authorName}</span>
                      --->>>
-                    <span onClick={this.handleSubjectClick}>{subjectName}</span>
+                    <span className="post-user-name" onClick={this.handleSubjectClick}>{subjectName}</span>
                 </p>;
     }
     return(
+    <ReactCSSTransitionGroup transitionName="example"
+                              transitionAppear={true}
+                              transitionAppearTimeout={500}
+                              transitionEnterTimeout={500}
+                              transitionLeaveTimeout={500}>
       <div className="whole-post">
         <div className="feed-post-body">
          {nameLine}
@@ -50,6 +56,7 @@ var Post = React.createClass({
       </div>
       <div className="post-seperator-black"></div>
       </div>
+    </ReactCSSTransitionGroup>
     );
   }
 });

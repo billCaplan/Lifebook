@@ -5,6 +5,8 @@ var Post = require('../components/Post');
 var ApiUtil = require('../util/api_util');
 var NewPost = require('../components/NewPost');
 var UserStore = require('../stores/user');
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+var Footer = require('../components/Footer');
 
 
 var Feed = React.createClass({
@@ -42,26 +44,35 @@ var Feed = React.createClass({
 
   render: function(){
     // need to filter the posts to only the ones that are being followed
+    var posts;
+
     if (!this.state.posts){
-      var posts = <div>Loading</div>
+      posts = <div>Loading</div>;
     }
     else {
-    var posts = this.state.posts.map(function (post, i) {
+      posts = this.state.posts.map(function (post, i) {
       return <Post key={i} post={post} />;
     });
   }
 
 
     return(
-      <div className="feed">
-        <div className="feed-new-post">
-          <NewPost/>
-        </div>
-        <br></br>
+      <ReactCSSTransitionGroup transitionName="example"
+                                transitionAppear={true}
+                                transitionAppearTimeout={500}
+                                transitionEnterTimeout={500}
+                                transitionLeaveTimeout={500}>
+        <h1>Fading at Initial Mount</h1>
+        <div className="feed">
+          <div className="feed-new-post">
+            <NewPost/>
+          </div>
+          <br></br>
           <ul className="feed-post">
             {posts}
           </ul>
-      </div>
+        </div>
+      </ReactCSSTransitionGroup>
     );
   }
 });
