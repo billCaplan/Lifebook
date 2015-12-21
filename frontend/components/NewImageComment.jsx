@@ -7,7 +7,7 @@ var UserStore = require('../stores/user');
 
 var ApiUtil = require('../util/api_util');
 
-var NewComment = React.createClass({
+var NewImageComment = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
@@ -16,8 +16,9 @@ var NewComment = React.createClass({
   },
   handleSubmit: function(event){
     event.preventDefault();
-    var post = {body: event.currentTarget[0].value, post_id: this.props.parentCommentId};
-    ApiUtil.createComment(post);
+    debugger
+    var post = {body: event.currentTarget[0].value, image_id: this.props.image.id};
+    ApiUtil.createImageComment(post);
   },
 
   render: function(){
@@ -39,4 +40,4 @@ var NewComment = React.createClass({
   }
 });
 
-module.exports = NewComment;
+module.exports = NewImageComment;

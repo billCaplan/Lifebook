@@ -41,6 +41,7 @@ var UserProfile = React.createClass({
       ApiUtil.fetchUsers();
       ApiUtil.fetchImages();
       ApiUtil.fetchFollows();
+      ApiUtil.fetchImageComments();
     //Add listener to update state
     this.postListener = PostStore.addListener(this._postsChanged);
     this.userListener = UserStore.addListener(this._usersChanged);

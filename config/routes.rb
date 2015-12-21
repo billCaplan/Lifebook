@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     resources :comments
     resources :follows
     resources :images
+    resources :image_comments
   end
   resources :users, except: [:show, :index]
   resources :current, only: [:index]

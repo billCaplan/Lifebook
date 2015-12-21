@@ -2,6 +2,7 @@ var AppDispatcher = require('../dispatcher/Dispatcher');
 var PostConstants = require('../constants/post_constants');
 var UserConstants = require('../constants/user_constants');
 var FollowConstants = require('../constants/follow_constants');
+var ImageCommentConstants = require('../constants/image_comment_constants');
 
 var ApiActions = {
   // receiveAllPosts
@@ -62,6 +63,18 @@ var ApiActions = {
     AppDispatcher.dispatch({
       actionType: FollowConstants.FOLLOWS_RECEIVED,
       follows: follows
+    });
+  },
+  receiveAllImageComments: function(comments){
+    AppDispatcher.dispatch({
+      actionType: ImageCommentConstants.IMAGE_COMMENTS_RECEIVED,
+      image_comments: comments
+    });
+  },
+  receiveNewImageComment: function(newImageComment){
+    AppDispatcher.dispatch({
+      actionType: ImageCommentConstants.NEW_IMAGE_COMMENT_RECEIVED,
+      newImageComment: newImageComment
     });
   },
 };

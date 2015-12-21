@@ -52,7 +52,7 @@ var ApiUtil = {
     });
   },
   deleteFollow: function(data){
-    debugger
+
     $.ajax({
        method: 'DELETE',
        url: '/api/follows/' + data.id,
@@ -65,6 +65,17 @@ var ApiUtil = {
           console.log("Fail");
         }
      });
+  },
+  fetchImageComments: function(){
+    $.get('/api/image_comments', function(imageComments){
+      debugger
+      ApiActions.receiveAllImageComments(imageComments);
+    });
+  },
+  createImageComment: function(data){
+    $.post('api/image_comments', { image_comment: data }, function(imageComment) {
+      ApiActions.receiveNewImageComment(imageComment);
+    });
   },
 };
 

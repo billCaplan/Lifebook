@@ -1,0 +1,6 @@
+ImageCommentConstants = {
+  IMAGE_COMMENTS_RECEIVED: "IMAGE_COMMENTS_RECEIVED",
+  NEW_IMAGE_COMMENT_RECEIVED: "NEW_IMAGE_COMMENT_RECEIVED",
+};
+
+module.exports = ImageCommentConstants;

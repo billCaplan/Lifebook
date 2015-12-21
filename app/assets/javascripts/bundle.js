@@ -31475,7 +31475,7 @@
 	    });
 	  },
 	  deleteFollow: function (data) {
-	    debugger;
+	
 	    $.ajax({
 	      method: 'DELETE',
 	      url: '/api/follows/' + data.id,
@@ -31487,6 +31487,17 @@
 	      error: function (xhr, ajaxOptions, thrownError) {
 	        console.log("Fail");
 	      }
+	    });
+	  },
+	  fetchImageComments: function () {
+	    $.get('/api/image_comments', function (imageComments) {
+	      debugger;
+	      ApiActions.receiveAllImageComments(imageComments);
+	    });
+	  },
+	  createImageComment: function (data) {
+	    $.post('api/image_comments', { image_comment: data }, function (imageComment) {
+	      ApiActions.receiveNewImageComment(imageComment);
 	    });
 	  }
 	};
@@ -31501,6 +31512,7 @@
 	var PostConstants = __webpack_require__(229);
 	var UserConstants = __webpack_require__(234);
 	var FollowConstants = __webpack_require__(280);
+	var ImageCommentConstants = __webpack_require__(292);
 	
 	var ApiActions = {
 	  // receiveAllPosts
@@ -31561,6 +31573,18 @@
 	    AppDispatcher.dispatch({
 	      actionType: FollowConstants.FOLLOWS_RECEIVED,
 	      follows: follows
+	    });
+	  },
+	  receiveAllImageComments: function (comments) {
+	    AppDispatcher.dispatch({
+	      actionType: ImageCommentConstants.IMAGE_COMMENTS_RECEIVED,
+	      image_comments: comments
+	    });
+	  },
+	  receiveNewImageComment: function (newImageComment) {
+	    AppDispatcher.dispatch({
+	      actionType: ImageCommentConstants.NEW_IMAGE_COMMENT_RECEIVED,
+	      newImageComment: newImageComment
 	    });
 	  }
 	};
@@ -31668,6 +31692,8 @@
 /* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
+	
+	
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
 	var Post = __webpack_require__(237);
@@ -31685,9 +31711,7 @@
 	    this.setState({ currentUser: UserStore.getCurrentUser() });
 	  },
 	  handleSubmit: function (event) {
-	    debugger;
 	    event.preventDefault();
-	    debugger;
 	    var post = { body: event.currentTarget[0].value, post_id: this.props.parentCommentId };
 	    ApiUtil.createComment(post);
 	  },
@@ -31966,6 +31990,7 @@
 	    ApiUtil.fetchUsers();
 	    ApiUtil.fetchImages();
 	    ApiUtil.fetchFollows();
+	    ApiUtil.fetchImageComments();
 	    //Add listener to update state
 	    this.postListener = PostStore.addListener(this._postsChanged);
 	    this.userListener = UserStore.addListener(this._usersChanged);
@@ -32319,6 +32344,8 @@
 	    ImageStore = __webpack_require__(250),
 	    ApiUtil = __webpack_require__(235),
 	    Modal = __webpack_require__(260),
+	    ImageComments = __webpack_require__(290),
+	    NewImageComment = __webpack_require__(291),
 	    ImageModal = __webpack_require__(249);
 	
 	var customStyles = {
@@ -32343,7 +32370,7 @@
 	  openModal: function (event) {
 	
 	    this.setState({ modalIsOpen: true,
-	      selectedImage: event.image_path });
+	      selectedImage: event });
 	  },
 	
 	  closeModal: function () {
@@ -32423,7 +32450,9 @@
 	              null,
 	              'I am a modal'
 	            ),
-	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage) })
+	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage.image_path) }),
+	            React.createElement(ImageComments, { image: this.state.selectedImage }),
+	            React.createElement(NewImageComment, { image: this.state.selectedImage })
 	          )
 	        )
 	      ),
@@ -34941,7 +34970,6 @@
 	var _follows = [];
 	
 	var resetFollows = function (follows) {
-	  debugger;
 	  _follows = follows.slice(0);
 	};
 	
@@ -35822,6 +35850,203 @@
 	});
 	
 	module.exports = Footer;
+
+/***/ },
+/* 290 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(237);
+	var UserStore = __webpack_require__(233);
+	var ImageCommentStore = __webpack_require__(293);
+	
+	var ApiUtil = __webpack_require__(235);
+	var History = __webpack_require__(159).History;
+	
+	var ImageComment = React.createClass({
+	  displayName: 'ImageComment',
+	
+	  mixins: [History],
+	
+	  _commentsChanged: function () {
+	    this.setState({ comments: ImageCommentStore.getByPostId(this.props.image.id) });
+	  },
+	
+	  getInitialState: function () {
+	
+	    return {
+	      comments: ImageCommentStore.getByPostId(this.props.image.id)
+	    };
+	  },
+	
+	  componentDidMount: function () {
+	    this.commentListener = ImageCommentStore.addListener(this._commentsChanged);
+	    ApiUtil.fetchComments();
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.commentListener.remove();
+	  },
+	  handleAuthorClick: function (authorId) {
+	    this.history.pushState(null, "user/" + authorId);
+	  },
+	
+	  render: function () {
+	    var that = this;
+	    var Comments = this.state.comments.map(function (comment, i) {
+	      return React.createElement(
+	        'div',
+	        { key: comment.id, className: 'post-comment' },
+	        React.createElement(
+	          'div',
+	          { onClick: that.handleAuthorClick.bind(null, comment.author.id) },
+	          comment.author.real_name
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          comment.body
+	        )
+	      );
+	    });
+	    return React.createElement(
+	      'div',
+	      null,
+	      Comments
+	    );
+	  }
+	});
+	
+	module.exports = ImageComment;
+
+/***/ },
+/* 291 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(237);
+	var UserStore = __webpack_require__(233);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var NewImageComment = React.createClass({
+	  displayName: 'NewImageComment',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  componentWillMount: function () {
+	    this.setState({ currentUser: UserStore.getCurrentUser() });
+	  },
+	  handleSubmit: function (event) {
+	    event.preventDefault();
+	    debugger;
+	    var post = { body: event.currentTarget[0].value, image_id: this.props.image.id };
+	    ApiUtil.createImageComment(post);
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'form',
+	          { onSubmit: this.handleSubmit },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'comment_body' },
+	            'Leave a new comment'
+	          ),
+	          React.createElement('br', null),
+	          React.createElement('textarea', {
+	            name: 'comment[body]',
+	            id: 'comment_body', rows: '4', cols: '50' }),
+	          React.createElement('br', null),
+	          React.createElement('input', { type: 'submit', value: 'Comment' })
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = NewImageComment;
+
+/***/ },
+/* 292 */
+/***/ function(module, exports) {
+
+	ImageCommentConstants = {
+	  IMAGE_COMMENTS_RECEIVED: "IMAGE_COMMENTS_RECEIVED",
+	  NEW_IMAGE_COMMENT_RECEIVED: "NEW_IMAGE_COMMENT_RECEIVED"
+	};
+	
+	module.exports = ImageCommentConstants;
+
+/***/ },
+/* 293 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var ImageConstants = __webpack_require__(292);
+	var AppDispatcher = __webpack_require__(230);
+	
+	var ImageCommentsStore = new Store(AppDispatcher);
+	
+	var _image_comments = [];
+	
+	var resetImageComments = function (image_comments) {
+	  debugger;
+	  _image_comments = image_comments.slice(0);
+	};
+	
+	var addNewImageComment = function (newImageComment) {
+	  _image_comments.push(newImage);
+	};
+	
+	ImageCommentsStore.all = function () {
+	  return _image_comments.slice(0);
+	};
+	
+	ImageCommentsStore.getByPostId = function (imageIdString) {
+	
+	  var imageId = parseInt(imageIdString);
+	  var image_comments = ImageCommentsStore.all();
+	  var relevantImageComments = [];
+	
+	  debugger;
+	  image_comments.forEach(function (comment) {
+	
+	    if (comment.image_id === imageId) {
+	      relevantImageComments.push(comment);
+	    }
+	  });
+	
+	  return relevantImageComments;
+	};
+	
+	ImageCommentsStore.__onDispatch = function (payload) {
+	  debugger;
+	  switch (payload.actionType) {
+	    case ImageConstants.IMAGE_COMMENTS_RECEIVED:
+	      debugger;
+	      var result = resetImageComments(payload.image_comments);
+	      ImageCommentsStore.__emitChange();
+	      break;
+	    case ImageConstants.NEW_IMAGE_COMMENT_RECEIVED:
+	      var result = addNewImageComment(payload.newImage);
+	      ImageCommentsStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = ImageCommentsStore;
 
 /***/ }
 /******/ ]);

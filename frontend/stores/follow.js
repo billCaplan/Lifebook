@@ -7,7 +7,6 @@ var FollowStore = new Store(AppDispatcher);
 var _follows = [];
 
 var resetFollows = function(follows){
-  debugger
   _follows = follows.slice(0);
 };
 

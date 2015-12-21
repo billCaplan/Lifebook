@@ -8,6 +8,8 @@ var React = require('react'),
     ImageStore = require("../stores/image"),
     ApiUtil = require('../util/api_util'),
     Modal = require('react-modal'),
+    ImageComments = require('../components/ImageComment'),
+    NewImageComment = require('../components/NewImageComment'),
     ImageModal = require('../components/ImageModal');
 
     var customStyles = {
@@ -30,7 +32,7 @@ var Images = React.createClass({
   openModal: function(event) {
 
     this.setState({modalIsOpen: true,
-                  selectedImage: event.image_path });
+                  selectedImage: event });
   },
 
   closeModal: function() {
@@ -88,7 +90,9 @@ var Images = React.createClass({
                <h2>Picture</h2>
                <button onClick={this.closeModal}>close</button>
                <div>I am a modal</div>
-               <img src={that.buildModalUrl(that.state.selectedImage)}></img>
+               <img src={that.buildModalUrl(that.state.selectedImage.image_path)}></img>
+               <ImageComments image={this.state.selectedImage}/>
+               <NewImageComment image={this.state.selectedImage}/>
              </Modal>
            </div>
         </div>
