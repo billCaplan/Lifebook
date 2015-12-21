@@ -6,7 +6,8 @@ var React = require('react'),
     ImageModal = require("../components/ImageModal"),
     UserStore = require("../stores/user"),
     ImageStore = require("../stores/image"),
-    ApiUtil = require('../util/api_util');
+    ApiUtil = require('../util/api_util'),
+    ImageModal = require('../components/ImageModal');
 
 var Images = React.createClass({
   getInitialState: function () {
@@ -30,11 +31,17 @@ var Images = React.createClass({
     var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + image_path;
     return url;
   },
+  handleClick: function(){
+    return <ImageModal />;
+  },
   render: function () {
     var that = this;
     if (this.state.images){
       var images = this.state.images.map(function(image){
-        return <div key={image.id} className="pictures-in-pane"><img src={that.buildUrl(image.image_path)}></img></div>;
+        return <div key={image.id}
+                    className="pictures-in-pane"><img
+                    src={that.buildUrl(image.image_path)}
+                    onClick={this.handleClick}></img></div>;
       });
   } else {
         var images = <div> no images</div>;

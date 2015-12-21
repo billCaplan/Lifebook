@@ -20,12 +20,13 @@ var SignoutButton = React.createClass({
        method: 'DELETE',
        url: 'session/',
        success: function(resp) {
-         $("content").hide().show(0);
-
-      },
-      error: function (xhr, ajaxOptions, thrownError) {
-        that.history.pushState(null, "/");
-     }
+        //  $("content").hide().show(0);
+        window.location.replace(window.location.origin)
+       },
+       error: function (xhr, ajaxOptions, thrownError) {
+          // debugger;
+          // that.history.pushState(null, "/");
+        }
      });
   },
 

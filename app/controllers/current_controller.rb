@@ -1,6 +1,6 @@
 class CurrentController < ApplicationController
   def index
     @user = current_user
-    render json: @user
+    render :index
   end
 end

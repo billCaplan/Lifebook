@@ -5,7 +5,7 @@ class Api::FollowsController < ApplicationController
   end
 
   def index
-    @follows = Follow.includes(:author, :subject).all.order('"created_at" DESC')
+    @follows = Follow.includes(:author, :usersToFollow).all.order('"created_at" DESC')
   end
 
   def create
@@ -27,7 +27,7 @@ class Api::FollowsController < ApplicationController
     def destroy
      @follow = Follow.find(params[:id])
      @follow.destroy
-     render :show
+     render json: { response: "Logged out" }
     end
 
   private

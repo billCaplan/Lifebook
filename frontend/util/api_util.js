@@ -42,10 +42,29 @@ var ApiUtil = {
     });
   },
   createImage: function(data){
-
     $.post('api/images', { image: {image_path: data.public_id} }, function(image) {
       ApiActions.receiveNewImage(image);
     });
+  },
+  fetchFollows: function(){
+    $.get('/api/follows', function(follows){
+      ApiActions.receiveAllFollows(follows);
+    });
+  },
+  deleteFollow: function(data){
+    debugger
+    $.ajax({
+       method: 'DELETE',
+       url: '/api/follows/' + data.id,
+       data: data,
+       success: function(resp) {
+
+        console.log("Success");
+      },
+       error: function (xhr, ajaxOptions, thrownError) {
+          console.log("Fail");
+        }
+     });
   },
 };
 

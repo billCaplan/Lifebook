@@ -1,6 +1,7 @@
 var AppDispatcher = require('../dispatcher/Dispatcher');
 var PostConstants = require('../constants/post_constants');
 var UserConstants = require('../constants/user_constants');
+var FollowConstants = require('../constants/follow_constants');
 
 var ApiActions = {
   // receiveAllPosts
@@ -55,6 +56,12 @@ var ApiActions = {
     AppDispatcher.dispatch({
       actionType: ImageConstants.NEW_IMAGE_RECEIVED,
       newImage: newImage
+    });
+  },
+  receiveAllFollows: function(follows){
+    AppDispatcher.dispatch({
+      actionType: FollowConstants.FOLLOWS_RECEIVED,
+      follows: follows
     });
   },
 };

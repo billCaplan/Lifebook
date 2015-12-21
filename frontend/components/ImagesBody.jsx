@@ -8,6 +8,8 @@ var React = require('react'),
     ImageStore = require("../stores/image"),
     ApiUtil = require('../util/api_util');
 
+
+
 var ImagesBody = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
@@ -34,7 +36,7 @@ var ImagesBody = React.createClass({
     var that = this;
     if (this.state.images){
       var images = this.state.images.map(function(image){
-        return <div key={image.id}><img src={that.buildUrl(image.image_path)}></img></div>;
+        return <div key={image.id} className="image-body-image"><img src={that.buildUrl(image.image_path)}></img></div>;
       });
   } else {
         var images = <div> no images</div>;
@@ -42,6 +44,7 @@ var ImagesBody = React.createClass({
     return (
       <div className="profile-images-body">
         {images}
+        <ImageModal />
       </div>
     );
   }

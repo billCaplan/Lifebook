@@ -40,6 +40,7 @@ var UserProfile = React.createClass({
       ApiUtil.fetchPosts();
       ApiUtil.fetchUsers();
       ApiUtil.fetchImages();
+      ApiUtil.fetchFollows();
     //Add listener to update state
     this.postListener = PostStore.addListener(this._postsChanged);
     this.userListener = UserStore.addListener(this._usersChanged);
@@ -64,7 +65,7 @@ var UserProfile = React.createClass({
     this.setState({user: _getApplicableUser(this.state.user_id)});
   },
   _renderPicturePage: function(){
-    return <div>
+    return <div className="user-profile-picture-content">
               <button onClick={this._setPostsPage}>Return to Profile</button>
               <ImagesBody user={this.state.user.id} />
           </div>;
