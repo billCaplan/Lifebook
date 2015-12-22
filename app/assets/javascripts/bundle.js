@@ -54,14 +54,14 @@
 	var IndexRoute = ReactRouter.IndexRoute;
 	
 	var Feed = __webpack_require__(210);
-	var UserProfile = __webpack_require__(243);
-	var PostPage = __webpack_require__(253);
+	var UserProfile = __webpack_require__(256);
+	var PostPage = __webpack_require__(291);
 	var ApiUtil = __webpack_require__(235);
 	var UserStore = __webpack_require__(233);
-	var NewPost = __webpack_require__(242);
-	var NewComment = __webpack_require__(238);
-	var Comment = __webpack_require__(239);
-	var HeaderBar = __webpack_require__(254);
+	var NewPost = __webpack_require__(251);
+	var NewComment = __webpack_require__(240);
+	var Comment = __webpack_require__(241);
+	var HeaderBar = __webpack_require__(292);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -24470,13 +24470,13 @@
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
+	var Post = __webpack_require__(239);
 	
 	var ApiUtil = __webpack_require__(235);
-	var NewPost = __webpack_require__(242);
+	var NewPost = __webpack_require__(251);
 	var UserStore = __webpack_require__(233);
-	var ReactCSSTransitionGroup = __webpack_require__(282);
-	var Footer = __webpack_require__(289);
+	var ReactCSSTransitionGroup = __webpack_require__(244);
+	var Footer = __webpack_require__(252);
 	
 	var Feed = React.createClass({
 	  displayName: 'Feed',
@@ -31520,8 +31520,8 @@
 	var AppDispatcher = __webpack_require__(230);
 	var PostConstants = __webpack_require__(229);
 	var UserConstants = __webpack_require__(234);
-	var FollowConstants = __webpack_require__(280);
-	var ImageCommentConstants = __webpack_require__(292);
+	var FollowConstants = __webpack_require__(237);
+	var ImageCommentConstants = __webpack_require__(238);
 	
 	var ApiActions = {
 	  // receiveAllPosts
@@ -31602,6 +31602,28 @@
 
 /***/ },
 /* 237 */
+/***/ function(module, exports) {
+
+	FollowConstants = {
+	  FOLLOW_RECEIVED: "FOLLOW_RECEIVED",
+	  FOLLOWS_RECEIVED: "FOLLOWS_RECEIVED"
+	};
+	
+	module.exports = FollowConstants;
+
+/***/ },
+/* 238 */
+/***/ function(module, exports) {
+
+	ImageCommentConstants = {
+	  IMAGE_COMMENTS_RECEIVED: "IMAGE_COMMENTS_RECEIVED",
+	  NEW_IMAGE_COMMENT_RECEIVED: "NEW_IMAGE_COMMENT_RECEIVED"
+	};
+	
+	module.exports = ImageCommentConstants;
+
+/***/ },
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Note: this is the page for posts that appear in the FEED
@@ -31611,9 +31633,9 @@
 	
 	var ApiUtil = __webpack_require__(235);
 	var History = __webpack_require__(159).History;
-	var NewComment = __webpack_require__(238);
-	var Comment = __webpack_require__(239);
-	var ReactCSSTransitionGroup = __webpack_require__(282);
+	var NewComment = __webpack_require__(240);
+	var Comment = __webpack_require__(241);
+	var ReactCSSTransitionGroup = __webpack_require__(244);
 	
 	var Post = React.createClass({
 	  displayName: 'Post',
@@ -31701,14 +31723,14 @@
 	module.exports = Post;
 
 /***/ },
-/* 238 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
 	
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
+	var Post = __webpack_require__(239);
 	var UserStore = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(235);
@@ -31726,6 +31748,7 @@
 	    event.preventDefault();
 	    var post = { body: event.currentTarget[0].value, post_id: this.props.parentCommentId };
 	    ApiUtil.createComment(post);
+	    event.currentTarget[0].value = null;
 	  },
 	
 	  render: function () {
@@ -31758,14 +31781,14 @@
 	module.exports = NewComment;
 
 /***/ },
-/* 239 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
+	var Post = __webpack_require__(239);
 	var UserStore = __webpack_require__(233);
-	var CommentStore = __webpack_require__(240);
+	var CommentStore = __webpack_require__(242);
 	
 	var ApiUtil = __webpack_require__(235);
 	var History = __webpack_require__(159).History;
@@ -31829,11 +31852,11 @@
 	module.exports = Comment;
 
 /***/ },
-/* 240 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
-	var CommentConstants = __webpack_require__(241);
+	var CommentConstants = __webpack_require__(243);
 	var AppDispatcher = __webpack_require__(230);
 	
 	var CommentStore = new Store(AppDispatcher);
@@ -31883,7 +31906,7 @@
 	module.exports = CommentStore;
 
 /***/ },
-/* 241 */
+/* 243 */
 /***/ function(module, exports) {
 
 	CommentConstants = {
@@ -31894,12 +31917,806 @@
 	module.exports = CommentConstants;
 
 /***/ },
-/* 242 */
+/* 244 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(245);
+
+/***/ },
+/* 245 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @typechecks
+	 * @providesModule ReactCSSTransitionGroup
+	 */
+	
+	'use strict';
+	
+	var React = __webpack_require__(2);
+	
+	var assign = __webpack_require__(39);
+	
+	var ReactTransitionGroup = __webpack_require__(246);
+	var ReactCSSTransitionGroupChild = __webpack_require__(248);
+	
+	function createTransitionTimeoutPropValidator(transitionType) {
+	  var timeoutPropName = 'transition' + transitionType + 'Timeout';
+	  var enabledPropName = 'transition' + transitionType;
+	
+	  return function (props) {
+	    // If the transition is enabled
+	    if (props[enabledPropName]) {
+	      // If no timeout duration is provided
+	      if (props[timeoutPropName] == null) {
+	        return new Error(timeoutPropName + ' wasn\'t supplied to ReactCSSTransitionGroup: ' + 'this can cause unreliable animations and won\'t be supported in ' + 'a future version of React. See ' + 'https://fb.me/react-animation-transition-group-timeout for more ' + 'information.');
+	
+	        // If the duration isn't a number
+	      } else if (typeof props[timeoutPropName] !== 'number') {
+	          return new Error(timeoutPropName + ' must be a number (in milliseconds)');
+	        }
+	    }
+	  };
+	}
+	
+	var ReactCSSTransitionGroup = React.createClass({
+	  displayName: 'ReactCSSTransitionGroup',
+	
+	  propTypes: {
+	    transitionName: ReactCSSTransitionGroupChild.propTypes.name,
+	
+	    transitionAppear: React.PropTypes.bool,
+	    transitionEnter: React.PropTypes.bool,
+	    transitionLeave: React.PropTypes.bool,
+	    transitionAppearTimeout: createTransitionTimeoutPropValidator('Appear'),
+	    transitionEnterTimeout: createTransitionTimeoutPropValidator('Enter'),
+	    transitionLeaveTimeout: createTransitionTimeoutPropValidator('Leave')
+	  },
+	
+	  getDefaultProps: function () {
+	    return {
+	      transitionAppear: false,
+	      transitionEnter: true,
+	      transitionLeave: true
+	    };
+	  },
+	
+	  _wrapChild: function (child) {
+	    // We need to provide this childFactory so that
+	    // ReactCSSTransitionGroupChild can receive updates to name, enter, and
+	    // leave while it is leaving.
+	    return React.createElement(ReactCSSTransitionGroupChild, {
+	      name: this.props.transitionName,
+	      appear: this.props.transitionAppear,
+	      enter: this.props.transitionEnter,
+	      leave: this.props.transitionLeave,
+	      appearTimeout: this.props.transitionAppearTimeout,
+	      enterTimeout: this.props.transitionEnterTimeout,
+	      leaveTimeout: this.props.transitionLeaveTimeout
+	    }, child);
+	  },
+	
+	  render: function () {
+	    return React.createElement(ReactTransitionGroup, assign({}, this.props, { childFactory: this._wrapChild }));
+	  }
+	});
+	
+	module.exports = ReactCSSTransitionGroup;
+
+/***/ },
+/* 246 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactTransitionGroup
+	 */
+	
+	'use strict';
+	
+	var React = __webpack_require__(2);
+	var ReactTransitionChildMapping = __webpack_require__(247);
+	
+	var assign = __webpack_require__(39);
+	var emptyFunction = __webpack_require__(15);
+	
+	var ReactTransitionGroup = React.createClass({
+	  displayName: 'ReactTransitionGroup',
+	
+	  propTypes: {
+	    component: React.PropTypes.any,
+	    childFactory: React.PropTypes.func
+	  },
+	
+	  getDefaultProps: function () {
+	    return {
+	      component: 'span',
+	      childFactory: emptyFunction.thatReturnsArgument
+	    };
+	  },
+	
+	  getInitialState: function () {
+	    return {
+	      children: ReactTransitionChildMapping.getChildMapping(this.props.children)
+	    };
+	  },
+	
+	  componentWillMount: function () {
+	    this.currentlyTransitioningKeys = {};
+	    this.keysToEnter = [];
+	    this.keysToLeave = [];
+	  },
+	
+	  componentDidMount: function () {
+	    var initialChildMapping = this.state.children;
+	    for (var key in initialChildMapping) {
+	      if (initialChildMapping[key]) {
+	        this.performAppear(key);
+	      }
+	    }
+	  },
+	
+	  componentWillReceiveProps: function (nextProps) {
+	    var nextChildMapping = ReactTransitionChildMapping.getChildMapping(nextProps.children);
+	    var prevChildMapping = this.state.children;
+	
+	    this.setState({
+	      children: ReactTransitionChildMapping.mergeChildMappings(prevChildMapping, nextChildMapping)
+	    });
+	
+	    var key;
+	
+	    for (key in nextChildMapping) {
+	      var hasPrev = prevChildMapping && prevChildMapping.hasOwnProperty(key);
+	      if (nextChildMapping[key] && !hasPrev && !this.currentlyTransitioningKeys[key]) {
+	        this.keysToEnter.push(key);
+	      }
+	    }
+	
+	    for (key in prevChildMapping) {
+	      var hasNext = nextChildMapping && nextChildMapping.hasOwnProperty(key);
+	      if (prevChildMapping[key] && !hasNext && !this.currentlyTransitioningKeys[key]) {
+	        this.keysToLeave.push(key);
+	      }
+	    }
+	
+	    // If we want to someday check for reordering, we could do it here.
+	  },
+	
+	  componentDidUpdate: function () {
+	    var keysToEnter = this.keysToEnter;
+	    this.keysToEnter = [];
+	    keysToEnter.forEach(this.performEnter);
+	
+	    var keysToLeave = this.keysToLeave;
+	    this.keysToLeave = [];
+	    keysToLeave.forEach(this.performLeave);
+	  },
+	
+	  performAppear: function (key) {
+	    this.currentlyTransitioningKeys[key] = true;
+	
+	    var component = this.refs[key];
+	
+	    if (component.componentWillAppear) {
+	      component.componentWillAppear(this._handleDoneAppearing.bind(this, key));
+	    } else {
+	      this._handleDoneAppearing(key);
+	    }
+	  },
+	
+	  _handleDoneAppearing: function (key) {
+	    var component = this.refs[key];
+	    if (component.componentDidAppear) {
+	      component.componentDidAppear();
+	    }
+	
+	    delete this.currentlyTransitioningKeys[key];
+	
+	    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
+	
+	    if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key)) {
+	      // This was removed before it had fully appeared. Remove it.
+	      this.performLeave(key);
+	    }
+	  },
+	
+	  performEnter: function (key) {
+	    this.currentlyTransitioningKeys[key] = true;
+	
+	    var component = this.refs[key];
+	
+	    if (component.componentWillEnter) {
+	      component.componentWillEnter(this._handleDoneEntering.bind(this, key));
+	    } else {
+	      this._handleDoneEntering(key);
+	    }
+	  },
+	
+	  _handleDoneEntering: function (key) {
+	    var component = this.refs[key];
+	    if (component.componentDidEnter) {
+	      component.componentDidEnter();
+	    }
+	
+	    delete this.currentlyTransitioningKeys[key];
+	
+	    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
+	
+	    if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key)) {
+	      // This was removed before it had fully entered. Remove it.
+	      this.performLeave(key);
+	    }
+	  },
+	
+	  performLeave: function (key) {
+	    this.currentlyTransitioningKeys[key] = true;
+	
+	    var component = this.refs[key];
+	    if (component.componentWillLeave) {
+	      component.componentWillLeave(this._handleDoneLeaving.bind(this, key));
+	    } else {
+	      // Note that this is somewhat dangerous b/c it calls setState()
+	      // again, effectively mutating the component before all the work
+	      // is done.
+	      this._handleDoneLeaving(key);
+	    }
+	  },
+	
+	  _handleDoneLeaving: function (key) {
+	    var component = this.refs[key];
+	
+	    if (component.componentDidLeave) {
+	      component.componentDidLeave();
+	    }
+	
+	    delete this.currentlyTransitioningKeys[key];
+	
+	    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
+	
+	    if (currentChildMapping && currentChildMapping.hasOwnProperty(key)) {
+	      // This entered again before it fully left. Add it again.
+	      this.performEnter(key);
+	    } else {
+	      this.setState(function (state) {
+	        var newChildren = assign({}, state.children);
+	        delete newChildren[key];
+	        return { children: newChildren };
+	      });
+	    }
+	  },
+	
+	  render: function () {
+	    // TODO: we could get rid of the need for the wrapper node
+	    // by cloning a single child
+	    var childrenToRender = [];
+	    for (var key in this.state.children) {
+	      var child = this.state.children[key];
+	      if (child) {
+	        // You may need to apply reactive updates to a child as it is leaving.
+	        // The normal React way to do it won't work since the child will have
+	        // already been removed. In case you need this behavior you can provide
+	        // a childFactory function to wrap every child, even the ones that are
+	        // leaving.
+	        childrenToRender.push(React.cloneElement(this.props.childFactory(child), { ref: key, key: key }));
+	      }
+	    }
+	    return React.createElement(this.props.component, this.props, childrenToRender);
+	  }
+	});
+	
+	module.exports = ReactTransitionGroup;
+
+/***/ },
+/* 247 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @typechecks static-only
+	 * @providesModule ReactTransitionChildMapping
+	 */
+	
+	'use strict';
+	
+	var flattenChildren = __webpack_require__(116);
+	
+	var ReactTransitionChildMapping = {
+	  /**
+	   * Given `this.props.children`, return an object mapping key to child. Just
+	   * simple syntactic sugar around flattenChildren().
+	   *
+	   * @param {*} children `this.props.children`
+	   * @return {object} Mapping of key to child
+	   */
+	  getChildMapping: function (children) {
+	    if (!children) {
+	      return children;
+	    }
+	    return flattenChildren(children);
+	  },
+	
+	  /**
+	   * When you're adding or removing children some may be added or removed in the
+	   * same render pass. We want to show *both* since we want to simultaneously
+	   * animate elements in and out. This function takes a previous set of keys
+	   * and a new set of keys and merges them with its best guess of the correct
+	   * ordering. In the future we may expose some of the utilities in
+	   * ReactMultiChild to make this easy, but for now React itself does not
+	   * directly have this concept of the union of prevChildren and nextChildren
+	   * so we implement it here.
+	   *
+	   * @param {object} prev prev children as returned from
+	   * `ReactTransitionChildMapping.getChildMapping()`.
+	   * @param {object} next next children as returned from
+	   * `ReactTransitionChildMapping.getChildMapping()`.
+	   * @return {object} a key set that contains all keys in `prev` and all keys
+	   * in `next` in a reasonable order.
+	   */
+	  mergeChildMappings: function (prev, next) {
+	    prev = prev || {};
+	    next = next || {};
+	
+	    function getValueForKey(key) {
+	      if (next.hasOwnProperty(key)) {
+	        return next[key];
+	      } else {
+	        return prev[key];
+	      }
+	    }
+	
+	    // For each key of `next`, the list of keys to insert before that key in
+	    // the combined list
+	    var nextKeysPending = {};
+	
+	    var pendingKeys = [];
+	    for (var prevKey in prev) {
+	      if (next.hasOwnProperty(prevKey)) {
+	        if (pendingKeys.length) {
+	          nextKeysPending[prevKey] = pendingKeys;
+	          pendingKeys = [];
+	        }
+	      } else {
+	        pendingKeys.push(prevKey);
+	      }
+	    }
+	
+	    var i;
+	    var childMapping = {};
+	    for (var nextKey in next) {
+	      if (nextKeysPending.hasOwnProperty(nextKey)) {
+	        for (i = 0; i < nextKeysPending[nextKey].length; i++) {
+	          var pendingNextKey = nextKeysPending[nextKey][i];
+	          childMapping[nextKeysPending[nextKey][i]] = getValueForKey(pendingNextKey);
+	        }
+	      }
+	      childMapping[nextKey] = getValueForKey(nextKey);
+	    }
+	
+	    // Finally, add the keys which didn't appear before any key in `next`
+	    for (i = 0; i < pendingKeys.length; i++) {
+	      childMapping[pendingKeys[i]] = getValueForKey(pendingKeys[i]);
+	    }
+	
+	    return childMapping;
+	  }
+	};
+	
+	module.exports = ReactTransitionChildMapping;
+
+/***/ },
+/* 248 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @typechecks
+	 * @providesModule ReactCSSTransitionGroupChild
+	 */
+	
+	'use strict';
+	
+	var React = __webpack_require__(2);
+	var ReactDOM = __webpack_require__(3);
+	
+	var CSSCore = __webpack_require__(249);
+	var ReactTransitionEvents = __webpack_require__(250);
+	
+	var onlyChild = __webpack_require__(156);
+	
+	// We don't remove the element from the DOM until we receive an animationend or
+	// transitionend event. If the user screws up and forgets to add an animation
+	// their node will be stuck in the DOM forever, so we detect if an animation
+	// does not start and if it doesn't, we just call the end listener immediately.
+	var TICK = 17;
+	
+	var ReactCSSTransitionGroupChild = React.createClass({
+	  displayName: 'ReactCSSTransitionGroupChild',
+	
+	  propTypes: {
+	    name: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.shape({
+	      enter: React.PropTypes.string,
+	      leave: React.PropTypes.string,
+	      active: React.PropTypes.string
+	    }), React.PropTypes.shape({
+	      enter: React.PropTypes.string,
+	      enterActive: React.PropTypes.string,
+	      leave: React.PropTypes.string,
+	      leaveActive: React.PropTypes.string,
+	      appear: React.PropTypes.string,
+	      appearActive: React.PropTypes.string
+	    })]).isRequired,
+	
+	    // Once we require timeouts to be specified, we can remove the
+	    // boolean flags (appear etc.) and just accept a number
+	    // or a bool for the timeout flags (appearTimeout etc.)
+	    appear: React.PropTypes.bool,
+	    enter: React.PropTypes.bool,
+	    leave: React.PropTypes.bool,
+	    appearTimeout: React.PropTypes.number,
+	    enterTimeout: React.PropTypes.number,
+	    leaveTimeout: React.PropTypes.number
+	  },
+	
+	  transition: function (animationType, finishCallback, userSpecifiedDelay) {
+	    var node = ReactDOM.findDOMNode(this);
+	
+	    if (!node) {
+	      if (finishCallback) {
+	        finishCallback();
+	      }
+	      return;
+	    }
+	
+	    var className = this.props.name[animationType] || this.props.name + '-' + animationType;
+	    var activeClassName = this.props.name[animationType + 'Active'] || className + '-active';
+	    var timeout = null;
+	
+	    var endListener = function (e) {
+	      if (e && e.target !== node) {
+	        return;
+	      }
+	
+	      clearTimeout(timeout);
+	
+	      CSSCore.removeClass(node, className);
+	      CSSCore.removeClass(node, activeClassName);
+	
+	      ReactTransitionEvents.removeEndEventListener(node, endListener);
+	
+	      // Usually this optional callback is used for informing an owner of
+	      // a leave animation and telling it to remove the child.
+	      if (finishCallback) {
+	        finishCallback();
+	      }
+	    };
+	
+	    CSSCore.addClass(node, className);
+	
+	    // Need to do this to actually trigger a transition.
+	    this.queueClass(activeClassName);
+	
+	    // If the user specified a timeout delay.
+	    if (userSpecifiedDelay) {
+	      // Clean-up the animation after the specified delay
+	      timeout = setTimeout(endListener, userSpecifiedDelay);
+	      this.transitionTimeouts.push(timeout);
+	    } else {
+	      // DEPRECATED: this listener will be removed in a future version of react
+	      ReactTransitionEvents.addEndEventListener(node, endListener);
+	    }
+	  },
+	
+	  queueClass: function (className) {
+	    this.classNameQueue.push(className);
+	
+	    if (!this.timeout) {
+	      this.timeout = setTimeout(this.flushClassNameQueue, TICK);
+	    }
+	  },
+	
+	  flushClassNameQueue: function () {
+	    if (this.isMounted()) {
+	      this.classNameQueue.forEach(CSSCore.addClass.bind(CSSCore, ReactDOM.findDOMNode(this)));
+	    }
+	    this.classNameQueue.length = 0;
+	    this.timeout = null;
+	  },
+	
+	  componentWillMount: function () {
+	    this.classNameQueue = [];
+	    this.transitionTimeouts = [];
+	  },
+	
+	  componentWillUnmount: function () {
+	    if (this.timeout) {
+	      clearTimeout(this.timeout);
+	    }
+	    this.transitionTimeouts.forEach(function (timeout) {
+	      clearTimeout(timeout);
+	    });
+	  },
+	
+	  componentWillAppear: function (done) {
+	    if (this.props.appear) {
+	      this.transition('appear', done, this.props.appearTimeout);
+	    } else {
+	      done();
+	    }
+	  },
+	
+	  componentWillEnter: function (done) {
+	    if (this.props.enter) {
+	      this.transition('enter', done, this.props.enterTimeout);
+	    } else {
+	      done();
+	    }
+	  },
+	
+	  componentWillLeave: function (done) {
+	    if (this.props.leave) {
+	      this.transition('leave', done, this.props.leaveTimeout);
+	    } else {
+	      done();
+	    }
+	  },
+	
+	  render: function () {
+	    return onlyChild(this.props.children);
+	  }
+	});
+	
+	module.exports = ReactCSSTransitionGroupChild;
+
+/***/ },
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule CSSCore
+	 * @typechecks
+	 */
+	
+	'use strict';
+	
+	var invariant = __webpack_require__(13);
+	
+	/**
+	 * The CSSCore module specifies the API (and implements most of the methods)
+	 * that should be used when dealing with the display of elements (via their
+	 * CSS classes and visibility on screen. It is an API focused on mutating the
+	 * display and not reading it as no logical state should be encoded in the
+	 * display of elements.
+	 */
+	
+	var CSSCore = {
+	
+	  /**
+	   * Adds the class passed in to the element if it doesn't already have it.
+	   *
+	   * @param {DOMElement} element the element to set the class on
+	   * @param {string} className the CSS className
+	   * @return {DOMElement} the element passed in
+	   */
+	  addClass: function (element, className) {
+	    !!/\s/.test(className) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'CSSCore.addClass takes only a single class name. "%s" contains ' + 'multiple classes.', className) : invariant(false) : undefined;
+	
+	    if (className) {
+	      if (element.classList) {
+	        element.classList.add(className);
+	      } else if (!CSSCore.hasClass(element, className)) {
+	        element.className = element.className + ' ' + className;
+	      }
+	    }
+	    return element;
+	  },
+	
+	  /**
+	   * Removes the class passed in from the element
+	   *
+	   * @param {DOMElement} element the element to set the class on
+	   * @param {string} className the CSS className
+	   * @return {DOMElement} the element passed in
+	   */
+	  removeClass: function (element, className) {
+	    !!/\s/.test(className) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'CSSCore.removeClass takes only a single class name. "%s" contains ' + 'multiple classes.', className) : invariant(false) : undefined;
+	
+	    if (className) {
+	      if (element.classList) {
+	        element.classList.remove(className);
+	      } else if (CSSCore.hasClass(element, className)) {
+	        element.className = element.className.replace(new RegExp('(^|\\s)' + className + '(?:\\s|$)', 'g'), '$1').replace(/\s+/g, ' ') // multiple spaces to one
+	        .replace(/^\s*|\s*$/g, ''); // trim the ends
+	      }
+	    }
+	    return element;
+	  },
+	
+	  /**
+	   * Helper to add or remove a class from an element based on a condition.
+	   *
+	   * @param {DOMElement} element the element to set the class on
+	   * @param {string} className the CSS className
+	   * @param {*} bool condition to whether to add or remove the class
+	   * @return {DOMElement} the element passed in
+	   */
+	  conditionClass: function (element, className, bool) {
+	    return (bool ? CSSCore.addClass : CSSCore.removeClass)(element, className);
+	  },
+	
+	  /**
+	   * Tests whether the element has the class specified.
+	   *
+	   * @param {DOMNode|DOMWindow} element the element to set the class on
+	   * @param {string} className the CSS className
+	   * @return {boolean} true if the element has the class, false if not
+	   */
+	  hasClass: function (element, className) {
+	    !!/\s/.test(className) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'CSS.hasClass takes only a single class name.') : invariant(false) : undefined;
+	    if (element.classList) {
+	      return !!className && element.classList.contains(className);
+	    }
+	    return (' ' + element.className + ' ').indexOf(' ' + className + ' ') > -1;
+	  }
+	
+	};
+	
+	module.exports = CSSCore;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ },
+/* 250 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactTransitionEvents
+	 */
+	
+	'use strict';
+	
+	var ExecutionEnvironment = __webpack_require__(9);
+	
+	/**
+	 * EVENT_NAME_MAP is used to determine which event fired when a
+	 * transition/animation ends, based on the style property used to
+	 * define that event.
+	 */
+	var EVENT_NAME_MAP = {
+	  transitionend: {
+	    'transition': 'transitionend',
+	    'WebkitTransition': 'webkitTransitionEnd',
+	    'MozTransition': 'mozTransitionEnd',
+	    'OTransition': 'oTransitionEnd',
+	    'msTransition': 'MSTransitionEnd'
+	  },
+	
+	  animationend: {
+	    'animation': 'animationend',
+	    'WebkitAnimation': 'webkitAnimationEnd',
+	    'MozAnimation': 'mozAnimationEnd',
+	    'OAnimation': 'oAnimationEnd',
+	    'msAnimation': 'MSAnimationEnd'
+	  }
+	};
+	
+	var endEvents = [];
+	
+	function detectEvents() {
+	  var testEl = document.createElement('div');
+	  var style = testEl.style;
+	
+	  // On some platforms, in particular some releases of Android 4.x,
+	  // the un-prefixed "animation" and "transition" properties are defined on the
+	  // style object but the events that fire will still be prefixed, so we need
+	  // to check if the un-prefixed events are useable, and if not remove them
+	  // from the map
+	  if (!('AnimationEvent' in window)) {
+	    delete EVENT_NAME_MAP.animationend.animation;
+	  }
+	
+	  if (!('TransitionEvent' in window)) {
+	    delete EVENT_NAME_MAP.transitionend.transition;
+	  }
+	
+	  for (var baseEventName in EVENT_NAME_MAP) {
+	    var baseEvents = EVENT_NAME_MAP[baseEventName];
+	    for (var styleName in baseEvents) {
+	      if (styleName in style) {
+	        endEvents.push(baseEvents[styleName]);
+	        break;
+	      }
+	    }
+	  }
+	}
+	
+	if (ExecutionEnvironment.canUseDOM) {
+	  detectEvents();
+	}
+	
+	// We use the raw {add|remove}EventListener() call because EventListener
+	// does not know how to remove event listeners and we really should
+	// clean up. Also, these events are not triggered in older browsers
+	// so we should be A-OK here.
+	
+	function addEventListener(node, eventName, eventListener) {
+	  node.addEventListener(eventName, eventListener, false);
+	}
+	
+	function removeEventListener(node, eventName, eventListener) {
+	  node.removeEventListener(eventName, eventListener, false);
+	}
+	
+	var ReactTransitionEvents = {
+	  addEndEventListener: function (node, eventListener) {
+	    if (endEvents.length === 0) {
+	      // If CSS transitions are not supported, trigger an "end animation"
+	      // event immediately.
+	      window.setTimeout(eventListener, 0);
+	      return;
+	    }
+	    endEvents.forEach(function (endEvent) {
+	      addEventListener(node, endEvent, eventListener);
+	    });
+	  },
+	
+	  removeEndEventListener: function (node, eventListener) {
+	    if (endEvents.length === 0) {
+	      return;
+	    }
+	    endEvents.forEach(function (endEvent) {
+	      removeEventListener(node, endEvent, eventListener);
+	    });
+	  }
+	};
+	
+	module.exports = ReactTransitionEvents;
+
+/***/ },
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
+	var Post = __webpack_require__(239);
 	
 	var ApiUtil = __webpack_require__(235);
 	var UserStore = __webpack_require__(233);
@@ -31926,6 +32743,7 @@
 	
 	    var post = { body: event.currentTarget[0].value, target_id: this.props.targetUserId };
 	    ApiUtil.createPost(post);
+	    event.currentTarget[0].value = null;
 	  },
 	
 	  render: function () {
@@ -31955,22 +32773,293 @@
 	module.exports = NewPost;
 
 /***/ },
-/* 243 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
+	var Post = __webpack_require__(239);
+	var UserStore = __webpack_require__(233);
+	var SearchBar = __webpack_require__(253);
+	var History = __webpack_require__(159).History;
+	var SignoutButton = __webpack_require__(255);
+	var ApiUtil = __webpack_require__(235);
+	
+	var Footer = React.createClass({
+	  displayName: 'Footer',
+	
+	  mixins: [History],
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	
+	  render: function () {
+	    var name, profile_image;
+	
+	    if (this.state.user.real_name) {
+	      name = this.state.user.real_name;
+	      profile_image = this.state.user.profile_image;
+	    } else {
+	      name = "Loading";
+	    }
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'footer-bar' },
+	      React.createElement(
+	        'div',
+	        null,
+	        'End of Page'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = Footer;
+
+/***/ },
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserStore = __webpack_require__(233);
+	var History = __webpack_require__(159).History;
+	var classNames = __webpack_require__(254);
+	
+	var SearchBar = React.createClass({
+	  displayName: 'SearchBar',
+	
+	  mixins: [History],
+	  getInitialState: function () {
+	    this.userListener = UserStore.addListener(this._usersChanged);
+	    return { inputVal: "",
+	      users: UserStore.all(),
+	      listVisible: false
+	    };
+	  },
+	  _usersChanged: function () {
+	    this.setState({ users: UserStore.all() });
+	  },
+	  handleSubjectClick: function (destinationId) {
+	    this.setState({ listVisible: false });
+	    this.history.pushState(null, "user/" + this.props.post.subject.id);
+	    window.scrollTo(0, 0);
+	  },
+	
+	  handleInput: function (event) {
+	    this.setState({ inputVal: event.currentTarget.value });
+	    if (event.currentTarget.value.length !== 0) {
+	      this.setState({ listVisible: true });
+	    } else {
+	      this.setState({ listVisible: false });
+	    }
+	  },
+	
+	  matches: function () {
+	    var matches = [];
+	    if (this.state.inputVal.length === 0) {
+	      return this.state.users;
+	    }
+	
+	    this.state.users.forEach((function (user) {
+	
+	      var name = user.real_name;
+	      var sub = name.slice(0, this.state.inputVal.length);
+	      if (sub.toLowerCase() === this.state.inputVal.toLowerCase()) {
+	        matches.push(user);
+	      }
+	    }).bind(this));
+	
+	    if (matches.length === 0) {
+	      matches.push("No matches");
+	    }
+	    return matches;
+	  },
+	
+	  selectName: function (result) {
+	    var name = event.currentTarget.innerText;
+	    this.setState({ listVisible: false, inputVal: "" });
+	    this.history.pushState(null, "user/" + result.id);
+	  },
+	  _setContent: function (results) {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'label',
+	        null,
+	        'Search:'
+	      ),
+	      React.createElement('input', { onChange: this.handleInput, value: this.state.inputVal }),
+	      React.createElement(
+	        'ul',
+	        { className: this.listClass() },
+	        results.map((function (result, i) {
+	          return React.createElement(
+	            'li',
+	            { key: i, onClick: this.selectName.bind(null, result) },
+	            result.real_name
+	          );
+	        }).bind(this))
+	      )
+	    );
+	  },
+	  componentWillUnmount: function () {
+	    this.userListener.remove();
+	  },
+	  listClass: function () {
+	    var listClass = classNames({
+	      'search-list': true,
+	      'search-list-hidden': this.state.listVisible === false,
+	      'search-list-visible': this.state.listVisible
+	    });
+	    return listClass;
+	  },
+	
+	  render: function () {
+	    var results = this.matches();
+	
+	    if (this.state.users && results) {
+	      var content = this._setContent(results);
+	    } else {
+	      var content = React.createElement(
+	        'div',
+	        null,
+	        'Loading'
+	      );
+	    }
+	    return React.createElement(
+	      'div',
+	      null,
+	      content
+	    );
+	  }
+	});
+	
+	module.exports = SearchBar;
+
+/***/ },
+/* 254 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2015 Jed Watson.
+	  Licensed under the MIT License (MIT), see
+	  http://jedwatson.github.io/classnames
+	*/
+	/* global define */
+	
+	(function () {
+		'use strict';
+	
+		var hasOwn = {}.hasOwnProperty;
+	
+		function classNames () {
+			var classes = '';
+	
+			for (var i = 0; i < arguments.length; i++) {
+				var arg = arguments[i];
+				if (!arg) continue;
+	
+				var argType = typeof arg;
+	
+				if (argType === 'string' || argType === 'number') {
+					classes += ' ' + arg;
+				} else if (Array.isArray(arg)) {
+					classes += ' ' + classNames.apply(null, arg);
+				} else if (argType === 'object') {
+					for (var key in arg) {
+						if (hasOwn.call(arg, key) && arg[key]) {
+							classes += ' ' + key;
+						}
+					}
+				}
+			}
+	
+			return classes.substr(1);
+		}
+	
+		if (typeof module !== 'undefined' && module.exports) {
+			module.exports = classNames;
+		} else if (true) {
+			// register as 'classnames', consistent with npm package name
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+				return classNames;
+			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		} else {
+			window.classNames = classNames;
+		}
+	}());
+
+
+/***/ },
+/* 255 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(239);
+	var UserStore = __webpack_require__(233);
+	var History = __webpack_require__(159).History;
 	
 	var ApiUtil = __webpack_require__(235);
-	var UserProfileUserInfo = __webpack_require__(244);
-	var NewPost = __webpack_require__(242);
+	
+	var SignoutButton = React.createClass({
+	  displayName: 'SignoutButton',
+	
+	  mixins: [History],
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  logout: function () {},
+	  handleSignout: function () {
+	    var that = this;
+	    $.ajax({
+	      method: 'DELETE',
+	      url: 'session/',
+	      success: function (resp) {
+	        //  $("content").hide().show(0);
+	        window.location.replace(window.location.origin);
+	      },
+	      error: function (xhr, ajaxOptions, thrownError) {
+	        // debugger;
+	        // that.history.pushState(null, "/");
+	      }
+	    });
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'header-bar-signout-button' },
+	      React.createElement(
+	        'button',
+	        { onClick: this.handleSignout },
+	        'Sign Out'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = SignoutButton;
+
+/***/ },
+/* 256 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(239);
+	
+	var ApiUtil = __webpack_require__(235);
+	var UserProfileUserInfo = __webpack_require__(257);
+	var NewPost = __webpack_require__(251);
 	var UserStore = __webpack_require__(233);
-	var FriendsPane = __webpack_require__(245);
-	var FollowButton = __webpack_require__(246);
-	var Images = __webpack_require__(247);
-	var ImagesBody = __webpack_require__(252);
-	var ReactCSSTransitionGroup = __webpack_require__(282);
+	var FriendsPane = __webpack_require__(258);
+	var FollowButton = __webpack_require__(259);
+	var Images = __webpack_require__(261);
+	var ImagesBody = __webpack_require__(290);
+	var ReactCSSTransitionGroup = __webpack_require__(244);
 	
 	function _getRelevantPosts(userId) {
 	  return PostStore.getByUserId(userId);
@@ -32118,12 +33207,12 @@
 	module.exports = UserProfile;
 
 /***/ },
-/* 244 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
+	var Post = __webpack_require__(239);
 	var UserStore = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(235);
@@ -32189,12 +33278,12 @@
 	module.exports = UserProfileUserInfo;
 
 /***/ },
-/* 245 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
+	var Post = __webpack_require__(239);
 	var UserStore = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(235);
@@ -32241,14 +33330,14 @@
 	module.exports = FriendsPane;
 
 /***/ },
-/* 246 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
+	var Post = __webpack_require__(239);
 	var UserStore = __webpack_require__(233);
-	var FollowStore = __webpack_require__(281);
+	var FollowStore = __webpack_require__(260);
 	
 	var ApiUtil = __webpack_require__(235);
 	
@@ -32344,28 +33433,83 @@
 	module.exports = FollowButton;
 
 /***/ },
-/* 247 */
+/* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var FollowConstants = __webpack_require__(237);
+	var AppDispatcher = __webpack_require__(230);
+	
+	var FollowStore = new Store(AppDispatcher);
+	
+	var _follows = [];
+	
+	var resetFollows = function (follows) {
+	  _follows = follows.slice(0);
+	};
+	
+	var addNewFollow = function (newFollow) {
+	  _follows.push(newFollow);
+	};
+	
+	FollowStore.all = function () {
+	  return _follows.slice(0);
+	};
+	
+	FollowStore.getByFollowParties = function (followParties) {
+	  var author_id = parseInt(followParties.author_id);
+	  var followed_user_id = parseInt(followParties.followed_user_id);
+	  var follows = FollowStore.all();
+	  var relevantFollow = {};
+	
+	  follows.forEach(function (follow) {
+	
+	    if (follow.author_id === author_id && follow.followed_user_id === followed_user_id) {
+	      relevantFollow = follow;
+	    }
+	  });
+	
+	  return relevantFollow;
+	};
+	
+	FollowStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case UserConstants.FOLLOW_RECEIVED:
+	      var result = resetFollows(payload.follows);
+	      FollowStore.__emitChange();
+	      break;
+	    case FollowConstants.FOLLOWS_RECEIVED:
+	      var result = resetFollows(payload.follows);
+	      FollowStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = FollowStore;
+
+/***/ },
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Really the Image Pane, includes the individual images and Upload Button
 	
 	var React = __webpack_require__(1),
 	    ReactDOM = __webpack_require__(158),
-	    UploadButton = __webpack_require__(248),
-	    ImageModal = __webpack_require__(249),
+	    UploadButton = __webpack_require__(262),
+	    ImageModal = __webpack_require__(263),
 	    UserStore = __webpack_require__(233),
-	    ImageStore = __webpack_require__(250),
+	    ImageStore = __webpack_require__(284),
 	    ApiUtil = __webpack_require__(235),
-	    Modal = __webpack_require__(260),
-	    ImageComments = __webpack_require__(290),
-	    NewImageComment = __webpack_require__(291),
-	    ProfilePicChangeButton = __webpack_require__(294),
-	    ImageModal = __webpack_require__(249);
+	    Modal = __webpack_require__(264),
+	    ImageComments = __webpack_require__(286),
+	    NewImageComment = __webpack_require__(288),
+	    ProfilePicChangeButton = __webpack_require__(289),
+	    ImageModal = __webpack_require__(263);
 	
 	var customStyles = {
 	  overlay: {
 	    position: 'fixed',
-	    backgroundColor: 'rgba(255, 255, 255, 0.75)'
+	    backgroundColor: 'rgba(255, 255, 255, 0.90)'
 	  },
 	  content: {
 	    top: '50%',
@@ -32482,7 +33626,7 @@
 	module.exports = Images;
 
 /***/ },
-/* 248 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -32517,14 +33661,14 @@
 	// the postImage function will no longet exist.  Needs to be a store action I believe
 
 /***/ },
-/* 249 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
+	var Post = __webpack_require__(239);
 	var UserStore = __webpack_require__(233);
-	var Modal = __webpack_require__(260);
+	var Modal = __webpack_require__(264);
 	
 	var ApiUtil = __webpack_require__(235);
 	
@@ -32613,604 +33757,23 @@
 	module.exports = ImageModal;
 
 /***/ },
-/* 250 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Store = __webpack_require__(212).Store;
-	var ImageConstants = __webpack_require__(251);
-	var AppDispatcher = __webpack_require__(230);
-	var UserStore = __webpack_require__(233);
-	
-	var ImageStore = new Store(AppDispatcher);
-	
-	var _images = [];
-	
-	var resetImages = function (images) {
-	  _images = images.slice(0);
-	};
-	
-	var addNewImage = function (newImage) {
-	  _images.unshift(newImage);
-	};
-	
-	ImageStore.all = function () {
-	  return _images.slice(0);
-	};
-	
-	// for use on profile page, will return images the user imageed
-	// or images imageed to their wall
-	ImageStore.getByUserId = function (userIdString) {
-	
-	  var userId = parseInt(userIdString);
-	  var images = ImageStore.all();
-	  var relevantImages = [];
-	
-	  images.forEach(function (image) {
-	
-	    if (image.owner_id === userId) {
-	      relevantImages.push(image);
-	    }
-	  });
-	
-	  return relevantImages;
-	};
-	
-	// Could be useful for putting images in the feed, not sure yet
-	// ImageStore.getUsersFollowedImages = function(userIdString){
-	//   var userId = parseInt(userIdString);
-	//   var user = UserStore.findUser(userId);
-	//   var images = ImageStore.all();
-	//
-	//   if(images === [] || user.string === "Bad User"){
-	//     return null;
-	//   }
-	//   var relevantImages = [];
-	//   var relevantUsers = [];
-	//
-	// // now we get an array of good user ids
-	//     user.usersFollowing.forEach(function(user){
-	//       relevantUsers.push(user.id);
-	//     });
-	//
-	// // now we reference the images against the
-	//   images.forEach(function(image){
-	//     if (relevantUsers.indexOf(image.author_id) !== -1){
-	//       relevantImages.push(image);
-	//     }
-	//   });
-	//   return relevantImages;
-	// },
-	
-	ImageStore.__onDispatch = function (payload) {
-	
-	  switch (payload.actionType) {
-	    case ImageConstants.IMAGES_RECEIVED:
-	      var result = resetImages(payload.images);
-	      ImageStore.__emitChange();
-	      break;
-	    case ImageConstants.NEW_IMAGE_RECEIVED:
-	      var result = addNewImage(payload.newImage);
-	      ImageStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	module.exports = ImageStore;
-
-/***/ },
-/* 251 */
-/***/ function(module, exports) {
-
-	ImageConstants = {
-	  IMAGES_RECEIVED: "IMAGES_RECEIVED",
-	  NEW_IMAGE_RECEIVED: "NEW_IMAGE_RECEIVED"
-	};
-	module.exports = ImageConstants;
-
-/***/ },
-/* 252 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Really the Image Pane, includes the individual images and Upload Button
-	
-	var React = __webpack_require__(1),
-	    ReactDOM = __webpack_require__(158),
-	    UploadButton = __webpack_require__(248),
-	    ImageModal = __webpack_require__(249),
-	    UserStore = __webpack_require__(233),
-	    ImageStore = __webpack_require__(250),
-	    Modal = __webpack_require__(260),
-	    ImageComments = __webpack_require__(290),
-	    NewImageComment = __webpack_require__(291),
-	    ApiUtil = __webpack_require__(235);
-	
-	var customStyles = {
-	  overlay: {
-	    position: 'fixed',
-	    backgroundColor: 'rgba(255, 255, 255, 0.75)'
-	  },
-	  content: {
-	    top: '50%',
-	    left: '50%',
-	    right: 'auto',
-	    bottom: 'auto',
-	    height: '600px',
-	    width: '1200px',
-	    marginRight: '-50%',
-	    transform: 'translate(-50%, -50%)'
-	  }
-	};
-	
-	var ImagesBody = React.createClass({
-	  displayName: 'ImagesBody',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  getInitialState: function () {
-	    ApiUtil.fetchImages();
-	    return { images: ImageStore.getByUserId(this.props.user),
-	      user: this.props.user,
-	      modalIsOpen: false,
-	      selectedImage: "" };
-	  },
-	  openModal: function (event) {
-	    this.setState({ modalIsOpen: true,
-	      selectedImage: event });
-	  },
-	
-	  closeModal: function () {
-	    this.setState({ modalIsOpen: false, selectedImage: "" });
-	  },
-	
-	  componentWillReceiveProps: function (newProps) {
-	    ApiUtil.fetchImages();
-	    this.setState({ user: newProps.user });
-	    this.setState({ images: ImageStore.getByUserId(newProps.user) });
-	  },
-	  // componentWillUnmount: function(){
-	  //   this.setState({user: null});
-	  // },
-	  buildUrl: function (image_path) {
-	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_200,w_200/v1450463928/" + image_path;
-	    return url;
-	  },
-	  buildModalUrl: function (image_path) {
-	    var url = "http://res.cloudinary.com/lifebook/image/upload/v1450463928/" + image_path;
-	    return url;
-	  },
-	  modal: function () {
-	    return;
-	  },
-	
-	  render: function () {
-	    var that = this;
-	    if (this.state.images) {
-	      var images = this.state.images.map((function (image) {
-	        return React.createElement(
-	          'div',
-	          { key: image.id,
-	            className: 'image-body-image' },
-	          React.createElement('img', { onClick: this.openModal.bind(null, image),
-	            src: that.buildUrl(image.image_path) })
-	        );
-	      }).bind(this));
-	    } else {
-	      var images = React.createElement(
-	        'div',
-	        null,
-	        ' no images'
-	      );
-	    }
-	    return React.createElement(
-	      'div',
-	      { className: 'profile-images-pane' },
-	      images,
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'div',
-	          { className: 'image-modal-outside' },
-	          React.createElement(
-	            Modal,
-	            {
-	              isOpen: this.state.modalIsOpen,
-	              onRequestClose: this.closeModal,
-	              style: customStyles,
-	              className: 'image-modal' },
-	            React.createElement(
-	              'h2',
-	              null,
-	              'Picture'
-	            ),
-	            React.createElement(
-	              'button',
-	              { onClick: this.closeModal },
-	              'close'
-	            ),
-	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage.image_path), className: 'image-modal-image' }),
-	            React.createElement(NewImageComment, { image: this.state.selectedImage, className: 'image-modal-new-comments' }),
-	            React.createElement(ImageComments, { image: this.state.selectedImage, className: 'image-modal-image-comments' })
-	          )
-	        )
-	      ),
-	      React.createElement(UploadButton, null)
-	    );
-	  }
-	});
-	
-	module.exports = ImagesBody;
-
-/***/ },
-/* 253 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// This page is intended to be the page you go to when you are looking at that exact
-	// single post.  May not make in into final production
-	
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var PostPage = React.createClass({
-	  displayName: 'PostPage',
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        null,
-	        'This is where the posts will go'
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = PostPage;
-
-/***/ },
-/* 254 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
-	var UserStore = __webpack_require__(233);
-	var SearchBar = __webpack_require__(255);
-	var History = __webpack_require__(159).History;
-	var SignoutButton = __webpack_require__(257);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var HeaderBar = React.createClass({
-	  displayName: 'HeaderBar',
-	
-	  mixins: [History],
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  getInitialState: function () {
-	
-	    return { user: {} };
-	  },
-	  redirectToHome: function () {
-	    this.history.pushState(null, "/");
-	  },
-	  componentDidMount: function () {
-	    this.userListener = UserStore.addListener(this._usersChanged);
-	  },
-	  _usersChanged: function () {
-	    this.setState({ user: UserStore.getCurrentUser() });
-	  },
-	  componentWillReceiveProps: function (newProps) {
-	    this.setState({ user: newProps.currentUser });
-	  },
-	  _buildUrl: function (image_path) {
-	    var publicID;
-	    if (!image_path) {
-	      publicID = "lifebook_default_pic.jpg";
-	    } else {
-	      publicID = image_path;
-	    }
-	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + publicID;
-	    return url;
-	  },
-	
-	  render: function () {
-	    debugger;
-	    var name, profile_image;
-	
-	    if (this.state.user.real_name) {
-	      name = this.state.user.real_name;
-	      profile_image = this.state.user.profile_image;
-	    } else {
-	      name = "Loading";
-	    }
-	
-	    return React.createElement(
-	      'nav',
-	      { className: 'header-bar' },
-	      React.createElement(
-	        'div',
-	        { className: 'header-bar-profile-pic' },
-	        React.createElement('img', { src: this._buildUrl(profile_image) })
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'header-bar-real-name' },
-	        name
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'header-bar-search-bar' },
-	        React.createElement(SearchBar, null)
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'header-bar-go-home' },
-	        React.createElement(
-	          'h1',
-	          { onClick: this.redirectToHome },
-	          'Lifebook'
-	        )
-	      ),
-	      React.createElement(SignoutButton, null)
-	    );
-	  }
-	});
-	
-	module.exports = HeaderBar;
-
-/***/ },
-/* 255 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var UserStore = __webpack_require__(233);
-	var History = __webpack_require__(159).History;
-	var classNames = __webpack_require__(256);
-	
-	var SearchBar = React.createClass({
-	  displayName: 'SearchBar',
-	
-	  mixins: [History],
-	  getInitialState: function () {
-	    this.userListener = UserStore.addListener(this._usersChanged);
-	    return { inputVal: "",
-	      users: UserStore.all(),
-	      listVisible: false
-	    };
-	  },
-	  _usersChanged: function () {
-	    this.setState({ users: UserStore.all() });
-	  },
-	  handleSubjectClick: function (destinationId) {
-	    this.setState({ listVisible: false });
-	    this.history.pushState(null, "user/" + this.props.post.subject.id);
-	    window.scrollTo(0, 0);
-	  },
-	
-	  handleInput: function (event) {
-	    this.setState({ inputVal: event.currentTarget.value });
-	    if (event.currentTarget.value.length !== 0) {
-	      this.setState({ listVisible: true });
-	    } else {
-	      this.setState({ listVisible: false });
-	    }
-	  },
-	
-	  matches: function () {
-	    var matches = [];
-	    if (this.state.inputVal.length === 0) {
-	      return this.state.users;
-	    }
-	
-	    this.state.users.forEach((function (user) {
-	
-	      var name = user.real_name;
-	      var sub = name.slice(0, this.state.inputVal.length);
-	      if (sub.toLowerCase() === this.state.inputVal.toLowerCase()) {
-	        matches.push(user);
-	      }
-	    }).bind(this));
-	
-	    if (matches.length === 0) {
-	      matches.push("No matches");
-	    }
-	    return matches;
-	  },
-	
-	  selectName: function (result) {
-	    var name = event.currentTarget.innerText;
-	    this.setState({ listVisible: false, inputVal: "" });
-	    this.history.pushState(null, "user/" + result.id);
-	  },
-	  _setContent: function (results) {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'label',
-	        null,
-	        'Search:'
-	      ),
-	      React.createElement('input', { onChange: this.handleInput, value: this.state.inputVal }),
-	      React.createElement(
-	        'ul',
-	        { className: this.listClass() },
-	        results.map((function (result, i) {
-	          return React.createElement(
-	            'li',
-	            { key: i, onClick: this.selectName.bind(null, result) },
-	            result.real_name
-	          );
-	        }).bind(this))
-	      )
-	    );
-	  },
-	  componentWillUnmount: function () {
-	    this.userListener.remove();
-	  },
-	  listClass: function () {
-	    var listClass = classNames({
-	      'search-list': true,
-	      'search-list-hidden': this.state.listVisible === false,
-	      'search-list-visible': this.state.listVisible
-	    });
-	    return listClass;
-	  },
-	
-	  render: function () {
-	    var results = this.matches();
-	
-	    if (this.state.users && results) {
-	      var content = this._setContent(results);
-	    } else {
-	      var content = React.createElement(
-	        'div',
-	        null,
-	        'Loading'
-	      );
-	    }
-	    return React.createElement(
-	      'div',
-	      null,
-	      content
-	    );
-	  }
-	});
-	
-	module.exports = SearchBar;
-
-/***/ },
-/* 256 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
-	  Copyright (c) 2015 Jed Watson.
-	  Licensed under the MIT License (MIT), see
-	  http://jedwatson.github.io/classnames
-	*/
-	/* global define */
-	
-	(function () {
-		'use strict';
-	
-		var hasOwn = {}.hasOwnProperty;
-	
-		function classNames () {
-			var classes = '';
-	
-			for (var i = 0; i < arguments.length; i++) {
-				var arg = arguments[i];
-				if (!arg) continue;
-	
-				var argType = typeof arg;
-	
-				if (argType === 'string' || argType === 'number') {
-					classes += ' ' + arg;
-				} else if (Array.isArray(arg)) {
-					classes += ' ' + classNames.apply(null, arg);
-				} else if (argType === 'object') {
-					for (var key in arg) {
-						if (hasOwn.call(arg, key) && arg[key]) {
-							classes += ' ' + key;
-						}
-					}
-				}
-			}
-	
-			return classes.substr(1);
-		}
-	
-		if (typeof module !== 'undefined' && module.exports) {
-			module.exports = classNames;
-		} else if (true) {
-			// register as 'classnames', consistent with npm package name
-			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
-				return classNames;
-			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-		} else {
-			window.classNames = classNames;
-		}
-	}());
-
-
-/***/ },
-/* 257 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
-	var UserStore = __webpack_require__(233);
-	var History = __webpack_require__(159).History;
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var SignoutButton = React.createClass({
-	  displayName: 'SignoutButton',
-	
-	  mixins: [History],
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  logout: function () {},
-	  handleSignout: function () {
-	    var that = this;
-	    $.ajax({
-	      method: 'DELETE',
-	      url: 'session/',
-	      success: function (resp) {
-	        //  $("content").hide().show(0);
-	        window.location.replace(window.location.origin);
-	      },
-	      error: function (xhr, ajaxOptions, thrownError) {
-	        // debugger;
-	        // that.history.pushState(null, "/");
-	      }
-	    });
-	  },
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      { className: 'header-bar-signout-button' },
-	      React.createElement(
-	        'button',
-	        { onClick: this.handleSignout },
-	        'Sign Out'
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = SignoutButton;
-
-/***/ },
-/* 258 */,
-/* 259 */,
-/* 260 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(261);
+	module.exports = __webpack_require__(265);
 	
 
 
 /***/ },
-/* 261 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(158);
-	var ExecutionEnvironment = __webpack_require__(262);
-	var ModalPortal = React.createFactory(__webpack_require__(263));
-	var ariaAppHider = __webpack_require__(278);
-	var elementClass = __webpack_require__(279);
+	var ExecutionEnvironment = __webpack_require__(266);
+	var ModalPortal = React.createFactory(__webpack_require__(267));
+	var ariaAppHider = __webpack_require__(282);
+	var elementClass = __webpack_require__(283);
 	var renderSubtreeIntoContainer = __webpack_require__(158).unstable_renderSubtreeIntoContainer;
 	
 	var SafeHTMLElement = ExecutionEnvironment.canUseDOM ? window.HTMLElement : {};
@@ -33289,7 +33852,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 262 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -33334,14 +33897,14 @@
 
 
 /***/ },
-/* 263 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var div = React.DOM.div;
-	var focusManager = __webpack_require__(264);
-	var scopeTab = __webpack_require__(266);
-	var Assign = __webpack_require__(267);
+	var focusManager = __webpack_require__(268);
+	var scopeTab = __webpack_require__(270);
+	var Assign = __webpack_require__(271);
 	
 	
 	// so that our CSS is statically analyzable
@@ -33538,10 +34101,10 @@
 
 
 /***/ },
-/* 264 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var findTabbable = __webpack_require__(265);
+	var findTabbable = __webpack_require__(269);
 	var modalElement = null;
 	var focusLaterElement = null;
 	var needToFocus = false;
@@ -33612,7 +34175,7 @@
 
 
 /***/ },
-/* 265 */
+/* 269 */
 /***/ function(module, exports) {
 
 	/*!
@@ -33668,10 +34231,10 @@
 
 
 /***/ },
-/* 266 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var findTabbable = __webpack_require__(265);
+	var findTabbable = __webpack_require__(269);
 	
 	module.exports = function(node, event) {
 	  var tabbable = findTabbable(node);
@@ -33689,7 +34252,7 @@
 
 
 /***/ },
-/* 267 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -33700,9 +34263,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseAssign = __webpack_require__(268),
-	    createAssigner = __webpack_require__(274),
-	    keys = __webpack_require__(270);
+	var baseAssign = __webpack_require__(272),
+	    createAssigner = __webpack_require__(278),
+	    keys = __webpack_require__(274);
 	
 	/**
 	 * A specialized version of `_.assign` for customizing assigned values without
@@ -33775,7 +34338,7 @@
 
 
 /***/ },
-/* 268 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -33786,8 +34349,8 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseCopy = __webpack_require__(269),
-	    keys = __webpack_require__(270);
+	var baseCopy = __webpack_require__(273),
+	    keys = __webpack_require__(274);
 	
 	/**
 	 * The base implementation of `_.assign` without support for argument juggling,
@@ -33808,7 +34371,7 @@
 
 
 /***/ },
-/* 269 */
+/* 273 */
 /***/ function(module, exports) {
 
 	/**
@@ -33846,7 +34409,7 @@
 
 
 /***/ },
-/* 270 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -33857,9 +34420,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var getNative = __webpack_require__(271),
-	    isArguments = __webpack_require__(272),
-	    isArray = __webpack_require__(273);
+	var getNative = __webpack_require__(275),
+	    isArguments = __webpack_require__(276),
+	    isArray = __webpack_require__(277);
 	
 	/** Used to detect unsigned integer values. */
 	var reIsUint = /^\d+$/;
@@ -34088,7 +34651,7 @@
 
 
 /***/ },
-/* 271 */
+/* 275 */
 /***/ function(module, exports) {
 
 	/**
@@ -34231,7 +34794,7 @@
 
 
 /***/ },
-/* 272 */
+/* 276 */
 /***/ function(module, exports) {
 
 	/**
@@ -34343,7 +34906,7 @@
 
 
 /***/ },
-/* 273 */
+/* 277 */
 /***/ function(module, exports) {
 
 	/**
@@ -34529,7 +35092,7 @@
 
 
 /***/ },
-/* 274 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -34540,9 +35103,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var bindCallback = __webpack_require__(275),
-	    isIterateeCall = __webpack_require__(276),
-	    restParam = __webpack_require__(277);
+	var bindCallback = __webpack_require__(279),
+	    isIterateeCall = __webpack_require__(280),
+	    restParam = __webpack_require__(281);
 	
 	/**
 	 * Creates a function that assigns properties of source object(s) to a given
@@ -34587,7 +35150,7 @@
 
 
 /***/ },
-/* 275 */
+/* 279 */
 /***/ function(module, exports) {
 
 	/**
@@ -34658,7 +35221,7 @@
 
 
 /***/ },
-/* 276 */
+/* 280 */
 /***/ function(module, exports) {
 
 	/**
@@ -34796,7 +35359,7 @@
 
 
 /***/ },
-/* 277 */
+/* 281 */
 /***/ function(module, exports) {
 
 	/**
@@ -34869,7 +35432,7 @@
 
 
 /***/ },
-/* 278 */
+/* 282 */
 /***/ function(module, exports) {
 
 	var _element = typeof document !== 'undefined' ? document.body : null;
@@ -34916,7 +35479,7 @@
 
 
 /***/ },
-/* 279 */
+/* 283 */
 /***/ function(module, exports) {
 
 	module.exports = function(opts) {
@@ -34981,919 +35544,109 @@
 
 
 /***/ },
-/* 280 */
-/***/ function(module, exports) {
-
-	FollowConstants = {
-	  FOLLOW_RECEIVED: "FOLLOW_RECEIVED",
-	  FOLLOWS_RECEIVED: "FOLLOWS_RECEIVED"
-	};
-	
-	module.exports = FollowConstants;
-
-/***/ },
-/* 281 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(212).Store;
-	var FollowConstants = __webpack_require__(280);
-	var AppDispatcher = __webpack_require__(230);
-	
-	var FollowStore = new Store(AppDispatcher);
-	
-	var _follows = [];
-	
-	var resetFollows = function (follows) {
-	  _follows = follows.slice(0);
-	};
-	
-	var addNewFollow = function (newFollow) {
-	  _follows.push(newFollow);
-	};
-	
-	FollowStore.all = function () {
-	  return _follows.slice(0);
-	};
-	
-	FollowStore.getByFollowParties = function (followParties) {
-	  var author_id = parseInt(followParties.author_id);
-	  var followed_user_id = parseInt(followParties.followed_user_id);
-	  var follows = FollowStore.all();
-	  var relevantFollow = {};
-	
-	  follows.forEach(function (follow) {
-	
-	    if (follow.author_id === author_id && follow.followed_user_id === followed_user_id) {
-	      relevantFollow = follow;
-	    }
-	  });
-	
-	  return relevantFollow;
-	};
-	
-	FollowStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case UserConstants.FOLLOW_RECEIVED:
-	      var result = resetFollows(payload.follows);
-	      FollowStore.__emitChange();
-	      break;
-	    case FollowConstants.FOLLOWS_RECEIVED:
-	      var result = resetFollows(payload.follows);
-	      FollowStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	module.exports = FollowStore;
-
-/***/ },
-/* 282 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(283);
-
-/***/ },
-/* 283 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @typechecks
-	 * @providesModule ReactCSSTransitionGroup
-	 */
-	
-	'use strict';
-	
-	var React = __webpack_require__(2);
-	
-	var assign = __webpack_require__(39);
-	
-	var ReactTransitionGroup = __webpack_require__(284);
-	var ReactCSSTransitionGroupChild = __webpack_require__(286);
-	
-	function createTransitionTimeoutPropValidator(transitionType) {
-	  var timeoutPropName = 'transition' + transitionType + 'Timeout';
-	  var enabledPropName = 'transition' + transitionType;
-	
-	  return function (props) {
-	    // If the transition is enabled
-	    if (props[enabledPropName]) {
-	      // If no timeout duration is provided
-	      if (props[timeoutPropName] == null) {
-	        return new Error(timeoutPropName + ' wasn\'t supplied to ReactCSSTransitionGroup: ' + 'this can cause unreliable animations and won\'t be supported in ' + 'a future version of React. See ' + 'https://fb.me/react-animation-transition-group-timeout for more ' + 'information.');
-	
-	        // If the duration isn't a number
-	      } else if (typeof props[timeoutPropName] !== 'number') {
-	          return new Error(timeoutPropName + ' must be a number (in milliseconds)');
-	        }
-	    }
-	  };
-	}
-	
-	var ReactCSSTransitionGroup = React.createClass({
-	  displayName: 'ReactCSSTransitionGroup',
-	
-	  propTypes: {
-	    transitionName: ReactCSSTransitionGroupChild.propTypes.name,
-	
-	    transitionAppear: React.PropTypes.bool,
-	    transitionEnter: React.PropTypes.bool,
-	    transitionLeave: React.PropTypes.bool,
-	    transitionAppearTimeout: createTransitionTimeoutPropValidator('Appear'),
-	    transitionEnterTimeout: createTransitionTimeoutPropValidator('Enter'),
-	    transitionLeaveTimeout: createTransitionTimeoutPropValidator('Leave')
-	  },
-	
-	  getDefaultProps: function () {
-	    return {
-	      transitionAppear: false,
-	      transitionEnter: true,
-	      transitionLeave: true
-	    };
-	  },
-	
-	  _wrapChild: function (child) {
-	    // We need to provide this childFactory so that
-	    // ReactCSSTransitionGroupChild can receive updates to name, enter, and
-	    // leave while it is leaving.
-	    return React.createElement(ReactCSSTransitionGroupChild, {
-	      name: this.props.transitionName,
-	      appear: this.props.transitionAppear,
-	      enter: this.props.transitionEnter,
-	      leave: this.props.transitionLeave,
-	      appearTimeout: this.props.transitionAppearTimeout,
-	      enterTimeout: this.props.transitionEnterTimeout,
-	      leaveTimeout: this.props.transitionLeaveTimeout
-	    }, child);
-	  },
-	
-	  render: function () {
-	    return React.createElement(ReactTransitionGroup, assign({}, this.props, { childFactory: this._wrapChild }));
-	  }
-	});
-	
-	module.exports = ReactCSSTransitionGroup;
-
-/***/ },
 /* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule ReactTransitionGroup
-	 */
+	var Store = __webpack_require__(212).Store;
+	var ImageConstants = __webpack_require__(285);
+	var AppDispatcher = __webpack_require__(230);
+	var UserStore = __webpack_require__(233);
 	
-	'use strict';
+	var ImageStore = new Store(AppDispatcher);
 	
-	var React = __webpack_require__(2);
-	var ReactTransitionChildMapping = __webpack_require__(285);
+	var _images = [];
 	
-	var assign = __webpack_require__(39);
-	var emptyFunction = __webpack_require__(15);
+	var resetImages = function (images) {
+	  _images = images.slice(0);
+	};
 	
-	var ReactTransitionGroup = React.createClass({
-	  displayName: 'ReactTransitionGroup',
+	var addNewImage = function (newImage) {
+	  _images.unshift(newImage);
+	};
 	
-	  propTypes: {
-	    component: React.PropTypes.any,
-	    childFactory: React.PropTypes.func
-	  },
+	ImageStore.all = function () {
+	  return _images.slice(0);
+	};
 	
-	  getDefaultProps: function () {
-	    return {
-	      component: 'span',
-	      childFactory: emptyFunction.thatReturnsArgument
-	    };
-	  },
+	// for use on profile page, will return images the user imageed
+	// or images imageed to their wall
+	ImageStore.getByUserId = function (userIdString) {
 	
-	  getInitialState: function () {
-	    return {
-	      children: ReactTransitionChildMapping.getChildMapping(this.props.children)
-	    };
-	  },
+	  var userId = parseInt(userIdString);
+	  var images = ImageStore.all();
+	  var relevantImages = [];
 	
-	  componentWillMount: function () {
-	    this.currentlyTransitioningKeys = {};
-	    this.keysToEnter = [];
-	    this.keysToLeave = [];
-	  },
+	  images.forEach(function (image) {
 	
-	  componentDidMount: function () {
-	    var initialChildMapping = this.state.children;
-	    for (var key in initialChildMapping) {
-	      if (initialChildMapping[key]) {
-	        this.performAppear(key);
-	      }
+	    if (image.owner_id === userId) {
+	      relevantImages.push(image);
 	    }
-	  },
+	  });
 	
-	  componentWillReceiveProps: function (nextProps) {
-	    var nextChildMapping = ReactTransitionChildMapping.getChildMapping(nextProps.children);
-	    var prevChildMapping = this.state.children;
+	  return relevantImages;
+	};
 	
-	    this.setState({
-	      children: ReactTransitionChildMapping.mergeChildMappings(prevChildMapping, nextChildMapping)
-	    });
+	// Could be useful for putting images in the feed, not sure yet
+	// ImageStore.getUsersFollowedImages = function(userIdString){
+	//   var userId = parseInt(userIdString);
+	//   var user = UserStore.findUser(userId);
+	//   var images = ImageStore.all();
+	//
+	//   if(images === [] || user.string === "Bad User"){
+	//     return null;
+	//   }
+	//   var relevantImages = [];
+	//   var relevantUsers = [];
+	//
+	// // now we get an array of good user ids
+	//     user.usersFollowing.forEach(function(user){
+	//       relevantUsers.push(user.id);
+	//     });
+	//
+	// // now we reference the images against the
+	//   images.forEach(function(image){
+	//     if (relevantUsers.indexOf(image.author_id) !== -1){
+	//       relevantImages.push(image);
+	//     }
+	//   });
+	//   return relevantImages;
+	// },
 	
-	    var key;
+	ImageStore.__onDispatch = function (payload) {
 	
-	    for (key in nextChildMapping) {
-	      var hasPrev = prevChildMapping && prevChildMapping.hasOwnProperty(key);
-	      if (nextChildMapping[key] && !hasPrev && !this.currentlyTransitioningKeys[key]) {
-	        this.keysToEnter.push(key);
-	      }
-	    }
-	
-	    for (key in prevChildMapping) {
-	      var hasNext = nextChildMapping && nextChildMapping.hasOwnProperty(key);
-	      if (prevChildMapping[key] && !hasNext && !this.currentlyTransitioningKeys[key]) {
-	        this.keysToLeave.push(key);
-	      }
-	    }
-	
-	    // If we want to someday check for reordering, we could do it here.
-	  },
-	
-	  componentDidUpdate: function () {
-	    var keysToEnter = this.keysToEnter;
-	    this.keysToEnter = [];
-	    keysToEnter.forEach(this.performEnter);
-	
-	    var keysToLeave = this.keysToLeave;
-	    this.keysToLeave = [];
-	    keysToLeave.forEach(this.performLeave);
-	  },
-	
-	  performAppear: function (key) {
-	    this.currentlyTransitioningKeys[key] = true;
-	
-	    var component = this.refs[key];
-	
-	    if (component.componentWillAppear) {
-	      component.componentWillAppear(this._handleDoneAppearing.bind(this, key));
-	    } else {
-	      this._handleDoneAppearing(key);
-	    }
-	  },
-	
-	  _handleDoneAppearing: function (key) {
-	    var component = this.refs[key];
-	    if (component.componentDidAppear) {
-	      component.componentDidAppear();
-	    }
-	
-	    delete this.currentlyTransitioningKeys[key];
-	
-	    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
-	
-	    if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key)) {
-	      // This was removed before it had fully appeared. Remove it.
-	      this.performLeave(key);
-	    }
-	  },
-	
-	  performEnter: function (key) {
-	    this.currentlyTransitioningKeys[key] = true;
-	
-	    var component = this.refs[key];
-	
-	    if (component.componentWillEnter) {
-	      component.componentWillEnter(this._handleDoneEntering.bind(this, key));
-	    } else {
-	      this._handleDoneEntering(key);
-	    }
-	  },
-	
-	  _handleDoneEntering: function (key) {
-	    var component = this.refs[key];
-	    if (component.componentDidEnter) {
-	      component.componentDidEnter();
-	    }
-	
-	    delete this.currentlyTransitioningKeys[key];
-	
-	    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
-	
-	    if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key)) {
-	      // This was removed before it had fully entered. Remove it.
-	      this.performLeave(key);
-	    }
-	  },
-	
-	  performLeave: function (key) {
-	    this.currentlyTransitioningKeys[key] = true;
-	
-	    var component = this.refs[key];
-	    if (component.componentWillLeave) {
-	      component.componentWillLeave(this._handleDoneLeaving.bind(this, key));
-	    } else {
-	      // Note that this is somewhat dangerous b/c it calls setState()
-	      // again, effectively mutating the component before all the work
-	      // is done.
-	      this._handleDoneLeaving(key);
-	    }
-	  },
-	
-	  _handleDoneLeaving: function (key) {
-	    var component = this.refs[key];
-	
-	    if (component.componentDidLeave) {
-	      component.componentDidLeave();
-	    }
-	
-	    delete this.currentlyTransitioningKeys[key];
-	
-	    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
-	
-	    if (currentChildMapping && currentChildMapping.hasOwnProperty(key)) {
-	      // This entered again before it fully left. Add it again.
-	      this.performEnter(key);
-	    } else {
-	      this.setState(function (state) {
-	        var newChildren = assign({}, state.children);
-	        delete newChildren[key];
-	        return { children: newChildren };
-	      });
-	    }
-	  },
-	
-	  render: function () {
-	    // TODO: we could get rid of the need for the wrapper node
-	    // by cloning a single child
-	    var childrenToRender = [];
-	    for (var key in this.state.children) {
-	      var child = this.state.children[key];
-	      if (child) {
-	        // You may need to apply reactive updates to a child as it is leaving.
-	        // The normal React way to do it won't work since the child will have
-	        // already been removed. In case you need this behavior you can provide
-	        // a childFactory function to wrap every child, even the ones that are
-	        // leaving.
-	        childrenToRender.push(React.cloneElement(this.props.childFactory(child), { ref: key, key: key }));
-	      }
-	    }
-	    return React.createElement(this.props.component, this.props, childrenToRender);
-	  }
-	});
-	
-	module.exports = ReactTransitionGroup;
-
-/***/ },
-/* 285 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @typechecks static-only
-	 * @providesModule ReactTransitionChildMapping
-	 */
-	
-	'use strict';
-	
-	var flattenChildren = __webpack_require__(116);
-	
-	var ReactTransitionChildMapping = {
-	  /**
-	   * Given `this.props.children`, return an object mapping key to child. Just
-	   * simple syntactic sugar around flattenChildren().
-	   *
-	   * @param {*} children `this.props.children`
-	   * @return {object} Mapping of key to child
-	   */
-	  getChildMapping: function (children) {
-	    if (!children) {
-	      return children;
-	    }
-	    return flattenChildren(children);
-	  },
-	
-	  /**
-	   * When you're adding or removing children some may be added or removed in the
-	   * same render pass. We want to show *both* since we want to simultaneously
-	   * animate elements in and out. This function takes a previous set of keys
-	   * and a new set of keys and merges them with its best guess of the correct
-	   * ordering. In the future we may expose some of the utilities in
-	   * ReactMultiChild to make this easy, but for now React itself does not
-	   * directly have this concept of the union of prevChildren and nextChildren
-	   * so we implement it here.
-	   *
-	   * @param {object} prev prev children as returned from
-	   * `ReactTransitionChildMapping.getChildMapping()`.
-	   * @param {object} next next children as returned from
-	   * `ReactTransitionChildMapping.getChildMapping()`.
-	   * @return {object} a key set that contains all keys in `prev` and all keys
-	   * in `next` in a reasonable order.
-	   */
-	  mergeChildMappings: function (prev, next) {
-	    prev = prev || {};
-	    next = next || {};
-	
-	    function getValueForKey(key) {
-	      if (next.hasOwnProperty(key)) {
-	        return next[key];
-	      } else {
-	        return prev[key];
-	      }
-	    }
-	
-	    // For each key of `next`, the list of keys to insert before that key in
-	    // the combined list
-	    var nextKeysPending = {};
-	
-	    var pendingKeys = [];
-	    for (var prevKey in prev) {
-	      if (next.hasOwnProperty(prevKey)) {
-	        if (pendingKeys.length) {
-	          nextKeysPending[prevKey] = pendingKeys;
-	          pendingKeys = [];
-	        }
-	      } else {
-	        pendingKeys.push(prevKey);
-	      }
-	    }
-	
-	    var i;
-	    var childMapping = {};
-	    for (var nextKey in next) {
-	      if (nextKeysPending.hasOwnProperty(nextKey)) {
-	        for (i = 0; i < nextKeysPending[nextKey].length; i++) {
-	          var pendingNextKey = nextKeysPending[nextKey][i];
-	          childMapping[nextKeysPending[nextKey][i]] = getValueForKey(pendingNextKey);
-	        }
-	      }
-	      childMapping[nextKey] = getValueForKey(nextKey);
-	    }
-	
-	    // Finally, add the keys which didn't appear before any key in `next`
-	    for (i = 0; i < pendingKeys.length; i++) {
-	      childMapping[pendingKeys[i]] = getValueForKey(pendingKeys[i]);
-	    }
-	
-	    return childMapping;
+	  switch (payload.actionType) {
+	    case ImageConstants.IMAGES_RECEIVED:
+	      var result = resetImages(payload.images);
+	      ImageStore.__emitChange();
+	      break;
+	    case ImageConstants.NEW_IMAGE_RECEIVED:
+	      var result = addNewImage(payload.newImage);
+	      ImageStore.__emitChange();
+	      break;
 	  }
 	};
 	
-	module.exports = ReactTransitionChildMapping;
+	module.exports = ImageStore;
+
+/***/ },
+/* 285 */
+/***/ function(module, exports) {
+
+	ImageConstants = {
+	  IMAGES_RECEIVED: "IMAGES_RECEIVED",
+	  NEW_IMAGE_RECEIVED: "NEW_IMAGE_RECEIVED"
+	};
+	module.exports = ImageConstants;
 
 /***/ },
 /* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @typechecks
-	 * @providesModule ReactCSSTransitionGroupChild
-	 */
-	
-	'use strict';
-	
-	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(3);
-	
-	var CSSCore = __webpack_require__(287);
-	var ReactTransitionEvents = __webpack_require__(288);
-	
-	var onlyChild = __webpack_require__(156);
-	
-	// We don't remove the element from the DOM until we receive an animationend or
-	// transitionend event. If the user screws up and forgets to add an animation
-	// their node will be stuck in the DOM forever, so we detect if an animation
-	// does not start and if it doesn't, we just call the end listener immediately.
-	var TICK = 17;
-	
-	var ReactCSSTransitionGroupChild = React.createClass({
-	  displayName: 'ReactCSSTransitionGroupChild',
-	
-	  propTypes: {
-	    name: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.shape({
-	      enter: React.PropTypes.string,
-	      leave: React.PropTypes.string,
-	      active: React.PropTypes.string
-	    }), React.PropTypes.shape({
-	      enter: React.PropTypes.string,
-	      enterActive: React.PropTypes.string,
-	      leave: React.PropTypes.string,
-	      leaveActive: React.PropTypes.string,
-	      appear: React.PropTypes.string,
-	      appearActive: React.PropTypes.string
-	    })]).isRequired,
-	
-	    // Once we require timeouts to be specified, we can remove the
-	    // boolean flags (appear etc.) and just accept a number
-	    // or a bool for the timeout flags (appearTimeout etc.)
-	    appear: React.PropTypes.bool,
-	    enter: React.PropTypes.bool,
-	    leave: React.PropTypes.bool,
-	    appearTimeout: React.PropTypes.number,
-	    enterTimeout: React.PropTypes.number,
-	    leaveTimeout: React.PropTypes.number
-	  },
-	
-	  transition: function (animationType, finishCallback, userSpecifiedDelay) {
-	    var node = ReactDOM.findDOMNode(this);
-	
-	    if (!node) {
-	      if (finishCallback) {
-	        finishCallback();
-	      }
-	      return;
-	    }
-	
-	    var className = this.props.name[animationType] || this.props.name + '-' + animationType;
-	    var activeClassName = this.props.name[animationType + 'Active'] || className + '-active';
-	    var timeout = null;
-	
-	    var endListener = function (e) {
-	      if (e && e.target !== node) {
-	        return;
-	      }
-	
-	      clearTimeout(timeout);
-	
-	      CSSCore.removeClass(node, className);
-	      CSSCore.removeClass(node, activeClassName);
-	
-	      ReactTransitionEvents.removeEndEventListener(node, endListener);
-	
-	      // Usually this optional callback is used for informing an owner of
-	      // a leave animation and telling it to remove the child.
-	      if (finishCallback) {
-	        finishCallback();
-	      }
-	    };
-	
-	    CSSCore.addClass(node, className);
-	
-	    // Need to do this to actually trigger a transition.
-	    this.queueClass(activeClassName);
-	
-	    // If the user specified a timeout delay.
-	    if (userSpecifiedDelay) {
-	      // Clean-up the animation after the specified delay
-	      timeout = setTimeout(endListener, userSpecifiedDelay);
-	      this.transitionTimeouts.push(timeout);
-	    } else {
-	      // DEPRECATED: this listener will be removed in a future version of react
-	      ReactTransitionEvents.addEndEventListener(node, endListener);
-	    }
-	  },
-	
-	  queueClass: function (className) {
-	    this.classNameQueue.push(className);
-	
-	    if (!this.timeout) {
-	      this.timeout = setTimeout(this.flushClassNameQueue, TICK);
-	    }
-	  },
-	
-	  flushClassNameQueue: function () {
-	    if (this.isMounted()) {
-	      this.classNameQueue.forEach(CSSCore.addClass.bind(CSSCore, ReactDOM.findDOMNode(this)));
-	    }
-	    this.classNameQueue.length = 0;
-	    this.timeout = null;
-	  },
-	
-	  componentWillMount: function () {
-	    this.classNameQueue = [];
-	    this.transitionTimeouts = [];
-	  },
-	
-	  componentWillUnmount: function () {
-	    if (this.timeout) {
-	      clearTimeout(this.timeout);
-	    }
-	    this.transitionTimeouts.forEach(function (timeout) {
-	      clearTimeout(timeout);
-	    });
-	  },
-	
-	  componentWillAppear: function (done) {
-	    if (this.props.appear) {
-	      this.transition('appear', done, this.props.appearTimeout);
-	    } else {
-	      done();
-	    }
-	  },
-	
-	  componentWillEnter: function (done) {
-	    if (this.props.enter) {
-	      this.transition('enter', done, this.props.enterTimeout);
-	    } else {
-	      done();
-	    }
-	  },
-	
-	  componentWillLeave: function (done) {
-	    if (this.props.leave) {
-	      this.transition('leave', done, this.props.leaveTimeout);
-	    } else {
-	      done();
-	    }
-	  },
-	
-	  render: function () {
-	    return onlyChild(this.props.children);
-	  }
-	});
-	
-	module.exports = ReactCSSTransitionGroupChild;
-
-/***/ },
-/* 287 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule CSSCore
-	 * @typechecks
-	 */
-	
-	'use strict';
-	
-	var invariant = __webpack_require__(13);
-	
-	/**
-	 * The CSSCore module specifies the API (and implements most of the methods)
-	 * that should be used when dealing with the display of elements (via their
-	 * CSS classes and visibility on screen. It is an API focused on mutating the
-	 * display and not reading it as no logical state should be encoded in the
-	 * display of elements.
-	 */
-	
-	var CSSCore = {
-	
-	  /**
-	   * Adds the class passed in to the element if it doesn't already have it.
-	   *
-	   * @param {DOMElement} element the element to set the class on
-	   * @param {string} className the CSS className
-	   * @return {DOMElement} the element passed in
-	   */
-	  addClass: function (element, className) {
-	    !!/\s/.test(className) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'CSSCore.addClass takes only a single class name. "%s" contains ' + 'multiple classes.', className) : invariant(false) : undefined;
-	
-	    if (className) {
-	      if (element.classList) {
-	        element.classList.add(className);
-	      } else if (!CSSCore.hasClass(element, className)) {
-	        element.className = element.className + ' ' + className;
-	      }
-	    }
-	    return element;
-	  },
-	
-	  /**
-	   * Removes the class passed in from the element
-	   *
-	   * @param {DOMElement} element the element to set the class on
-	   * @param {string} className the CSS className
-	   * @return {DOMElement} the element passed in
-	   */
-	  removeClass: function (element, className) {
-	    !!/\s/.test(className) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'CSSCore.removeClass takes only a single class name. "%s" contains ' + 'multiple classes.', className) : invariant(false) : undefined;
-	
-	    if (className) {
-	      if (element.classList) {
-	        element.classList.remove(className);
-	      } else if (CSSCore.hasClass(element, className)) {
-	        element.className = element.className.replace(new RegExp('(^|\\s)' + className + '(?:\\s|$)', 'g'), '$1').replace(/\s+/g, ' ') // multiple spaces to one
-	        .replace(/^\s*|\s*$/g, ''); // trim the ends
-	      }
-	    }
-	    return element;
-	  },
-	
-	  /**
-	   * Helper to add or remove a class from an element based on a condition.
-	   *
-	   * @param {DOMElement} element the element to set the class on
-	   * @param {string} className the CSS className
-	   * @param {*} bool condition to whether to add or remove the class
-	   * @return {DOMElement} the element passed in
-	   */
-	  conditionClass: function (element, className, bool) {
-	    return (bool ? CSSCore.addClass : CSSCore.removeClass)(element, className);
-	  },
-	
-	  /**
-	   * Tests whether the element has the class specified.
-	   *
-	   * @param {DOMNode|DOMWindow} element the element to set the class on
-	   * @param {string} className the CSS className
-	   * @return {boolean} true if the element has the class, false if not
-	   */
-	  hasClass: function (element, className) {
-	    !!/\s/.test(className) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'CSS.hasClass takes only a single class name.') : invariant(false) : undefined;
-	    if (element.classList) {
-	      return !!className && element.classList.contains(className);
-	    }
-	    return (' ' + element.className + ' ').indexOf(' ' + className + ' ') > -1;
-	  }
-	
-	};
-	
-	module.exports = CSSCore;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
-
-/***/ },
-/* 288 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule ReactTransitionEvents
-	 */
-	
-	'use strict';
-	
-	var ExecutionEnvironment = __webpack_require__(9);
-	
-	/**
-	 * EVENT_NAME_MAP is used to determine which event fired when a
-	 * transition/animation ends, based on the style property used to
-	 * define that event.
-	 */
-	var EVENT_NAME_MAP = {
-	  transitionend: {
-	    'transition': 'transitionend',
-	    'WebkitTransition': 'webkitTransitionEnd',
-	    'MozTransition': 'mozTransitionEnd',
-	    'OTransition': 'oTransitionEnd',
-	    'msTransition': 'MSTransitionEnd'
-	  },
-	
-	  animationend: {
-	    'animation': 'animationend',
-	    'WebkitAnimation': 'webkitAnimationEnd',
-	    'MozAnimation': 'mozAnimationEnd',
-	    'OAnimation': 'oAnimationEnd',
-	    'msAnimation': 'MSAnimationEnd'
-	  }
-	};
-	
-	var endEvents = [];
-	
-	function detectEvents() {
-	  var testEl = document.createElement('div');
-	  var style = testEl.style;
-	
-	  // On some platforms, in particular some releases of Android 4.x,
-	  // the un-prefixed "animation" and "transition" properties are defined on the
-	  // style object but the events that fire will still be prefixed, so we need
-	  // to check if the un-prefixed events are useable, and if not remove them
-	  // from the map
-	  if (!('AnimationEvent' in window)) {
-	    delete EVENT_NAME_MAP.animationend.animation;
-	  }
-	
-	  if (!('TransitionEvent' in window)) {
-	    delete EVENT_NAME_MAP.transitionend.transition;
-	  }
-	
-	  for (var baseEventName in EVENT_NAME_MAP) {
-	    var baseEvents = EVENT_NAME_MAP[baseEventName];
-	    for (var styleName in baseEvents) {
-	      if (styleName in style) {
-	        endEvents.push(baseEvents[styleName]);
-	        break;
-	      }
-	    }
-	  }
-	}
-	
-	if (ExecutionEnvironment.canUseDOM) {
-	  detectEvents();
-	}
-	
-	// We use the raw {add|remove}EventListener() call because EventListener
-	// does not know how to remove event listeners and we really should
-	// clean up. Also, these events are not triggered in older browsers
-	// so we should be A-OK here.
-	
-	function addEventListener(node, eventName, eventListener) {
-	  node.addEventListener(eventName, eventListener, false);
-	}
-	
-	function removeEventListener(node, eventName, eventListener) {
-	  node.removeEventListener(eventName, eventListener, false);
-	}
-	
-	var ReactTransitionEvents = {
-	  addEndEventListener: function (node, eventListener) {
-	    if (endEvents.length === 0) {
-	      // If CSS transitions are not supported, trigger an "end animation"
-	      // event immediately.
-	      window.setTimeout(eventListener, 0);
-	      return;
-	    }
-	    endEvents.forEach(function (endEvent) {
-	      addEventListener(node, endEvent, eventListener);
-	    });
-	  },
-	
-	  removeEndEventListener: function (node, eventListener) {
-	    if (endEvents.length === 0) {
-	      return;
-	    }
-	    endEvents.forEach(function (endEvent) {
-	      removeEventListener(node, endEvent, eventListener);
-	    });
-	  }
-	};
-	
-	module.exports = ReactTransitionEvents;
-
-/***/ },
-/* 289 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
+	var Post = __webpack_require__(239);
 	var UserStore = __webpack_require__(233);
-	var SearchBar = __webpack_require__(255);
-	var History = __webpack_require__(159).History;
-	var SignoutButton = __webpack_require__(257);
-	var ApiUtil = __webpack_require__(235);
-	
-	var Footer = React.createClass({
-	  displayName: 'Footer',
-	
-	  mixins: [History],
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	
-	  render: function () {
-	    var name, profile_image;
-	
-	    if (this.state.user.real_name) {
-	      name = this.state.user.real_name;
-	      profile_image = this.state.user.profile_image;
-	    } else {
-	      name = "Loading";
-	    }
-	
-	    return React.createElement(
-	      'div',
-	      { className: 'footer-bar' },
-	      React.createElement(
-	        'div',
-	        null,
-	        'End of Page'
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = Footer;
-
-/***/ },
-/* 290 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
-	var UserStore = __webpack_require__(233);
-	var ImageCommentStore = __webpack_require__(293);
+	var ImageCommentStore = __webpack_require__(287);
 	
 	var ApiUtil = __webpack_require__(235);
 	var History = __webpack_require__(159).History;
@@ -35956,79 +35709,11 @@
 	module.exports = ImageComment;
 
 /***/ },
-/* 291 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
-	var UserStore = __webpack_require__(233);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var NewImageComment = React.createClass({
-	  displayName: 'NewImageComment',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  componentWillMount: function () {
-	    this.setState({ currentUser: UserStore.getCurrentUser() });
-	  },
-	  handleSubmit: function (event) {
-	    event.preventDefault();
-	    var post = { body: event.currentTarget[0].value, image_id: this.props.image.id };
-	    ApiUtil.createImageComment(post);
-	  },
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      { className: 'image-post-new-post' },
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'form',
-	          { onSubmit: this.handleSubmit },
-	          React.createElement(
-	            'label',
-	            { htmlFor: 'comment_body' },
-	            'Leave a new comment'
-	          ),
-	          React.createElement('br', null),
-	          React.createElement('textarea', {
-	            name: 'comment[body]',
-	            id: 'comment_body', rows: '4', cols: '50' }),
-	          React.createElement('br', null),
-	          React.createElement('input', { type: 'submit', value: 'Comment' })
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = NewImageComment;
-
-/***/ },
-/* 292 */
-/***/ function(module, exports) {
-
-	ImageCommentConstants = {
-	  IMAGE_COMMENTS_RECEIVED: "IMAGE_COMMENTS_RECEIVED",
-	  NEW_IMAGE_COMMENT_RECEIVED: "NEW_IMAGE_COMMENT_RECEIVED"
-	};
-	
-	module.exports = ImageCommentConstants;
-
-/***/ },
-/* 293 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
-	var ImageConstants = __webpack_require__(292);
+	var ImageConstants = __webpack_require__(238);
 	var AppDispatcher = __webpack_require__(230);
 	
 	var ImageCommentsStore = new Store(AppDispatcher);
@@ -36083,12 +35768,70 @@
 	module.exports = ImageCommentsStore;
 
 /***/ },
-/* 294 */
+/* 288 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(239);
+	var UserStore = __webpack_require__(233);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var NewImageComment = React.createClass({
+	  displayName: 'NewImageComment',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  componentWillMount: function () {
+	    this.setState({ currentUser: UserStore.getCurrentUser() });
+	  },
+	  handleSubmit: function (event) {
+	    event.preventDefault();
+	    var post = { body: event.currentTarget[0].value, image_id: this.props.image.id };
+	    ApiUtil.createImageComment(post);
+	    event.currentTarget[0].value = null;
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'image-post-new-post' },
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'form',
+	          { onSubmit: this.handleSubmit },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'comment_body' },
+	            'Leave a new comment'
+	          ),
+	          React.createElement('br', null),
+	          React.createElement('textarea', {
+	            name: 'comment[body]',
+	            id: 'comment_body', rows: '4', cols: '50' }),
+	          React.createElement('br', null),
+	          React.createElement('input', { type: 'submit', value: 'Comment' })
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = NewImageComment;
+
+/***/ },
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(237);
+	var Post = __webpack_require__(239);
 	var UserStore = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(235);
@@ -36127,6 +35870,264 @@
 	});
 	
 	module.exports = UserProfileUserInfo;
+
+/***/ },
+/* 290 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Really the Image Pane, includes the individual images and Upload Button
+	
+	var React = __webpack_require__(1),
+	    ReactDOM = __webpack_require__(158),
+	    UploadButton = __webpack_require__(262),
+	    ImageModal = __webpack_require__(263),
+	    UserStore = __webpack_require__(233),
+	    ImageStore = __webpack_require__(284),
+	    Modal = __webpack_require__(264),
+	    ImageComments = __webpack_require__(286),
+	    NewImageComment = __webpack_require__(288),
+	    ApiUtil = __webpack_require__(235);
+	
+	var customStyles = {
+	  overlay: {
+	    position: 'fixed',
+	    backgroundColor: 'rgba(255, 255, 255, 0.75)'
+	  },
+	  content: {
+	    top: '50%',
+	    left: '50%',
+	    right: 'auto',
+	    bottom: 'auto',
+	    height: '600px',
+	    width: '1200px',
+	    marginRight: '-50%',
+	    transform: 'translate(-50%, -50%)'
+	  }
+	};
+	
+	var ImagesBody = React.createClass({
+	  displayName: 'ImagesBody',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  getInitialState: function () {
+	    ApiUtil.fetchImages();
+	    return { images: ImageStore.getByUserId(this.props.user),
+	      user: this.props.user,
+	      modalIsOpen: false,
+	      selectedImage: "" };
+	  },
+	  openModal: function (event) {
+	    this.setState({ modalIsOpen: true,
+	      selectedImage: event });
+	  },
+	
+	  closeModal: function () {
+	    this.setState({ modalIsOpen: false, selectedImage: "" });
+	  },
+	
+	  componentWillReceiveProps: function (newProps) {
+	    ApiUtil.fetchImages();
+	    this.setState({ user: newProps.user });
+	    this.setState({ images: ImageStore.getByUserId(newProps.user) });
+	  },
+	  // componentWillUnmount: function(){
+	  //   this.setState({user: null});
+	  // },
+	  buildUrl: function (image_path) {
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_200,w_200/v1450463928/" + image_path;
+	    return url;
+	  },
+	  buildModalUrl: function (image_path) {
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/v1450463928/" + image_path;
+	    return url;
+	  },
+	  modal: function () {
+	    return;
+	  },
+	
+	  render: function () {
+	    var that = this;
+	    if (this.state.images) {
+	      var images = this.state.images.map((function (image) {
+	        return React.createElement(
+	          'div',
+	          { key: image.id,
+	            className: 'image-body-image' },
+	          React.createElement('img', { onClick: this.openModal.bind(null, image),
+	            src: that.buildUrl(image.image_path) })
+	        );
+	      }).bind(this));
+	    } else {
+	      var images = React.createElement(
+	        'div',
+	        null,
+	        ' no images'
+	      );
+	    }
+	    return React.createElement(
+	      'div',
+	      { className: 'profile-images-pane' },
+	      images,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'div',
+	          { className: 'image-modal-outside' },
+	          React.createElement(
+	            Modal,
+	            {
+	              isOpen: this.state.modalIsOpen,
+	              onRequestClose: this.closeModal,
+	              style: customStyles,
+	              className: 'image-modal' },
+	            React.createElement(
+	              'h2',
+	              null,
+	              'Picture'
+	            ),
+	            React.createElement(
+	              'button',
+	              { onClick: this.closeModal },
+	              'close'
+	            ),
+	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage.image_path), className: 'image-modal-image' }),
+	            React.createElement(NewImageComment, { image: this.state.selectedImage, className: 'image-modal-new-comments' }),
+	            React.createElement(ImageComments, { image: this.state.selectedImage, className: 'image-modal-image-comments' })
+	          )
+	        )
+	      ),
+	      React.createElement(UploadButton, null)
+	    );
+	  }
+	});
+	
+	module.exports = ImagesBody;
+
+/***/ },
+/* 291 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// This page is intended to be the page you go to when you are looking at that exact
+	// single post.  May not make in into final production
+	
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var PostPage = React.createClass({
+	  displayName: 'PostPage',
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        'This is where the posts will go'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = PostPage;
+
+/***/ },
+/* 292 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(239);
+	var UserStore = __webpack_require__(233);
+	var SearchBar = __webpack_require__(253);
+	var History = __webpack_require__(159).History;
+	var SignoutButton = __webpack_require__(255);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var HeaderBar = React.createClass({
+	  displayName: 'HeaderBar',
+	
+	  mixins: [History],
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  getInitialState: function () {
+	
+	    return { user: {} };
+	  },
+	  redirectToHome: function () {
+	    this.history.pushState(null, "/");
+	  },
+	  componentDidMount: function () {
+	    this.userListener = UserStore.addListener(this._usersChanged);
+	  },
+	  _usersChanged: function () {
+	    this.setState({ user: UserStore.getCurrentUser() });
+	  },
+	  componentWillReceiveProps: function (newProps) {
+	    this.setState({ user: newProps.currentUser });
+	  },
+	  _buildUrl: function (image_path) {
+	    var publicID;
+	    if (!image_path) {
+	      publicID = "lifebook_default_pic.jpg";
+	    } else {
+	      publicID = image_path;
+	    }
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + publicID;
+	    return url;
+	  },
+	
+	  render: function () {
+	    debugger;
+	    var name, profile_image;
+	
+	    if (this.state.user.real_name) {
+	      name = this.state.user.real_name;
+	      profile_image = this.state.user.profile_image;
+	    } else {
+	      name = "Loading";
+	    }
+	
+	    return React.createElement(
+	      'nav',
+	      { className: 'header-bar' },
+	      React.createElement(
+	        'div',
+	        { className: 'header-bar-profile-pic' },
+	        React.createElement('img', { src: this._buildUrl(profile_image) })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'header-bar-real-name' },
+	        name
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'header-bar-search-bar' },
+	        React.createElement(SearchBar, null)
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'header-bar-go-home' },
+	        React.createElement(
+	          'h1',
+	          { onClick: this.redirectToHome },
+	          'Lifebook'
+	        )
+	      ),
+	      React.createElement(SignoutButton, null)
+	    );
+	  }
+	});
+	
+	module.exports = HeaderBar;
 
 /***/ }
 /******/ ]);

@@ -59,6 +59,8 @@
 .image-modal-image{
   float: left;
   display: block;
+  height: 520px;
+  width: 520px;
 
 }
 .image-modal-image-comments{
@@ -85,6 +87,7 @@ padding-right: 10px;
 
  html {
    background-color: green;
+   overflow: scroll;
  }
  .body{
     position: relative;
@@ -213,8 +216,6 @@ padding-right: 10px;
   padding: 3px;
   padding-bottom: 5px;
   top: 0px;
-
-
 }
 
 .header-bar-go-home{
@@ -222,15 +223,6 @@ padding-right: 10px;
 
 }
 
-
-
-
-
-/*.header-bar-search-bar:focus > LI:only-child {
-  display: block;
-}*/
-
-/*not really centering*/
 
 .header-bar:after {
   content: "";
@@ -241,8 +233,7 @@ padding-right: 10px;
 
 .header-bar-signout-button {
   right: 5px;
-  float:left;
-  padding-left: 300px
+  float:right;
 }
 
 
@@ -376,10 +367,12 @@ padding-right: 10px;
 
 .modal {
   display: none;
+  z-index: 2;
 }
 
 .modal.is-open {
   display: block;
+  z-index: 2;
 }
 
 .modal-screen {
@@ -412,10 +405,12 @@ padding-right: 10px;
   font-size: 36px;
   line-height: 1;
   cursor: pointer;
+  z-index: 2;
 }
 
 .modal-close:hover {
   color: #f00;
+  z-index: 2;
 }
 
 .modal-form > h1 {

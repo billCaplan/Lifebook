@@ -18,6 +18,7 @@ var NewComment = React.createClass({
     event.preventDefault();
     var post = {body: event.currentTarget[0].value, post_id: this.props.parentCommentId};
     ApiUtil.createComment(post);
+    event.currentTarget[0].value = null;
   },
 
   render: function(){

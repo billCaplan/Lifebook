@@ -27,6 +27,7 @@ var NewPost = React.createClass({
 
     var post = {body: event.currentTarget[0].value, target_id: this.props.targetUserId};
     ApiUtil.createPost(post);
+    event.currentTarget[0].value = null;
   },
 
   render: function(){
