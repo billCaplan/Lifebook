@@ -54,14 +54,14 @@
 	var IndexRoute = ReactRouter.IndexRoute;
 	
 	var Feed = __webpack_require__(210);
-	var UserProfile = __webpack_require__(256);
-	var PostPage = __webpack_require__(291);
+	var UserProfile = __webpack_require__(257);
+	var PostPage = __webpack_require__(293);
 	var ApiUtil = __webpack_require__(235);
 	var UserStore = __webpack_require__(233);
-	var NewPost = __webpack_require__(251);
-	var NewComment = __webpack_require__(240);
-	var Comment = __webpack_require__(241);
-	var HeaderBar = __webpack_require__(292);
+	var NewPost = __webpack_require__(252);
+	var NewComment = __webpack_require__(241);
+	var Comment = __webpack_require__(242);
+	var HeaderBar = __webpack_require__(294);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -24470,13 +24470,13 @@
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	
 	var ApiUtil = __webpack_require__(235);
-	var NewPost = __webpack_require__(251);
+	var NewPost = __webpack_require__(252);
 	var UserStore = __webpack_require__(233);
-	var ReactCSSTransitionGroup = __webpack_require__(244);
-	var Footer = __webpack_require__(252);
+	var ReactCSSTransitionGroup = __webpack_require__(245);
+	var Footer = __webpack_require__(253);
 	
 	var Feed = React.createClass({
 	  displayName: 'Feed',
@@ -31545,7 +31545,7 @@
 	var UserConstants = __webpack_require__(234);
 	var FollowConstants = __webpack_require__(237);
 	var ImageCommentConstants = __webpack_require__(238);
-	var LikeConstants = __webpack_require__(294);
+	var LikeConstants = __webpack_require__(239);
 	
 	var ApiActions = {
 	  // receiveAllPosts
@@ -31668,6 +31668,18 @@
 
 /***/ },
 /* 239 */
+/***/ function(module, exports) {
+
+	LikeConstants = {
+	  LIKE_RECEIVED: "LIKE_RECEIVED",
+	  LIKES_RECEIVED: "LIKES_RECEIVED",
+	  LIKE_REMOVED: "LIKE_REMOVED"
+	};
+	
+	module.exports = LikeConstants;
+
+/***/ },
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Note: this is the page for posts that appear in the FEED
@@ -31677,9 +31689,9 @@
 	
 	var ApiUtil = __webpack_require__(235);
 	var History = __webpack_require__(159).History;
-	var NewComment = __webpack_require__(240);
-	var Comment = __webpack_require__(241);
-	var ReactCSSTransitionGroup = __webpack_require__(244);
+	var NewComment = __webpack_require__(241);
+	var Comment = __webpack_require__(242);
+	var ReactCSSTransitionGroup = __webpack_require__(245);
 	
 	var Post = React.createClass({
 	  displayName: 'Post',
@@ -31767,14 +31779,14 @@
 	module.exports = Post;
 
 /***/ },
-/* 240 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
 	
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(235);
@@ -31825,14 +31837,14 @@
 	module.exports = NewComment;
 
 /***/ },
-/* 241 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
-	var CommentStore = __webpack_require__(242);
+	var CommentStore = __webpack_require__(243);
 	
 	var ApiUtil = __webpack_require__(235);
 	var History = __webpack_require__(159).History;
@@ -31896,11 +31908,11 @@
 	module.exports = Comment;
 
 /***/ },
-/* 242 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
-	var CommentConstants = __webpack_require__(243);
+	var CommentConstants = __webpack_require__(244);
 	var AppDispatcher = __webpack_require__(230);
 	
 	var CommentStore = new Store(AppDispatcher);
@@ -31950,7 +31962,7 @@
 	module.exports = CommentStore;
 
 /***/ },
-/* 243 */
+/* 244 */
 /***/ function(module, exports) {
 
 	CommentConstants = {
@@ -31961,13 +31973,13 @@
 	module.exports = CommentConstants;
 
 /***/ },
-/* 244 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(245);
+	module.exports = __webpack_require__(246);
 
 /***/ },
-/* 245 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31988,8 +32000,8 @@
 	
 	var assign = __webpack_require__(39);
 	
-	var ReactTransitionGroup = __webpack_require__(246);
-	var ReactCSSTransitionGroupChild = __webpack_require__(248);
+	var ReactTransitionGroup = __webpack_require__(247);
+	var ReactCSSTransitionGroupChild = __webpack_require__(249);
 	
 	function createTransitionTimeoutPropValidator(transitionType) {
 	  var timeoutPropName = 'transition' + transitionType + 'Timeout';
@@ -32055,7 +32067,7 @@
 	module.exports = ReactCSSTransitionGroup;
 
 /***/ },
-/* 246 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32072,7 +32084,7 @@
 	'use strict';
 	
 	var React = __webpack_require__(2);
-	var ReactTransitionChildMapping = __webpack_require__(247);
+	var ReactTransitionChildMapping = __webpack_require__(248);
 	
 	var assign = __webpack_require__(39);
 	var emptyFunction = __webpack_require__(15);
@@ -32265,7 +32277,7 @@
 	module.exports = ReactTransitionGroup;
 
 /***/ },
-/* 247 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32368,7 +32380,7 @@
 	module.exports = ReactTransitionChildMapping;
 
 /***/ },
-/* 248 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32388,8 +32400,8 @@
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(3);
 	
-	var CSSCore = __webpack_require__(249);
-	var ReactTransitionEvents = __webpack_require__(250);
+	var CSSCore = __webpack_require__(250);
+	var ReactTransitionEvents = __webpack_require__(251);
 	
 	var onlyChild = __webpack_require__(156);
 	
@@ -32538,7 +32550,7 @@
 	module.exports = ReactCSSTransitionGroupChild;
 
 /***/ },
-/* 249 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -32641,7 +32653,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32755,12 +32767,12 @@
 	module.exports = ReactTransitionEvents;
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	
 	var ApiUtil = __webpack_require__(235);
 	var UserStore = __webpack_require__(233);
@@ -32817,16 +32829,16 @@
 	module.exports = NewPost;
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
-	var SearchBar = __webpack_require__(253);
+	var SearchBar = __webpack_require__(254);
 	var History = __webpack_require__(159).History;
-	var SignoutButton = __webpack_require__(255);
+	var SignoutButton = __webpack_require__(256);
 	var ApiUtil = __webpack_require__(235);
 	
 	var Footer = React.createClass({
@@ -32862,13 +32874,13 @@
 	module.exports = Footer;
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var UserStore = __webpack_require__(233);
 	var History = __webpack_require__(159).History;
-	var classNames = __webpack_require__(254);
+	var classNames = __webpack_require__(255);
 	
 	var SearchBar = React.createClass({
 	  displayName: 'SearchBar',
@@ -32984,7 +32996,7 @@
 	module.exports = SearchBar;
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -33038,12 +33050,12 @@
 
 
 /***/ },
-/* 255 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
 	var History = __webpack_require__(159).History;
 	
@@ -33089,24 +33101,24 @@
 	module.exports = SignoutButton;
 
 /***/ },
-/* 256 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	
 	var ApiUtil = __webpack_require__(235);
-	var UserProfileUserInfo = __webpack_require__(257);
-	var NewPost = __webpack_require__(251);
+	var UserProfileUserInfo = __webpack_require__(258);
+	var NewPost = __webpack_require__(252);
 	var UserStore = __webpack_require__(233);
-	var FriendsPane = __webpack_require__(258);
-	var FollowButton = __webpack_require__(259);
-	var UnfollowButton = __webpack_require__(293);
-	var Images = __webpack_require__(261);
-	var ImagesBody = __webpack_require__(290);
-	var ReactCSSTransitionGroup = __webpack_require__(244);
-	var FollowStore = __webpack_require__(260);
+	var FriendsPane = __webpack_require__(259);
+	var FollowButton = __webpack_require__(260);
+	var UnfollowButton = __webpack_require__(262);
+	var Images = __webpack_require__(263);
+	var ImagesBody = __webpack_require__(292);
+	var ReactCSSTransitionGroup = __webpack_require__(245);
+	var FollowStore = __webpack_require__(261);
 	
 	function _getRelevantPosts(userId) {
 	  return PostStore.getByUserId(userId);
@@ -33293,12 +33305,12 @@
 	module.exports = UserProfile;
 
 /***/ },
-/* 257 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(235);
@@ -33364,12 +33376,12 @@
 	module.exports = UserProfileUserInfo;
 
 /***/ },
-/* 258 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(235);
@@ -33416,14 +33428,14 @@
 	module.exports = FriendsPane;
 
 /***/ },
-/* 259 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
-	var FollowStore = __webpack_require__(260);
+	var FollowStore = __webpack_require__(261);
 	
 	var ApiUtil = __webpack_require__(235);
 	
@@ -33523,7 +33535,7 @@
 	module.exports = FollowButton;
 
 /***/ },
-/* 260 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
@@ -33582,23 +33594,125 @@
 	module.exports = FollowStore;
 
 /***/ },
-/* 261 */
+/* 262 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var FollowStore = __webpack_require__(261);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var UnfollowButton = React.createClass({
+	  displayName: 'UnfollowButton',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  // getInitialState: function(){
+	  //   ApiUtil.fetchFollows();
+	  //   return {user: {}, isFollowing:{}, newProps:{}};
+	  // },
+	  // componentDidMount: function(){
+	  //   this.followListener = FollowStore.addListener(this._followsChanged);
+	  // },
+	  // _followsChanged: function(){
+	  //   debugger
+	  //   this.setState({
+	  //     user: UserStore.findUser(this.state.user.id),
+	  //     isFollowing: this.decideIfFollowOrUnfollow({user: UserStore.findUser(this.state.user.id)})
+	  //   });
+	  // },
+	  // componentWillUnmount: function(){
+	  //   this.followListener.remove();
+	  // },
+	  // componentWillReceiveProps: function (newProps) {
+	  //   debugger;
+	  //   this.setState({user: newProps.user,
+	  //                 isFollowing: this.decideIfFollowOrUnfollow(newProps)
+	  //
+	  //                   });
+	  // },
+	  // old handleSubmit
+	  // handleSubmit: function(event){
+	  //   event.preventDefault();
+	  //
+	  //   var follow = {followed_user_id: this.state.user.id};
+	  //   ApiUtil.createFollow(follow);
+	  // },
+	  // decideIfFollowOrUnfollow: function(newProps){
+	  //   debugger
+	  //   if (!newProps.user.id){
+	  //     return false;
+	  //   }
+	  //   var profile_user = newProps.user;
+	  //   var current_user = UserStore.getCurrentUser();
+	  //
+	  //   var followingList = current_user.usersFollowing;
+	  //   var following = false;
+	  //   var that = this;
+	  //
+	  //   followingList.forEach(function(user){
+	  //     if (user.id === that.state.user.id){
+	  //       following = true;
+	  //     }
+	  //   });
+	  //   return following;
+	  //
+	  // },
+	  handleUnfollowSubmit: function (event) {
+	    event.preventDefault();
+	    var current_user = UserStore.getCurrentUser();
+	
+	    var followParams = { followed_user_id: this.props.user.id, author_id: current_user.id };
+	
+	    var follow = FollowStore.getByFollowParties(followParams);
+	
+	    ApiUtil.deleteFollow(follow);
+	
+	    // going to need to find the follow by the combo, then pass that id to destroy
+	    // ApiUtil.deleteFollow(follow);
+	  },
+	
+	  render: function () {
+	    var properButton;
+	
+	    properButton = React.createElement(
+	      'button',
+	      { className: 'button', onClick: this.handleUnfollowSubmit },
+	      'Unfollow'
+	    );
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      properButton
+	    );
+	  }
+	});
+	
+	module.exports = UnfollowButton;
+
+/***/ },
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Really the Image Pane, includes the individual images and Upload Button
 	
 	var React = __webpack_require__(1),
 	    ReactDOM = __webpack_require__(158),
-	    UploadButton = __webpack_require__(262),
-	    ImageModal = __webpack_require__(263),
+	    UploadButton = __webpack_require__(264),
+	    ImageModal = __webpack_require__(265),
 	    UserStore = __webpack_require__(233),
-	    ImageStore = __webpack_require__(284),
+	    ImageStore = __webpack_require__(286),
 	    ApiUtil = __webpack_require__(235),
-	    Modal = __webpack_require__(264),
-	    ImageComments = __webpack_require__(286),
-	    NewImageComment = __webpack_require__(288),
-	    ProfilePicChangeButton = __webpack_require__(289),
-	    ImageModal = __webpack_require__(263);
+	    Modal = __webpack_require__(266),
+	    ImageComments = __webpack_require__(288),
+	    NewImageComment = __webpack_require__(290),
+	    ProfilePicChangeButton = __webpack_require__(291),
+	    ImageModal = __webpack_require__(265);
 	
 	var customStyles = {
 	  overlay: {
@@ -33721,7 +33835,7 @@
 	module.exports = Images;
 
 /***/ },
-/* 262 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -33756,14 +33870,14 @@
 	// the postImage function will no longet exist.  Needs to be a store action I believe
 
 /***/ },
-/* 263 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
-	var Modal = __webpack_require__(264);
+	var Modal = __webpack_require__(266);
 	
 	var ApiUtil = __webpack_require__(235);
 	
@@ -33852,23 +33966,23 @@
 	module.exports = ImageModal;
 
 /***/ },
-/* 264 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(265);
+	module.exports = __webpack_require__(267);
 	
 
 
 /***/ },
-/* 265 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(158);
-	var ExecutionEnvironment = __webpack_require__(266);
-	var ModalPortal = React.createFactory(__webpack_require__(267));
-	var ariaAppHider = __webpack_require__(282);
-	var elementClass = __webpack_require__(283);
+	var ExecutionEnvironment = __webpack_require__(268);
+	var ModalPortal = React.createFactory(__webpack_require__(269));
+	var ariaAppHider = __webpack_require__(284);
+	var elementClass = __webpack_require__(285);
 	var renderSubtreeIntoContainer = __webpack_require__(158).unstable_renderSubtreeIntoContainer;
 	
 	var SafeHTMLElement = ExecutionEnvironment.canUseDOM ? window.HTMLElement : {};
@@ -33947,7 +34061,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 266 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -33992,14 +34106,14 @@
 
 
 /***/ },
-/* 267 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var div = React.DOM.div;
-	var focusManager = __webpack_require__(268);
-	var scopeTab = __webpack_require__(270);
-	var Assign = __webpack_require__(271);
+	var focusManager = __webpack_require__(270);
+	var scopeTab = __webpack_require__(272);
+	var Assign = __webpack_require__(273);
 	
 	
 	// so that our CSS is statically analyzable
@@ -34196,10 +34310,10 @@
 
 
 /***/ },
-/* 268 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var findTabbable = __webpack_require__(269);
+	var findTabbable = __webpack_require__(271);
 	var modalElement = null;
 	var focusLaterElement = null;
 	var needToFocus = false;
@@ -34270,7 +34384,7 @@
 
 
 /***/ },
-/* 269 */
+/* 271 */
 /***/ function(module, exports) {
 
 	/*!
@@ -34326,10 +34440,10 @@
 
 
 /***/ },
-/* 270 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var findTabbable = __webpack_require__(269);
+	var findTabbable = __webpack_require__(271);
 	
 	module.exports = function(node, event) {
 	  var tabbable = findTabbable(node);
@@ -34347,7 +34461,7 @@
 
 
 /***/ },
-/* 271 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -34358,9 +34472,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseAssign = __webpack_require__(272),
-	    createAssigner = __webpack_require__(278),
-	    keys = __webpack_require__(274);
+	var baseAssign = __webpack_require__(274),
+	    createAssigner = __webpack_require__(280),
+	    keys = __webpack_require__(276);
 	
 	/**
 	 * A specialized version of `_.assign` for customizing assigned values without
@@ -34433,7 +34547,7 @@
 
 
 /***/ },
-/* 272 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -34444,8 +34558,8 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseCopy = __webpack_require__(273),
-	    keys = __webpack_require__(274);
+	var baseCopy = __webpack_require__(275),
+	    keys = __webpack_require__(276);
 	
 	/**
 	 * The base implementation of `_.assign` without support for argument juggling,
@@ -34466,7 +34580,7 @@
 
 
 /***/ },
-/* 273 */
+/* 275 */
 /***/ function(module, exports) {
 
 	/**
@@ -34504,7 +34618,7 @@
 
 
 /***/ },
-/* 274 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -34515,9 +34629,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var getNative = __webpack_require__(275),
-	    isArguments = __webpack_require__(276),
-	    isArray = __webpack_require__(277);
+	var getNative = __webpack_require__(277),
+	    isArguments = __webpack_require__(278),
+	    isArray = __webpack_require__(279);
 	
 	/** Used to detect unsigned integer values. */
 	var reIsUint = /^\d+$/;
@@ -34746,7 +34860,7 @@
 
 
 /***/ },
-/* 275 */
+/* 277 */
 /***/ function(module, exports) {
 
 	/**
@@ -34889,7 +35003,7 @@
 
 
 /***/ },
-/* 276 */
+/* 278 */
 /***/ function(module, exports) {
 
 	/**
@@ -35001,7 +35115,7 @@
 
 
 /***/ },
-/* 277 */
+/* 279 */
 /***/ function(module, exports) {
 
 	/**
@@ -35187,7 +35301,7 @@
 
 
 /***/ },
-/* 278 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -35198,9 +35312,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var bindCallback = __webpack_require__(279),
-	    isIterateeCall = __webpack_require__(280),
-	    restParam = __webpack_require__(281);
+	var bindCallback = __webpack_require__(281),
+	    isIterateeCall = __webpack_require__(282),
+	    restParam = __webpack_require__(283);
 	
 	/**
 	 * Creates a function that assigns properties of source object(s) to a given
@@ -35245,7 +35359,7 @@
 
 
 /***/ },
-/* 279 */
+/* 281 */
 /***/ function(module, exports) {
 
 	/**
@@ -35316,7 +35430,7 @@
 
 
 /***/ },
-/* 280 */
+/* 282 */
 /***/ function(module, exports) {
 
 	/**
@@ -35454,7 +35568,7 @@
 
 
 /***/ },
-/* 281 */
+/* 283 */
 /***/ function(module, exports) {
 
 	/**
@@ -35527,7 +35641,7 @@
 
 
 /***/ },
-/* 282 */
+/* 284 */
 /***/ function(module, exports) {
 
 	var _element = typeof document !== 'undefined' ? document.body : null;
@@ -35574,7 +35688,7 @@
 
 
 /***/ },
-/* 283 */
+/* 285 */
 /***/ function(module, exports) {
 
 	module.exports = function(opts) {
@@ -35639,11 +35753,11 @@
 
 
 /***/ },
-/* 284 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
-	var ImageConstants = __webpack_require__(285);
+	var ImageConstants = __webpack_require__(287);
 	var AppDispatcher = __webpack_require__(230);
 	var UserStore = __webpack_require__(233);
 	
@@ -35740,7 +35854,7 @@
 	module.exports = ImageStore;
 
 /***/ },
-/* 285 */
+/* 287 */
 /***/ function(module, exports) {
 
 	ImageConstants = {
@@ -35750,14 +35864,14 @@
 	module.exports = ImageConstants;
 
 /***/ },
-/* 286 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
-	var ImageCommentStore = __webpack_require__(287);
+	var ImageCommentStore = __webpack_require__(289);
 	
 	var ApiUtil = __webpack_require__(235);
 	var History = __webpack_require__(159).History;
@@ -35820,7 +35934,7 @@
 	module.exports = ImageComment;
 
 /***/ },
-/* 287 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
@@ -35879,14 +35993,14 @@
 	module.exports = ImageCommentsStore;
 
 /***/ },
-/* 288 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
 	
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(235);
@@ -35937,12 +36051,12 @@
 	module.exports = NewImageComment;
 
 /***/ },
-/* 289 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
 	
 	var ApiUtil = __webpack_require__(235);
@@ -35983,21 +36097,21 @@
 	module.exports = UserProfileUserInfo;
 
 /***/ },
-/* 290 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Really the Image Pane, includes the individual images and Upload Button
 	
 	var React = __webpack_require__(1),
 	    ReactDOM = __webpack_require__(158),
-	    UploadButton = __webpack_require__(262),
-	    ImageModal = __webpack_require__(263),
+	    UploadButton = __webpack_require__(264),
+	    ImageModal = __webpack_require__(265),
 	    UserStore = __webpack_require__(233),
-	    ImageStore = __webpack_require__(284),
-	    Modal = __webpack_require__(264),
-	    ImageComments = __webpack_require__(286),
-	    NewImageComment = __webpack_require__(288),
-	    ProfilePicChangeButton = __webpack_require__(289),
+	    ImageStore = __webpack_require__(286),
+	    Modal = __webpack_require__(266),
+	    ImageComments = __webpack_require__(288),
+	    NewImageComment = __webpack_require__(290),
+	    ProfilePicChangeButton = __webpack_require__(291),
 	    ApiUtil = __webpack_require__(235);
 	
 	var customStyles = {
@@ -36120,7 +36234,7 @@
 	module.exports = ImagesBody;
 
 /***/ },
-/* 291 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// This page is intended to be the page you go to when you are looking at that exact
@@ -36150,16 +36264,16 @@
 	module.exports = PostPage;
 
 /***/ },
-/* 292 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
+	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
-	var SearchBar = __webpack_require__(253);
+	var SearchBar = __webpack_require__(254);
 	var History = __webpack_require__(159).History;
-	var SignoutButton = __webpack_require__(255);
+	var SignoutButton = __webpack_require__(256);
 	
 	var ApiUtil = __webpack_require__(235);
 	
@@ -36241,120 +36355,6 @@
 	});
 	
 	module.exports = HeaderBar;
-
-/***/ },
-/* 293 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(239);
-	var UserStore = __webpack_require__(233);
-	var FollowStore = __webpack_require__(260);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var UnfollowButton = React.createClass({
-	  displayName: 'UnfollowButton',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  // getInitialState: function(){
-	  //   ApiUtil.fetchFollows();
-	  //   return {user: {}, isFollowing:{}, newProps:{}};
-	  // },
-	  // componentDidMount: function(){
-	  //   this.followListener = FollowStore.addListener(this._followsChanged);
-	  // },
-	  // _followsChanged: function(){
-	  //   debugger
-	  //   this.setState({
-	  //     user: UserStore.findUser(this.state.user.id),
-	  //     isFollowing: this.decideIfFollowOrUnfollow({user: UserStore.findUser(this.state.user.id)})
-	  //   });
-	  // },
-	  // componentWillUnmount: function(){
-	  //   this.followListener.remove();
-	  // },
-	  // componentWillReceiveProps: function (newProps) {
-	  //   debugger;
-	  //   this.setState({user: newProps.user,
-	  //                 isFollowing: this.decideIfFollowOrUnfollow(newProps)
-	  //
-	  //                   });
-	  // },
-	  // old handleSubmit
-	  // handleSubmit: function(event){
-	  //   event.preventDefault();
-	  //
-	  //   var follow = {followed_user_id: this.state.user.id};
-	  //   ApiUtil.createFollow(follow);
-	  // },
-	  // decideIfFollowOrUnfollow: function(newProps){
-	  //   debugger
-	  //   if (!newProps.user.id){
-	  //     return false;
-	  //   }
-	  //   var profile_user = newProps.user;
-	  //   var current_user = UserStore.getCurrentUser();
-	  //
-	  //   var followingList = current_user.usersFollowing;
-	  //   var following = false;
-	  //   var that = this;
-	  //
-	  //   followingList.forEach(function(user){
-	  //     if (user.id === that.state.user.id){
-	  //       following = true;
-	  //     }
-	  //   });
-	  //   return following;
-	  //
-	  // },
-	  handleUnfollowSubmit: function (event) {
-	    event.preventDefault();
-	    var current_user = UserStore.getCurrentUser();
-	
-	    var followParams = { followed_user_id: this.props.user.id, author_id: current_user.id };
-	
-	    var follow = FollowStore.getByFollowParties(followParams);
-	
-	    ApiUtil.deleteFollow(follow);
-	
-	    // going to need to find the follow by the combo, then pass that id to destroy
-	    // ApiUtil.deleteFollow(follow);
-	  },
-	
-	  render: function () {
-	    var properButton;
-	
-	    properButton = React.createElement(
-	      'button',
-	      { className: 'button', onClick: this.handleUnfollowSubmit },
-	      'Unfollow'
-	    );
-	
-	    return React.createElement(
-	      'div',
-	      null,
-	      properButton
-	    );
-	  }
-	});
-	
-	module.exports = UnfollowButton;
-
-/***/ },
-/* 294 */
-/***/ function(module, exports) {
-
-	LikeConstants = {
-	  LIKE_RECEIVED: "LIKE_RECEIVED",
-	  LIKES_RECEIVED: "LIKES_RECEIVED",
-	  LIKE_REMOVED: "LIKE_REMOVED"
-	};
-	
-	module.exports = LikeConstants;
 
 /***/ }
 /******/ ]);
