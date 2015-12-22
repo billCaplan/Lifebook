@@ -60,10 +60,12 @@ var UserProfile = React.createClass({
 
   _postsChanged: function(){
     this.setState({posts: _getRelevantPosts(this.state.user_id)});
+    window.scrollTo(0, 0);
   },
 
   _usersChanged: function(){
     this.setState({user: _getApplicableUser(this.state.user_id)});
+    window.scrollTo(0, 0);
   },
   _renderPicturePage: function(){
     return <div className="user-profile-picture-content">

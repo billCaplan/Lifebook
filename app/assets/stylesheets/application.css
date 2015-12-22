@@ -86,8 +86,9 @@ padding-right: 10px;
 }
 
  html {
-   background-color: green;
+   background-color: #E9EAED;
    overflow: scroll;
+   font-family: 'Open Sans', sans-serif;
  }
  .body{
     position: relative;
@@ -209,18 +210,28 @@ padding-right: 10px;
   position: fixed;
   width: 894px;
   height: 50px;
-  background-color: green;
+  background-color: #415E9B;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   color: white;
   padding: 3px;
   padding-bottom: 5px;
   top: 0px;
+  z-index: 1;
 }
 
 .header-bar-go-home{
+  margin-left: 200px;
+  font-family: 'Open Sans', sans-serif;
+}
 
+.header-bar-profile-pic{
+  margin-left: 100px;
+}
 
+.header-bar-real-name{
+  margin-top: 20px;
+  font-family: 'Open Sans', sans-serif;
 }
 
 
@@ -234,20 +245,21 @@ padding-right: 10px;
 .header-bar-signout-button {
   right: 5px;
   float:right;
+  margin-left: 0px;
+  margin-top: 20px;
 }
 
 
 .search-list{
   position: relative;
   visibility: hidden;
-  background-color: white;
+  background-color: grey;
   width: 90px;
   color: black;
-  border-left: 2px;
-  border-bottom: 2px;
-  border-right: 2px;
-  border-color: gray;
+  border: 7px;
+  border-color: black;
   border-radius: 5px;
+  margin-left: 50px;
 
   z-index: 2;
 }
@@ -258,6 +270,11 @@ padding-right: 10px;
 
 .search-list-hidden{
   visibility: hidden;
+}
+
+.header-bar-search-bar{
+  margin-top: 20px;
+  font-family: 'Open Sans', sans-serif;
 }
 .header-bar-search-bar .search-list-hidden {
   display: none;

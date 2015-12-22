@@ -32880,6 +32880,7 @@
 	    var name = event.currentTarget.innerText;
 	    this.setState({ listVisible: false, inputVal: "" });
 	    this.history.pushState(null, "user/" + result.id);
+	    window.scrollTo(0, 0);
 	  },
 	  _setContent: function (results) {
 	    return React.createElement(
@@ -33110,10 +33111,12 @@
 	
 	  _postsChanged: function () {
 	    this.setState({ posts: _getRelevantPosts(this.state.user_id) });
+	    window.scrollTo(0, 0);
 	  },
 	
 	  _usersChanged: function () {
 	    this.setState({ user: _getApplicableUser(this.state.user_id) });
+	    window.scrollTo(0, 0);
 	  },
 	  _renderPicturePage: function () {
 	    return React.createElement(
@@ -36063,6 +36066,7 @@
 	  },
 	  redirectToHome: function () {
 	    this.history.pushState(null, "/");
+	    window.scrollTo(0, 0);
 	  },
 	  componentDidMount: function () {
 	    this.userListener = UserStore.addListener(this._usersChanged);
@@ -36100,16 +36104,6 @@
 	      { className: 'header-bar' },
 	      React.createElement(
 	        'div',
-	        { className: 'header-bar-profile-pic' },
-	        React.createElement('img', { src: this._buildUrl(profile_image) })
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'header-bar-real-name' },
-	        name
-	      ),
-	      React.createElement(
-	        'div',
 	        { className: 'header-bar-search-bar' },
 	        React.createElement(SearchBar, null)
 	      ),
@@ -36121,6 +36115,16 @@
 	          { onClick: this.redirectToHome },
 	          'Lifebook'
 	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'header-bar-profile-pic' },
+	        React.createElement('img', { src: this._buildUrl(profile_image) })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'header-bar-real-name' },
+	        name
 	      ),
 	      React.createElement(SignoutButton, null)
 	    );
