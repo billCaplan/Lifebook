@@ -38,6 +38,23 @@ ImageStore.getByUserId = function(userIdString) {
   return relevantImages;
 };
 
+ImageStore.getByUserIdOnlyFirstNine = function(userIdString) {
+
+  var userId = parseInt(userIdString);
+  var images = ImageStore.all();
+  var relevantImages = [];
+
+
+  images.forEach(function(image){
+
+    if (image.owner_id === userId){
+      relevantImages.push(image);
+    }
+  });
+
+  return relevantImages.slice(0,9);
+};
+
 // Could be useful for putting images in the feed, not sure yet
 // ImageStore.getUsersFollowedImages = function(userIdString){
 //   var userId = parseInt(userIdString);

@@ -16,7 +16,8 @@ var React = require('react'),
     var customStyles = {
       overlay : {
        position          : 'fixed',
-       backgroundColor   : 'rgba(255, 255, 255, 0.90)'
+       backgroundColor   : 'rgba(255, 255, 255, 0.90)',
+       zIndex            : 5
    },
       content : {
         top                   : '50%',
@@ -49,10 +50,10 @@ var Images = React.createClass({
   componentWillReceiveProps: function (newProps) {
     ApiUtil.fetchImages();
     this.setState({user: newProps.user});
-    this.setState({images: ImageStore.getByUserId(newProps.user)});
+    this.setState({images: ImageStore.getByUserIdOnlyFirstNine(newProps.user)});
   },
   _imagesChanged: function(){
-    this.setState({images: ImageStore.getByUserId(this.state.user)});
+    this.setState({images: ImageStore.getByUserIdOnlyFirstNine(this.state.user)});
   },
   componentWillUnmount: function(){
     this.imageListener.remove();

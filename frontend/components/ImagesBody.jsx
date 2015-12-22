@@ -9,12 +9,14 @@ var React = require('react'),
     Modal = require('react-modal'),
     ImageComments = require('../components/ImageComment'),
     NewImageComment = require('../components/NewImageComment'),
+    ProfilePicChangeButton = require("../components/ProfilePicChangeButton"),
     ApiUtil = require('../util/api_util');
 
     var customStyles = {
       overlay : {
        position          : 'fixed',
-       backgroundColor   : 'rgba(255, 255, 255, 0.75)'
+       backgroundColor   : 'rgba(255, 255, 255, 0.75)',
+       zIndex            : 5
    },
       content : {
         top                   : '50%',
@@ -96,6 +98,7 @@ var ImagesBody = React.createClass({
 
                <h2>Picture</h2>
                <button onClick={this.closeModal}>close</button>
+               <ProfilePicChangeButton image={this.state.selectedImage}/>
                <img src={that.buildModalUrl(that.state.selectedImage.image_path)} className="image-modal-image"></img>
                <NewImageComment image={this.state.selectedImage} className="image-modal-new-comments"/>
                <ImageComments image={this.state.selectedImage} className="image-modal-image-comments"/>

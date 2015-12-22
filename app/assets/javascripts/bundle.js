@@ -33603,7 +33603,8 @@
 	var customStyles = {
 	  overlay: {
 	    position: 'fixed',
-	    backgroundColor: 'rgba(255, 255, 255, 0.90)'
+	    backgroundColor: 'rgba(255, 255, 255, 0.90)',
+	    zIndex: 5
 	  },
 	  content: {
 	    top: '50%',
@@ -33638,10 +33639,10 @@
 	  componentWillReceiveProps: function (newProps) {
 	    ApiUtil.fetchImages();
 	    this.setState({ user: newProps.user });
-	    this.setState({ images: ImageStore.getByUserId(newProps.user) });
+	    this.setState({ images: ImageStore.getByUserIdOnlyFirstNine(newProps.user) });
 	  },
 	  _imagesChanged: function () {
-	    this.setState({ images: ImageStore.getByUserId(this.state.user) });
+	    this.setState({ images: ImageStore.getByUserIdOnlyFirstNine(this.state.user) });
 	  },
 	  componentWillUnmount: function () {
 	    this.imageListener.remove();
@@ -35680,6 +35681,22 @@
 	  return relevantImages;
 	};
 	
+	ImageStore.getByUserIdOnlyFirstNine = function (userIdString) {
+	
+	  var userId = parseInt(userIdString);
+	  var images = ImageStore.all();
+	  var relevantImages = [];
+	
+	  images.forEach(function (image) {
+	
+	    if (image.owner_id === userId) {
+	      relevantImages.push(image);
+	    }
+	  });
+	
+	  return relevantImages.slice(0, 9);
+	};
+	
 	// Could be useful for putting images in the feed, not sure yet
 	// ImageStore.getUsersFollowedImages = function(userIdString){
 	//   var userId = parseInt(userIdString);
@@ -35980,12 +35997,14 @@
 	    Modal = __webpack_require__(264),
 	    ImageComments = __webpack_require__(286),
 	    NewImageComment = __webpack_require__(288),
+	    ProfilePicChangeButton = __webpack_require__(289),
 	    ApiUtil = __webpack_require__(235);
 	
 	var customStyles = {
 	  overlay: {
 	    position: 'fixed',
-	    backgroundColor: 'rgba(255, 255, 255, 0.75)'
+	    backgroundColor: 'rgba(255, 255, 255, 0.75)',
+	    zIndex: 5
 	  },
 	  content: {
 	    top: '50%',
@@ -36087,6 +36106,7 @@
 	              { onClick: this.closeModal },
 	              'close'
 	            ),
+	            React.createElement(ProfilePicChangeButton, { image: this.state.selectedImage }),
 	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage.image_path), className: 'image-modal-image' }),
 	            React.createElement(NewImageComment, { image: this.state.selectedImage, className: 'image-modal-new-comments' }),
 	            React.createElement(ImageComments, { image: this.state.selectedImage, className: 'image-modal-image-comments' })
