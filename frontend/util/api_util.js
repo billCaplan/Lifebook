@@ -90,6 +90,30 @@ var ApiUtil = {
         }
      });
   },
+  fetchLikes: function(){
+    $.get('/api/likes', function(likes){
+      ApiActions.receiveAllLikes(likes);
+    });
+  },
+  createLike: function(data){
+    $.post('api/likes', { like: data }, function(like) {
+      ApiActions.receiveNewLike(like);
+    });
+  },
+  deleteLike: function(data){
+
+    $.ajax({
+       method: 'DELETE',
+       url: '/api/likes/' + data.id,
+       data: data,
+       success: function(likes) {
+        ApiActions.removedLike(likes);
+      },
+       error: function (xhr, ajaxOptions, thrownError) {
+          console.log("Fail");
+        }
+     });
+  }
 };
 
 module.exports = ApiUtil;

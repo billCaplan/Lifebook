@@ -83,7 +83,7 @@ var FollowButton = React.createClass({
   render: function(){
     var properButton;
 
-    properButton = <button onClick={this.handleFollowSubmit}>Follow</button>;
+    properButton = <button  className="button" onClick={this.handleFollowSubmit}>Follow</button>;
 
     return (
       <div>

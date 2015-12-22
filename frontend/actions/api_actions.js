@@ -3,6 +3,7 @@ var PostConstants = require('../constants/post_constants');
 var UserConstants = require('../constants/user_constants');
 var FollowConstants = require('../constants/follow_constants');
 var ImageCommentConstants = require('../constants/image_comment_constants');
+var LikeConstants = require('../constants/like_constants');
 
 var ApiActions = {
   // receiveAllPosts
@@ -83,7 +84,19 @@ var ApiActions = {
       actionType: ImageCommentConstants.NEW_IMAGE_COMMENT_RECEIVED,
       newImageComment: newImageComment
     });
-  }
+  },
+  receiveAllLikes: function(likes){
+    AppDispatcher.dispatch({
+      actionType: LikeConstants.LIKES_RECEIVED,
+      likes: likes
+    });
+  },
+  receiveNewLike: function(newLike){
+    AppDispatcher.dispatch({
+      actionType: LikeConstants.NEW_LIKE_RECEIVED,
+      newLike: newLike
+    });
+  },
 };
 
 module.exports = ApiActions;

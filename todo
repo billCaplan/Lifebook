@@ -8,15 +8,8 @@ NOTES:
   Need to migrate DB changes to Heroku
 
 Still need:
-
-  Change Profile Pics
-
-
-  WORK ON FOLLOW BUTTON
-    need to have an if conditional for follow / unfollow button
-    and alter the feed to have only those
-
-
+  Likes
+  
   Followers count
 
   Profile pictures next to posts

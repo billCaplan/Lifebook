@@ -31507,6 +31507,30 @@
 	        console.log("Fail");
 	      }
 	    });
+	  },
+	  fetchLikes: function () {
+	    $.get('/api/likes', function (likes) {
+	      ApiActions.receiveAllLikes(likes);
+	    });
+	  },
+	  createLike: function (data) {
+	    $.post('api/likes', { like: data }, function (like) {
+	      ApiActions.receiveNewLike(like);
+	    });
+	  },
+	  deleteLike: function (data) {
+	
+	    $.ajax({
+	      method: 'DELETE',
+	      url: '/api/likes/' + data.id,
+	      data: data,
+	      success: function (likes) {
+	        ApiActions.removedLike(likes);
+	      },
+	      error: function (xhr, ajaxOptions, thrownError) {
+	        console.log("Fail");
+	      }
+	    });
 	  }
 	};
 	
@@ -31521,6 +31545,7 @@
 	var UserConstants = __webpack_require__(234);
 	var FollowConstants = __webpack_require__(237);
 	var ImageCommentConstants = __webpack_require__(238);
+	var LikeConstants = __webpack_require__(294);
 	
 	var ApiActions = {
 	  // receiveAllPosts
@@ -31600,6 +31625,18 @@
 	    AppDispatcher.dispatch({
 	      actionType: ImageCommentConstants.NEW_IMAGE_COMMENT_RECEIVED,
 	      newImageComment: newImageComment
+	    });
+	  },
+	  receiveAllLikes: function (likes) {
+	    AppDispatcher.dispatch({
+	      actionType: LikeConstants.LIKES_RECEIVED,
+	      likes: likes
+	    });
+	  },
+	  receiveNewLike: function (newLike) {
+	    AppDispatcher.dispatch({
+	      actionType: LikeConstants.NEW_LIKE_RECEIVED,
+	      newLike: newLike
 	    });
 	  }
 	};
@@ -33169,7 +33206,6 @@
 	    var following = false;
 	    var that = this;
 	
-	    debugger;
 	    follows.forEach(function (follow) {
 	      if (follow.followed_user_id === that.state.user.id && follow.author_id === current_user.id) {
 	        following = true;
@@ -33472,7 +33508,7 @@
 	
 	    properButton = React.createElement(
 	      'button',
-	      { onClick: this.handleFollowSubmit },
+	      { className: 'button', onClick: this.handleFollowSubmit },
 	      'Follow'
 	    );
 	
@@ -33529,7 +33565,6 @@
 	FollowStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case UserConstants.FOLLOW_RECEIVED:
-	      debugger;
 	      // var result = addNewFollow(payload.newFollow);
 	      var result = resetFollows(payload.follow);
 	      FollowStore.__emitChange();
@@ -36275,7 +36310,7 @@
 	
 	    properButton = React.createElement(
 	      'button',
-	      { onClick: this.handleUnfollowSubmit },
+	      { className: 'button', onClick: this.handleUnfollowSubmit },
 	      'Unfollow'
 	    );
 	
@@ -36288,6 +36323,18 @@
 	});
 	
 	module.exports = UnfollowButton;
+
+/***/ },
+/* 294 */
+/***/ function(module, exports) {
+
+	LikeConstants = {
+	  LIKE_RECEIVED: "LIKE_RECEIVED",
+	  LIKES_RECEIVED: "LIKES_RECEIVED",
+	  LIKE_REMOVED: "LIKE_REMOVED"
+	};
+	
+	module.exports = LikeConstants;
 
 /***/ }
 /******/ ]);

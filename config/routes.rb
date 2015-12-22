@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources :follows
     resources :images
     resources :image_comments
+    resources :likes
   end
   resources :users, except: [:show, :index, :update]
   resources :current, only: [:index]

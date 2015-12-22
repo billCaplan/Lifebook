@@ -99,14 +99,12 @@ var UserProfile = React.createClass({
     var current_user = UserStore.getCurrentUser();
 
 
-
     if (!this.state.user.id){
       return false;
     }
     var following = false;
     var that = this;
 
-    debugger
     follows.forEach(function(follow){
       if (follow.followed_user_id === that.state.user.id && follow.author_id === current_user.id){
         following = true;
@@ -155,9 +153,6 @@ var UserProfile = React.createClass({
           <div>
             {followButton}
           </div>
-
-
-
           <div>
             <Images user={this.state.user.id}/>
             <button className="button" onClick={this._setPicturePage}>View All Picture</button>

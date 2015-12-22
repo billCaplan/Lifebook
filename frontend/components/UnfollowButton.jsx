@@ -78,7 +78,7 @@ var UnfollowButton = React.createClass({
   render: function(){
     var properButton;
 
-      properButton = <button onClick={this.handleUnfollowSubmit}>Unfollow</button>;
+      properButton = <button className="button" onClick={this.handleUnfollowSubmit}>Unfollow</button>;
 
     return (
       <div>

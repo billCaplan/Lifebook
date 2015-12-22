@@ -37,7 +37,6 @@ FollowStore.getByFollowParties = function(followParties) {
 FollowStore.__onDispatch = function (payload) {
   switch(payload.actionType) {
     case UserConstants.FOLLOW_RECEIVED:
-    debugger
       // var result = addNewFollow(payload.newFollow);
       var result = resetFollows(payload.follow);
       FollowStore.__emitChange();
