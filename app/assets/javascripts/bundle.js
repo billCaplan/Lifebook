@@ -32703,15 +32703,13 @@
 	    UserStore = __webpack_require__(233),
 	    ImageStore = __webpack_require__(250),
 	    Modal = __webpack_require__(260),
+	    ImageComments = __webpack_require__(290),
+	    NewImageComment = __webpack_require__(291),
 	    ApiUtil = __webpack_require__(235);
 	
 	var customStyles = {
 	  overlay: {
 	    position: 'fixed',
-	    top: 0,
-	    left: 0,
-	    right: 0,
-	    bottom: 0,
 	    backgroundColor: 'rgba(255, 255, 255, 0.75)'
 	  },
 	  content: {
@@ -32719,9 +32717,10 @@
 	    left: '50%',
 	    right: 'auto',
 	    bottom: 'auto',
+	    height: '600px',
+	    width: '1200px',
 	    marginRight: '-50%',
-	    transform: 'translate(-50%, -50%)',
-	    position: 'fixed'
+	    transform: 'translate(-50%, -50%)'
 	  }
 	};
 	
@@ -32740,7 +32739,7 @@
 	  },
 	  openModal: function (event) {
 	    this.setState({ modalIsOpen: true,
-	      selectedImage: event.image_path });
+	      selectedImage: event });
 	  },
 	
 	  closeModal: function () {
@@ -32788,20 +32787,21 @@
 	    }
 	    return React.createElement(
 	      'div',
-	      { className: 'profile-images-body' },
+	      { className: 'profile-images-pane' },
 	      images,
 	      React.createElement(
 	        'div',
 	        null,
 	        React.createElement(
 	          'div',
-	          null,
+	          { className: 'image-modal-outside' },
 	          React.createElement(
 	            Modal,
 	            {
 	              isOpen: this.state.modalIsOpen,
 	              onRequestClose: this.closeModal,
-	              style: customStyles },
+	              style: customStyles,
+	              className: 'image-modal' },
 	            React.createElement(
 	              'h2',
 	              null,
@@ -32812,15 +32812,13 @@
 	              { onClick: this.closeModal },
 	              'close'
 	            ),
-	            React.createElement(
-	              'div',
-	              null,
-	              'I am a modal'
-	            ),
-	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage) })
+	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage.image_path), className: 'image-modal-image' }),
+	            React.createElement(NewImageComment, { image: this.state.selectedImage, className: 'image-modal-new-comments' }),
+	            React.createElement(ImageComments, { image: this.state.selectedImage, className: 'image-modal-image-comments' })
 	          )
 	        )
-	      )
+	      ),
+	      React.createElement(UploadButton, null)
 	    );
 	  }
 	});

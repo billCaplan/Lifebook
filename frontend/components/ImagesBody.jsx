@@ -7,15 +7,13 @@ var React = require('react'),
     UserStore = require("../stores/user"),
     ImageStore = require("../stores/image"),
     Modal = require('react-modal'),
+    ImageComments = require('../components/ImageComment'),
+    NewImageComment = require('../components/NewImageComment'),
     ApiUtil = require('../util/api_util');
 
     var customStyles = {
       overlay : {
        position          : 'fixed',
-       top               : 0,
-       left              : 0,
-       right             : 0,
-       bottom            : 0,
        backgroundColor   : 'rgba(255, 255, 255, 0.75)'
    },
       content : {
@@ -23,9 +21,10 @@ var React = require('react'),
         left                  : '50%',
         right                 : 'auto',
         bottom                : 'auto',
+        height                : '600px',
+        width                 : '1200px',
         marginRight           : '-50%',
-        transform             : 'translate(-50%, -50%)',
-        position              : 'fixed',
+        transform             : 'translate(-50%, -50%)'
       }
     };
 
@@ -43,7 +42,7 @@ var ImagesBody = React.createClass({
   },
   openModal: function(event) {
     this.setState({modalIsOpen: true,
-                  selectedImage: event.image_path });
+                  selectedImage: event });
   },
 
   closeModal: function() {
@@ -85,25 +84,28 @@ var ImagesBody = React.createClass({
         var images = <div> no images</div>;
   }
     return (
-      <div className="profile-images-body">
+      <div className="profile-images-pane">
         {images}
         <div>
-          <div>
+          <div className="image-modal-outside">
              <Modal
                isOpen={this.state.modalIsOpen}
                onRequestClose={this.closeModal}
-               style={customStyles} >
+               style={customStyles}
+               className="image-modal" >
 
                <h2>Picture</h2>
                <button onClick={this.closeModal}>close</button>
-               <div>I am a modal</div>
-               <img src={that.buildModalUrl(that.state.selectedImage)}></img>
+               <img src={that.buildModalUrl(that.state.selectedImage.image_path)} className="image-modal-image"></img>
+               <NewImageComment image={this.state.selectedImage} className="image-modal-new-comments"/>
+               <ImageComments image={this.state.selectedImage} className="image-modal-image-comments"/>
              </Modal>
            </div>
         </div>
+        <UploadButton />
       </div>
-    );
-  }
-});
+      );
+      }
+      });
 
 module.exports = ImagesBody;
