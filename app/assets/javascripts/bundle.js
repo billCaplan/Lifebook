@@ -32843,7 +32843,6 @@
 	  handleSubjectClick: function (destinationId) {
 	    this.setState({ listVisible: false });
 	    this.history.pushState(null, "user/" + this.props.post.subject.id);
-	    window.scrollTo(0, 0);
 	  },
 	
 	  handleInput: function (event) {
@@ -32877,7 +32876,8 @@
 	  },
 	
 	  selectName: function (result) {
-	    var name = event.currentTarget.innerText;
+	    // debugger
+	    // var name = event.currentTarget.innerText;
 	    this.setState({ listVisible: false, inputVal: "" });
 	    this.history.pushState(null, "user/" + result.id);
 	    window.scrollTo(0, 0);
