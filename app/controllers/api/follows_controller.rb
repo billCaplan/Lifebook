@@ -5,7 +5,7 @@ class Api::FollowsController < ApplicationController
   end
 
   def index
-    @follows = Follow.includes(:author, :usersToFollow).all.order('"created_at" DESC')
+    @follows = Follow.all.order('"created_at" DESC')
   end
 
   def create
@@ -14,6 +14,9 @@ class Api::FollowsController < ApplicationController
     @follow.author_id = current_user.id
 
     if @follow.save
+      # render :create
+      @follows = Follow.all
+
       render :index
     else
       render json: @follow.errors.full_messages, status: 422
@@ -27,6 +30,7 @@ class Api::FollowsController < ApplicationController
     def destroy
      @follow = Follow.find(params[:id])
      @follow.destroy
+     @follows = Follow.all
      render :index
     end
 

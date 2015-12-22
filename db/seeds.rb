@@ -10,7 +10,7 @@
 User.create({
   email: "dave@gmail.com",
   type_id: 1,
-  real_name: "Dave Thomas",
+  real_name: "Dave",
   age: 27,
   location: "Columbus, OH",
   profile_image: "",

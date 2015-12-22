@@ -42,10 +42,10 @@ var ApiActions = {
       newComment: newComment
     });
   },
-  receiveNewFollow: function(newFollow){
+  receiveNewFollow: function(follow){
     AppDispatcher.dispatch({
       actionType: UserConstants.FOLLOW_RECEIVED,
-      newFollow: newFollow
+      follow: follow
     });
   },
   receiveAllImages: function(images){

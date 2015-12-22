@@ -31560,10 +31560,10 @@
 	      newComment: newComment
 	    });
 	  },
-	  receiveNewFollow: function (newFollow) {
+	  receiveNewFollow: function (follow) {
 	    AppDispatcher.dispatch({
 	      actionType: UserConstants.FOLLOW_RECEIVED,
-	      newFollow: newFollow
+	      follow: follow
 	    });
 	  },
 	  receiveAllImages: function (images) {
@@ -33065,9 +33065,11 @@
 	var UserStore = __webpack_require__(233);
 	var FriendsPane = __webpack_require__(258);
 	var FollowButton = __webpack_require__(259);
+	var UnfollowButton = __webpack_require__(293);
 	var Images = __webpack_require__(261);
 	var ImagesBody = __webpack_require__(290);
 	var ReactCSSTransitionGroup = __webpack_require__(244);
+	var FollowStore = __webpack_require__(260);
 	
 	function _getRelevantPosts(userId) {
 	  return PostStore.getByUserId(userId);
@@ -33090,7 +33092,8 @@
 	      user_id: user_id,
 	      posts: _getRelevantPosts(user_id),
 	      user: {},
-	      showing: "posts"
+	      showing: "posts",
+	      nothing: {}
 	    };
 	  },
 	  componentDidMount: function () {
@@ -33104,10 +33107,12 @@
 	    //Add listener to update state
 	    this.postListener = PostStore.addListener(this._postsChanged);
 	    this.userListener = UserStore.addListener(this._usersChanged);
+	    this.followListener = FollowStore.addListener(this._followsChanged);
 	  },
 	  componentWillUnmount: function () {
 	    this.postListener.remove();
 	    this.userListener.remove();
+	    this.followListener.remove();
 	  },
 	  //Fixes navigating to new user id
 	  componentWillReceiveProps: function (newProps) {
@@ -33124,6 +33129,9 @@
 	  _usersChanged: function () {
 	    this.setState({ user: _getApplicableUser(this.state.user_id) });
 	    window.scrollTo(0, 0);
+	  },
+	  _followsChanged: function () {
+	    this.setState({ nothing: {} });
 	  },
 	  _renderPicturePage: function () {
 	    return React.createElement(
@@ -33150,9 +33158,41 @@
 	  _setPostsPage: function () {
 	    this.setState({ showing: "posts" });
 	  },
+	  followButtonLogic: function () {
+	    var follows = FollowStore.all();
+	    var profile_user = this.state.user;
+	    var current_user = UserStore.getCurrentUser();
+	
+	    if (!this.state.user.id) {
+	      return false;
+	    }
+	    var following = false;
+	    var that = this;
+	
+	    debugger;
+	    follows.forEach(function (follow) {
+	      if (follow.followed_user_id === that.state.user.id && follow.author_id === current_user.id) {
+	        following = true;
+	      }
+	    });
+	
+	    return following;
+	  },
+	
+	  // <div>
+	  //   <FollowButton user={this.state.user} />
+	  // </div>
 	
 	  render: function () {
 	    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
+	    var placeholder = this.followButtonLogic();
+	    var followButton;
+	
+	    if (placeholder === true) {
+	      followButton = React.createElement(UnfollowButton, { user: this.state.user });
+	    } else {
+	      followButton = React.createElement(FollowButton, { user: this.state.user });
+	    }
 	
 	    if (this.state.showing === "posts") {
 	      var content = this._renderPostsPage();
@@ -33186,7 +33226,7 @@
 	          React.createElement(
 	            'div',
 	            null,
-	            React.createElement(FollowButton, { user: this.state.user })
+	            followButton
 	          ),
 	          React.createElement(
 	            'div',
@@ -33357,28 +33397,30 @@
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
-	  getInitialState: function () {
-	    ApiUtil.fetchFollows();
-	    return { user: {}, isFollowing: {}, newProps: {} };
-	  },
-	  componentDidMount: function () {
-	    this.followListener = FollowStore.addListener(this._followsChanged);
-	  },
-	  _followsChanged: function () {
-	    this.setState({
-	      user: UserStore.findUser(this.state.user.id),
-	      isFollowing: this.decideIfFollowOrUnfollow({ user: UserStore.findUser(this.state.user.id) })
-	    });
-	  },
-	  componentWillUnmount: function () {
-	    this.followListener.remove();
-	  },
-	  componentWillReceiveProps: function (newProps) {
-	    this.setState({ user: newProps.user,
-	      isFollowing: this.decideIfFollowOrUnfollow(newProps)
-	
-	    });
-	  },
+	  // getInitialState: function(){
+	  //   ApiUtil.fetchFollows();
+	  //   return {user: {}, isFollowing:{}, newProps:{}};
+	  // },
+	  // componentDidMount: function(){
+	  //   this.followListener = FollowStore.addListener(this._followsChanged);
+	  // },
+	  // _followsChanged: function(){
+	  //   debugger
+	  //   this.setState({
+	  //     user: UserStore.findUser(this.state.user.id),
+	  //     isFollowing: this.decideIfFollowOrUnfollow({user: UserStore.findUser(this.state.user.id)})
+	  //   });
+	  // },
+	  // componentWillUnmount: function(){
+	  //   this.followListener.remove();
+	  // },
+	  // componentWillReceiveProps: function (newProps) {
+	  //   debugger;
+	  //   this.setState({user: newProps.user,
+	  //                 isFollowing: this.decideIfFollowOrUnfollow(newProps)
+	  //
+	  //                   });
+	  // },
 	  // old handleSubmit
 	  // handleSubmit: function(event){
 	  //   event.preventDefault();
@@ -33386,61 +33428,54 @@
 	  //   var follow = {followed_user_id: this.state.user.id};
 	  //   ApiUtil.createFollow(follow);
 	  // },
-	  decideIfFollowOrUnfollow: function (newProps) {
-	
-	    if (!newProps.user.id) {
-	      return false;
-	    }
-	    var profile_user = newProps.user;
-	    var current_user = UserStore.getCurrentUser();
-	
-	    var followingList = current_user.usersFollowing;
-	    var following;
-	    var that = this;
-	
-	    followingList.forEach(function (user) {
-	      if (user.id === that.state.user.id) {
-	        following = true;
-	      }
-	    });
-	    return following;
-	  },
+	  // decideIfFollowOrUnfollow: function(newProps){
+	  //   debugger
+	  //   if (!newProps.user.id){
+	  //     return false;
+	  //   }
+	  //   var profile_user = newProps.user;
+	  //   var current_user = UserStore.getCurrentUser();
+	  //
+	  //   var followingList = current_user.usersFollowing;
+	  //   var following = false;
+	  //   var that = this;
+	  //
+	  //   followingList.forEach(function(user){
+	  //     if (user.id === that.state.user.id){
+	  //       following = true;
+	  //     }
+	  //   });
+	  //   return following;
+	  //
+	  // },
 	  handleFollowSubmit: function (event) {
 	    event.preventDefault();
-	
-	    var follow = { followed_user_id: this.state.user.id };
+	    var follow = { followed_user_id: this.props.user.id };
 	    ApiUtil.createFollow(follow);
 	  },
-	  handleUnfollowSubmit: function (event) {
-	    event.preventDefault();
-	    var current_user = UserStore.getCurrentUser();
-	
-	    var followParams = { followed_user_id: this.state.user.id, author_id: current_user.id };
-	
-	    var follow = FollowStore.getByFollowParties(followParams);
-	
-	    ApiUtil.deleteFollow(follow);
-	
-	    // going to need to find the follow by the combo, then pass that id to destroy
-	    // ApiUtil.deleteFollow(follow);
-	  },
+	  // handleUnfollowSubmit: function(event){
+	  //   event.preventDefault();
+	  //   var current_user = UserStore.getCurrentUser();
+	  //
+	  //   var followParams = {followed_user_id: this.state.user.id, author_id: current_user.id };
+	  //
+	  //   var follow = FollowStore.getByFollowParties(followParams);
+	  //
+	  //   ApiUtil.deleteFollow(follow);
+	  //
+	  //   // going to need to find the follow by the combo, then pass that id to destroy
+	  //   // ApiUtil.deleteFollow(follow);
+	  // },
 	
 	  render: function () {
 	    var properButton;
 	
-	    if (this.state.isFollowing) {
-	      properButton = React.createElement(
-	        'button',
-	        { onClick: this.handleUnfollowSubmit },
-	        'Unfollow'
-	      );
-	    } else {
-	      properButton = React.createElement(
-	        'button',
-	        { onClick: this.handleFollowSubmit },
-	        'Follow'
-	      );
-	    }
+	    properButton = React.createElement(
+	      'button',
+	      { onClick: this.handleFollowSubmit },
+	      'Follow'
+	    );
+	
 	    return React.createElement(
 	      'div',
 	      null,
@@ -33494,7 +33529,9 @@
 	FollowStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case UserConstants.FOLLOW_RECEIVED:
-	      var result = resetFollows(payload.follows);
+	      debugger;
+	      // var result = addNewFollow(payload.newFollow);
+	      var result = resetFollows(payload.follow);
 	      FollowStore.__emitChange();
 	      break;
 	    case FollowConstants.FOLLOWS_RECEIVED:
@@ -36149,6 +36186,108 @@
 	});
 	
 	module.exports = HeaderBar;
+
+/***/ },
+/* 293 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(239);
+	var UserStore = __webpack_require__(233);
+	var FollowStore = __webpack_require__(260);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var UnfollowButton = React.createClass({
+	  displayName: 'UnfollowButton',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  // getInitialState: function(){
+	  //   ApiUtil.fetchFollows();
+	  //   return {user: {}, isFollowing:{}, newProps:{}};
+	  // },
+	  // componentDidMount: function(){
+	  //   this.followListener = FollowStore.addListener(this._followsChanged);
+	  // },
+	  // _followsChanged: function(){
+	  //   debugger
+	  //   this.setState({
+	  //     user: UserStore.findUser(this.state.user.id),
+	  //     isFollowing: this.decideIfFollowOrUnfollow({user: UserStore.findUser(this.state.user.id)})
+	  //   });
+	  // },
+	  // componentWillUnmount: function(){
+	  //   this.followListener.remove();
+	  // },
+	  // componentWillReceiveProps: function (newProps) {
+	  //   debugger;
+	  //   this.setState({user: newProps.user,
+	  //                 isFollowing: this.decideIfFollowOrUnfollow(newProps)
+	  //
+	  //                   });
+	  // },
+	  // old handleSubmit
+	  // handleSubmit: function(event){
+	  //   event.preventDefault();
+	  //
+	  //   var follow = {followed_user_id: this.state.user.id};
+	  //   ApiUtil.createFollow(follow);
+	  // },
+	  // decideIfFollowOrUnfollow: function(newProps){
+	  //   debugger
+	  //   if (!newProps.user.id){
+	  //     return false;
+	  //   }
+	  //   var profile_user = newProps.user;
+	  //   var current_user = UserStore.getCurrentUser();
+	  //
+	  //   var followingList = current_user.usersFollowing;
+	  //   var following = false;
+	  //   var that = this;
+	  //
+	  //   followingList.forEach(function(user){
+	  //     if (user.id === that.state.user.id){
+	  //       following = true;
+	  //     }
+	  //   });
+	  //   return following;
+	  //
+	  // },
+	  handleUnfollowSubmit: function (event) {
+	    event.preventDefault();
+	    var current_user = UserStore.getCurrentUser();
+	
+	    var followParams = { followed_user_id: this.props.user.id, author_id: current_user.id };
+	
+	    var follow = FollowStore.getByFollowParties(followParams);
+	
+	    ApiUtil.deleteFollow(follow);
+	
+	    // going to need to find the follow by the combo, then pass that id to destroy
+	    // ApiUtil.deleteFollow(follow);
+	  },
+	
+	  render: function () {
+	    var properButton;
+	
+	    properButton = React.createElement(
+	      'button',
+	      { onClick: this.handleUnfollowSubmit },
+	      'Unfollow'
+	    );
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      properButton
+	    );
+	  }
+	});
+	
+	module.exports = UnfollowButton;
 
 /***/ }
 /******/ ]);

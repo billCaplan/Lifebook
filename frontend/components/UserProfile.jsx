@@ -8,9 +8,11 @@ var NewPost = require('../components/NewPost');
 var UserStore = require('../stores/user');
 var FriendsPane = require('../components/FriendsPane');
 var FollowButton = require('../components/FollowButton');
+var UnfollowButton = require('../components/UnfollowButton');
 var Images = require('../components/Images');
 var ImagesBody = require('../components/ImagesBody');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+var FollowStore = require('../stores/follow');
 
 function _getRelevantPosts(userId) {
   return PostStore.getByUserId(userId);
@@ -32,6 +34,7 @@ var UserProfile = React.createClass({
       posts: _getRelevantPosts(user_id),
       user: {},
       showing: "posts",
+      nothing: {}
     };
   },
   componentDidMount: function(){
@@ -45,11 +48,12 @@ var UserProfile = React.createClass({
     //Add listener to update state
     this.postListener = PostStore.addListener(this._postsChanged);
     this.userListener = UserStore.addListener(this._usersChanged);
-
+    this.followListener = FollowStore.addListener(this._followsChanged);
   },
   componentWillUnmount: function(){
     this.postListener.remove();
     this.userListener.remove();
+    this.followListener.remove();
   },
   //Fixes navigating to new user id
   componentWillReceiveProps: function (newProps) {
@@ -66,6 +70,9 @@ var UserProfile = React.createClass({
   _usersChanged: function(){
     this.setState({user: _getApplicableUser(this.state.user_id)});
     window.scrollTo(0, 0);
+  },
+  _followsChanged: function(){
+    this.setState({nothing: {}});
   },
   _renderPicturePage: function(){
     return <div className="user-profile-picture-content">
@@ -86,10 +93,44 @@ var UserProfile = React.createClass({
   _setPostsPage: function(){
     this.setState({showing: "posts"});
   },
+  followButtonLogic: function(){
+    var follows = FollowStore.all();
+    var profile_user = this.state.user;
+    var current_user = UserStore.getCurrentUser();
+
+
+
+    if (!this.state.user.id){
+      return false;
+    }
+    var following = false;
+    var that = this;
+
+    debugger
+    follows.forEach(function(follow){
+      if (follow.followed_user_id === that.state.user.id && follow.author_id === current_user.id){
+        following = true;
+      }
+    });
+
+    return following;
+  },
+
+  // <div>
+  //   <FollowButton user={this.state.user} />
+  // </div>
 
 
   render: function(){
     // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
+    var placeholder = this.followButtonLogic();
+    var followButton;
+
+    if (placeholder === true) {
+      followButton = <UnfollowButton user={this.state.user} />;
+    } else {
+      followButton = <FollowButton user={this.state.user} />;
+    }
 
     if (this.state.showing === "posts"){
       var content = this._renderPostsPage();
@@ -112,8 +153,11 @@ var UserProfile = React.createClass({
             <FriendsPane user={this.state.user}/>
           </div>
           <div>
-            <FollowButton user={this.state.user} />
+            {followButton}
           </div>
+
+
+
           <div>
             <Images user={this.state.user.id}/>
             <button className="button" onClick={this._setPicturePage}>View All Picture</button>

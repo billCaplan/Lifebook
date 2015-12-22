@@ -6,7 +6,7 @@ var FollowStore = require('../stores/follow');
 
 var ApiUtil = require('../util/api_util');
 
-var FollowButton = React.createClass({
+var UnfollowButton = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
@@ -61,29 +61,24 @@ var FollowButton = React.createClass({
   //   return following;
   //
   // },
-  handleFollowSubmit: function(event){
+  handleUnfollowSubmit: function(event){
     event.preventDefault();
-    var follow = {followed_user_id: this.props.user.id};
-    ApiUtil.createFollow(follow);
+    var current_user = UserStore.getCurrentUser();
+
+    var followParams = {followed_user_id: this.props.user.id, author_id: current_user.id };
+
+    var follow = FollowStore.getByFollowParties(followParams);
+
+    ApiUtil.deleteFollow(follow);
+
+    // going to need to find the follow by the combo, then pass that id to destroy
+    // ApiUtil.deleteFollow(follow);
   },
-  // handleUnfollowSubmit: function(event){
-  //   event.preventDefault();
-  //   var current_user = UserStore.getCurrentUser();
-  //
-  //   var followParams = {followed_user_id: this.state.user.id, author_id: current_user.id };
-  //
-  //   var follow = FollowStore.getByFollowParties(followParams);
-  //
-  //   ApiUtil.deleteFollow(follow);
-  //
-  //   // going to need to find the follow by the combo, then pass that id to destroy
-  //   // ApiUtil.deleteFollow(follow);
-  // },
 
   render: function(){
     var properButton;
 
-    properButton = <button onClick={this.handleFollowSubmit}>Follow</button>;
+      properButton = <button onClick={this.handleUnfollowSubmit}>Unfollow</button>;
 
     return (
       <div>
@@ -93,4 +88,4 @@ var FollowButton = React.createClass({
   }
 });
 
-module.exports = FollowButton;
+module.exports = UnfollowButton;
