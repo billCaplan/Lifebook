@@ -84,7 +84,7 @@ var ImagesBody = React.createClass({
         var images = <div> no images</div>;
   }
     return (
-      <div className="profile-images-pane">
+      <div className="profile-images-body">
         {images}
         <div>
           <div className="image-modal-outside">
@@ -102,7 +102,7 @@ var ImagesBody = React.createClass({
              </Modal>
            </div>
         </div>
-        <UploadButton />
+
       </div>
       );
       }

@@ -42,9 +42,10 @@ var ApiActions = {
       newComment: newComment
     });
   },
-  receiveNewFollow: function(newPost){
+  receiveNewFollow: function(newFollow){
     AppDispatcher.dispatch({
-      actionType: UserConstants.FOLLOW_RECEIVED
+      actionType: UserConstants.FOLLOW_RECEIVED,
+      newFollow: newFollow
     });
   },
   receiveAllImages: function(images){
@@ -57,6 +58,12 @@ var ApiActions = {
     AppDispatcher.dispatch({
       actionType: ImageConstants.NEW_IMAGE_RECEIVED,
       newImage: newImage
+    });
+  },
+  removedFollow: function(follows){
+    AppDispatcher.dispatch({
+      actionType: FollowConstants.FOLLOW_REMOVED,
+      follows: follows
     });
   },
   receiveAllFollows: function(follows){
@@ -76,7 +83,7 @@ var ApiActions = {
       actionType: ImageCommentConstants.NEW_IMAGE_COMMENT_RECEIVED,
       newImageComment: newImageComment
     });
-  },
+  }
 };
 
 module.exports = ApiActions;

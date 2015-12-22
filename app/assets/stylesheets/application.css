@@ -20,6 +20,12 @@
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     background: rgb(28, 184, 65);
  }
+ .button{
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    background: rgb(28, 184, 65);
+ }
 
  .example-appear {
    opacity: 0.01;
@@ -166,19 +172,21 @@ padding-right: 10px;
  }
  .profile-images-pane {
    margin: 30px auto;
-   width: auto;
+   min-width: 250px;
    border: 3px solid black;
    float: left;
    display: block;
-   height: auto;
+   min-height: 100px;
    background-color: red;
 
  }
  .profile-images-body{
    height: auto;
-   width: auto;
+   width: 550px;
    background-color: cornflowerblue;
    padding: 10px;
+   min-height: 400px;
+
  }
 
  .profile-images-body:after {
@@ -358,6 +366,9 @@ padding-right: 10px;
 .user-profile-picture-content{
   margin-left: 5px;
   width: auto;
+  min-height: 400px;
+  width: 600px;
+
 }
 
 .user-profile-picture-content:after {

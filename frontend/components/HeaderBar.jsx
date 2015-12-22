@@ -42,7 +42,6 @@ var HeaderBar = React.createClass({
   },
 
   render: function(){
-    debugger
     var name, profile_image;
 
     if (this.state.user.real_name){

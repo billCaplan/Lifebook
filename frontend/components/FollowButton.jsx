@@ -12,20 +12,33 @@ var FollowButton = React.createClass({
   },
   getInitialState: function(){
     ApiUtil.fetchFollows();
-    return {user: {}, isFollowing:{}};
+    return {user: {}, isFollowing:{}, newProps:{}};
+  },
+  componentDidMount: function(){
+    this.followListener = FollowStore.addListener(this._followsChanged);
+  },
+  _followsChanged: function(){
+    this.setState({
+      user: UserStore.findUser(this.state.user.id),
+      isFollowing: this.decideIfFollowOrUnfollow({user: UserStore.findUser(this.state.user.id)})
+    });
+  },
+  componentWillUnmount: function(){
+    this.followListener.remove();
   },
   componentWillReceiveProps: function (newProps) {
     this.setState({user: newProps.user,
-                  isFollowing: this.decideIfFollowOrUnfollow(newProps),
+                  isFollowing: this.decideIfFollowOrUnfollow(newProps)
+
                     });
   },
   // old handleSubmit
-  handleSubmit: function(event){
-    event.preventDefault();
-
-    var follow = {followed_user_id: this.state.user.id};
-    ApiUtil.createFollow(follow);
-  },
+  // handleSubmit: function(event){
+  //   event.preventDefault();
+  //
+  //   var follow = {followed_user_id: this.state.user.id};
+  //   ApiUtil.createFollow(follow);
+  // },
   decideIfFollowOrUnfollow: function(newProps){
 
     if (!newProps.user.id){
@@ -64,14 +77,6 @@ var FollowButton = React.createClass({
 
     // going to need to find the follow by the combo, then pass that id to destroy
     // ApiUtil.deleteFollow(follow);
-  },
-
-  unfollowButton: function(){
-
-  },
-
-  followButton: function(){
-
   },
 
   render: function(){

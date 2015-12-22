@@ -40,10 +40,13 @@ FollowStore.__onDispatch = function (payload) {
       var result = resetFollows(payload.follows);
       FollowStore.__emitChange();
       break;
-      case FollowConstants.FOLLOWS_RECEIVED:
-        var result = resetFollows(payload.follows);
-        FollowStore.__emitChange();
-        break;
+    case FollowConstants.FOLLOWS_RECEIVED:
+      var result = resetFollows(payload.follows);
+      FollowStore.__emitChange();
+      break;
+    case FollowConstants.FOLLOW_REMOVED:
+      var result = resetFollows(payload.follows);
+      FollowStore.__emitChange();
   }
 };
 

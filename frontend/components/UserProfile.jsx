@@ -116,7 +116,7 @@ var UserProfile = React.createClass({
           </div>
           <div>
             <Images user={this.state.user.id}/>
-            <button onClick={this._setPicturePage}>View All Picture</button>
+            <button className="button" onClick={this._setPicturePage}>View All Picture</button>
           </div>
         </div>
         <div className="user-profile-new-post">

@@ -31475,9 +31475,8 @@
 	      method: 'DELETE',
 	      url: '/api/follows/' + data.id,
 	      data: data,
-	      success: function (resp) {
-	
-	        console.log("Success");
+	      success: function (follows) {
+	        ApiActions.removedFollow(follows);
 	      },
 	      error: function (xhr, ajaxOptions, thrownError) {
 	        console.log("Fail");
@@ -31561,9 +31560,10 @@
 	      newComment: newComment
 	    });
 	  },
-	  receiveNewFollow: function (newPost) {
+	  receiveNewFollow: function (newFollow) {
 	    AppDispatcher.dispatch({
-	      actionType: UserConstants.FOLLOW_RECEIVED
+	      actionType: UserConstants.FOLLOW_RECEIVED,
+	      newFollow: newFollow
 	    });
 	  },
 	  receiveAllImages: function (images) {
@@ -31576,6 +31576,12 @@
 	    AppDispatcher.dispatch({
 	      actionType: ImageConstants.NEW_IMAGE_RECEIVED,
 	      newImage: newImage
+	    });
+	  },
+	  removedFollow: function (follows) {
+	    AppDispatcher.dispatch({
+	      actionType: FollowConstants.FOLLOW_REMOVED,
+	      follows: follows
 	    });
 	  },
 	  receiveAllFollows: function (follows) {
@@ -31606,7 +31612,8 @@
 
 	FollowConstants = {
 	  FOLLOW_RECEIVED: "FOLLOW_RECEIVED",
-	  FOLLOWS_RECEIVED: "FOLLOWS_RECEIVED"
+	  FOLLOWS_RECEIVED: "FOLLOWS_RECEIVED",
+	  FOLLOW_REMOVED: "FOLLOW_REMOVED"
 	};
 	
 	module.exports = FollowConstants;
@@ -32889,7 +32896,7 @@
 	      React.createElement(
 	        'label',
 	        null,
-	        'Search:'
+	        'Search: '
 	      ),
 	      React.createElement('input', { onChange: this.handleInput, value: this.state.inputVal }),
 	      React.createElement(
@@ -33187,7 +33194,7 @@
 	            React.createElement(Images, { user: this.state.user.id }),
 	            React.createElement(
 	              'button',
-	              { onClick: this._setPicturePage },
+	              { className: 'button', onClick: this._setPicturePage },
 	              'View All Picture'
 	            )
 	          )
@@ -33352,20 +33359,33 @@
 	  },
 	  getInitialState: function () {
 	    ApiUtil.fetchFollows();
-	    return { user: {}, isFollowing: {} };
+	    return { user: {}, isFollowing: {}, newProps: {} };
+	  },
+	  componentDidMount: function () {
+	    this.followListener = FollowStore.addListener(this._followsChanged);
+	  },
+	  _followsChanged: function () {
+	    this.setState({
+	      user: UserStore.findUser(this.state.user.id),
+	      isFollowing: this.decideIfFollowOrUnfollow({ user: UserStore.findUser(this.state.user.id) })
+	    });
+	  },
+	  componentWillUnmount: function () {
+	    this.followListener.remove();
 	  },
 	  componentWillReceiveProps: function (newProps) {
 	    this.setState({ user: newProps.user,
 	      isFollowing: this.decideIfFollowOrUnfollow(newProps)
+	
 	    });
 	  },
 	  // old handleSubmit
-	  handleSubmit: function (event) {
-	    event.preventDefault();
-	
-	    var follow = { followed_user_id: this.state.user.id };
-	    ApiUtil.createFollow(follow);
-	  },
+	  // handleSubmit: function(event){
+	  //   event.preventDefault();
+	  //
+	  //   var follow = {followed_user_id: this.state.user.id};
+	  //   ApiUtil.createFollow(follow);
+	  // },
 	  decideIfFollowOrUnfollow: function (newProps) {
 	
 	    if (!newProps.user.id) {
@@ -33404,10 +33424,6 @@
 	    // going to need to find the follow by the combo, then pass that id to destroy
 	    // ApiUtil.deleteFollow(follow);
 	  },
-	
-	  unfollowButton: function () {},
-	
-	  followButton: function () {},
 	
 	  render: function () {
 	    var properButton;
@@ -33485,6 +33501,9 @@
 	      var result = resetFollows(payload.follows);
 	      FollowStore.__emitChange();
 	      break;
+	    case FollowConstants.FOLLOW_REMOVED:
+	      var result = resetFollows(payload.follows);
+	      FollowStore.__emitChange();
 	  }
 	};
 	
@@ -35971,7 +35990,7 @@
 	    }
 	    return React.createElement(
 	      'div',
-	      { className: 'profile-images-pane' },
+	      { className: 'profile-images-body' },
 	      images,
 	      React.createElement(
 	        'div',
@@ -36001,8 +36020,7 @@
 	            React.createElement(ImageComments, { image: this.state.selectedImage, className: 'image-modal-image-comments' })
 	          )
 	        )
-	      ),
-	      React.createElement(UploadButton, null)
+	      )
 	    );
 	  }
 	});
@@ -36089,7 +36107,6 @@
 	  },
 	
 	  render: function () {
-	    debugger;
 	    var name, profile_image;
 	
 	    if (this.state.user.real_name) {

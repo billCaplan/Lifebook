@@ -14,7 +14,7 @@ class Api::FollowsController < ApplicationController
     @follow.author_id = current_user.id
 
     if @follow.save
-      render json: @follow
+      render :index
     else
       render json: @follow.errors.full_messages, status: 422
     end
@@ -27,7 +27,7 @@ class Api::FollowsController < ApplicationController
     def destroy
      @follow = Follow.find(params[:id])
      @follow.destroy
-     render json: { response: "Logged out" }
+     render :index
     end
 
   private

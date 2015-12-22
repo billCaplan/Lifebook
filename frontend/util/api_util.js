@@ -57,9 +57,8 @@ var ApiUtil = {
        method: 'DELETE',
        url: '/api/follows/' + data.id,
        data: data,
-       success: function(resp) {
-
-        console.log("Success");
+       success: function(follows) {
+        ApiActions.removedFollow(follows);
       },
        error: function (xhr, ajaxOptions, thrownError) {
           console.log("Fail");

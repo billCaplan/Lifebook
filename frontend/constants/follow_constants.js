@@ -1,6 +1,7 @@
 FollowConstants = {
   FOLLOW_RECEIVED: "FOLLOW_RECEIVED",
   FOLLOWS_RECEIVED: "FOLLOWS_RECEIVED",
+  FOLLOW_REMOVED: "FOLLOW_REMOVED",
 };
 
 module.exports = FollowConstants;
