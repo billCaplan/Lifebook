@@ -36,6 +36,46 @@
      padding: 0px 10px !important;
  }
 
+ .image-modal{
+   position: fixed;
+
+ }
+ .image-modal-outside{
+   position: fixed;
+ }
+ .image-modal:after {
+   content: "";
+   display: block;
+   clear: both;
+ }
+
+.image-modal-image{
+  float: left;
+  display: block;
+
+}
+.image-modal-image-comments{
+  float: left;
+  width: 100px;
+  right: 20px;
+}
+
+
+.image-post-comments{
+  float:right;
+  display: block;
+  padding-right: 10px;
+
+}
+.image-post-new-post{
+float:right;
+width: auto;
+bottom: 30px;
+display: block;
+padding-right: 10px;
+
+}
+
  html {
    background-color: green;
  }
@@ -55,7 +95,7 @@
    display: block;
    clear: both;
  }
- 
+
  .feed{
    width: auto;
    float: left;
@@ -166,7 +206,7 @@
   padding: 3px;
   padding-bottom: 5px;
   top: 0px;
-  z-index: 1;
+
 
 }
 

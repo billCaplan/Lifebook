@@ -24537,11 +24537,6 @@
 	        transitionEnterTimeout: 500,
 	        transitionLeaveTimeout: 500 },
 	      React.createElement(
-	        'h1',
-	        null,
-	        'Fading at Initial Mount'
-	      ),
-	      React.createElement(
 	        'div',
 	        { className: 'feed' },
 	        React.createElement(
@@ -31491,7 +31486,6 @@
 	  },
 	  fetchImageComments: function () {
 	    $.get('/api/image_comments', function (imageComments) {
-	      debugger;
 	      ApiActions.receiveAllImageComments(imageComments);
 	    });
 	  },
@@ -31615,12 +31609,15 @@
 	  },
 	  handleAuthorClick: function (destinationId) {
 	    this.history.pushState(null, "user/" + this.props.post.author.id);
+	    window.scrollTo(0, 0);
 	  },
 	  handleSubjectClick: function (destinationId) {
 	    this.history.pushState(null, "user/" + this.props.post.subject.id);
+	    window.scrollTo(0, 0);
 	  },
 	  handlePostClick: function (post) {
 	    this.history.pushState(null, "posts/" + this.props.post.id);
+	    window.scrollTo(0, 0);
 	  },
 	  render: function () {
 	
@@ -31783,6 +31780,7 @@
 	  },
 	  handleAuthorClick: function (authorId) {
 	    this.history.pushState(null, "user/" + authorId);
+	    window.scrollTo(0, 0);
 	  },
 	
 	  render: function () {
@@ -32349,11 +32347,17 @@
 	    ImageModal = __webpack_require__(249);
 	
 	var customStyles = {
+	  overlay: {
+	    position: 'fixed',
+	    backgroundColor: 'rgba(255, 255, 255, 0.75)'
+	  },
 	  content: {
 	    top: '50%',
 	    left: '50%',
 	    right: 'auto',
 	    bottom: 'auto',
+	    height: '600px',
+	    width: '1200px',
 	    marginRight: '-50%',
 	    transform: 'translate(-50%, -50%)'
 	  }
@@ -32365,6 +32369,7 @@
 	  getInitialState: function () {
 	    ApiUtil.fetchImages();
 	    this.imageListener = ImageStore.addListener(this._imagesChanged);
+	
 	    return { images: [], user: this.props.user, modalIsOpen: false, selectedImage: "" };
 	  },
 	  openModal: function (event) {
@@ -32428,13 +32433,14 @@
 	        null,
 	        React.createElement(
 	          'div',
-	          null,
+	          { className: 'image-modal-outside' },
 	          React.createElement(
 	            Modal,
 	            {
 	              isOpen: this.state.modalIsOpen,
 	              onRequestClose: this.closeModal,
-	              style: customStyles },
+	              style: customStyles,
+	              className: 'image-modal' },
 	            React.createElement(
 	              'h2',
 	              null,
@@ -32445,14 +32451,9 @@
 	              { onClick: this.closeModal },
 	              'close'
 	            ),
-	            React.createElement(
-	              'div',
-	              null,
-	              'I am a modal'
-	            ),
-	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage.image_path) }),
-	            React.createElement(ImageComments, { image: this.state.selectedImage }),
-	            React.createElement(NewImageComment, { image: this.state.selectedImage })
+	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage.image_path), className: 'image-modal-image' }),
+	            React.createElement(NewImageComment, { image: this.state.selectedImage, className: 'image-modal-new-comments' }),
+	            React.createElement(ImageComments, { image: this.state.selectedImage, className: 'image-modal-image-comments' })
 	          )
 	        )
 	      ),
@@ -32705,13 +32706,22 @@
 	    ApiUtil = __webpack_require__(235);
 	
 	var customStyles = {
+	  overlay: {
+	    position: 'fixed',
+	    top: 0,
+	    left: 0,
+	    right: 0,
+	    bottom: 0,
+	    backgroundColor: 'rgba(255, 255, 255, 0.75)'
+	  },
 	  content: {
 	    top: '50%',
 	    left: '50%',
 	    right: 'auto',
 	    bottom: 'auto',
 	    marginRight: '-50%',
-	    transform: 'translate(-50%, -50%)'
+	    transform: 'translate(-50%, -50%)',
+	    position: 'fixed'
 	  }
 	};
 	
@@ -32958,6 +32968,7 @@
 	  handleSubjectClick: function (destinationId) {
 	    this.setState({ listVisible: false });
 	    this.history.pushState(null, "user/" + this.props.post.subject.id);
+	    window.scrollTo(0, 0);
 	  },
 	
 	  handleInput: function (event) {
@@ -35890,9 +35901,11 @@
 	  },
 	  handleAuthorClick: function (authorId) {
 	    this.history.pushState(null, "user/" + authorId);
+	    window.scrollTo(0, 0);
 	  },
 	
 	  render: function () {
+	    debugger;
 	    var that = this;
 	    var Comments = this.state.comments.map(function (comment, i) {
 	      return React.createElement(
@@ -35912,7 +35925,7 @@
 	    });
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'image-post-comments' },
 	      Comments
 	    );
 	  }
@@ -35952,7 +35965,7 @@
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'image-post-new-post' },
 	      React.createElement(
 	        'div',
 	        null,
@@ -36002,12 +36015,13 @@
 	var _image_comments = [];
 	
 	var resetImageComments = function (image_comments) {
-	  debugger;
+	
 	  _image_comments = image_comments.slice(0);
 	};
 	
 	var addNewImageComment = function (newImageComment) {
-	  _image_comments.push(newImage);
+	  debugger;
+	  _image_comments.push(newImageComment);
 	};
 	
 	ImageCommentsStore.all = function () {
@@ -36020,7 +36034,6 @@
 	  var image_comments = ImageCommentsStore.all();
 	  var relevantImageComments = [];
 	
-	  debugger;
 	  image_comments.forEach(function (comment) {
 	
 	    if (comment.image_id === imageId) {
@@ -36032,15 +36045,15 @@
 	};
 	
 	ImageCommentsStore.__onDispatch = function (payload) {
-	  debugger;
+	
 	  switch (payload.actionType) {
 	    case ImageConstants.IMAGE_COMMENTS_RECEIVED:
-	      debugger;
+	
 	      var result = resetImageComments(payload.image_comments);
 	      ImageCommentsStore.__emitChange();
 	      break;
 	    case ImageConstants.NEW_IMAGE_COMMENT_RECEIVED:
-	      var result = addNewImageComment(payload.newImage);
+	      var result = addNewImageComment(payload.newImageComment);
 	      ImageCommentsStore.__emitChange();
 	      break;
 	  }

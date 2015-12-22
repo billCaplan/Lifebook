@@ -30,6 +30,7 @@ var Comment = React.createClass({
     },
     handleAuthorClick: function(authorId){
       this.history.pushState(null, "user/" + authorId);
+      window.scrollTo(0, 0);
     },
 
     render: function(){

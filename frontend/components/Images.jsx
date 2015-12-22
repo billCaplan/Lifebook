@@ -13,11 +13,17 @@ var React = require('react'),
     ImageModal = require('../components/ImageModal');
 
     var customStyles = {
+      overlay : {
+       position          : 'fixed',
+       backgroundColor   : 'rgba(255, 255, 255, 0.75)'
+   },
       content : {
         top                   : '50%',
         left                  : '50%',
         right                 : 'auto',
         bottom                : 'auto',
+        height                : '600px',
+        width                 : '1200px',
         marginRight           : '-50%',
         transform             : 'translate(-50%, -50%)'
       }
@@ -27,6 +33,7 @@ var Images = React.createClass({
   getInitialState: function () {
     ApiUtil.fetchImages();
     this.imageListener = ImageStore.addListener(this._imagesChanged);
+
     return { images: [], user: this.props.user, modalIsOpen: false, selectedImage: "" };
   },
   openModal: function(event) {
@@ -81,18 +88,18 @@ var Images = React.createClass({
       <div className="profile-images-pane">
         {images}
         <div>
-          <div>
+          <div className="image-modal-outside">
              <Modal
                isOpen={this.state.modalIsOpen}
                onRequestClose={this.closeModal}
-               style={customStyles} >
+               style={customStyles}
+               className="image-modal" >
 
                <h2>Picture</h2>
                <button onClick={this.closeModal}>close</button>
-               <div>I am a modal</div>
-               <img src={that.buildModalUrl(that.state.selectedImage.image_path)}></img>
-               <ImageComments image={this.state.selectedImage}/>
-               <NewImageComment image={this.state.selectedImage}/>
+               <img src={that.buildModalUrl(that.state.selectedImage.image_path)} className="image-modal-image"></img>
+               <NewImageComment image={this.state.selectedImage} className="image-modal-new-comments"/>
+               <ImageComments image={this.state.selectedImage} className="image-modal-image-comments"/>
              </Modal>
            </div>
         </div>

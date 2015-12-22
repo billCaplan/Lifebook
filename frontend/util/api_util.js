@@ -68,7 +68,6 @@ var ApiUtil = {
   },
   fetchImageComments: function(){
     $.get('/api/image_comments', function(imageComments){
-      debugger
       ApiActions.receiveAllImageComments(imageComments);
     });
   },

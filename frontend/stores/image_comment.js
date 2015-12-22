@@ -7,12 +7,13 @@ var ImageCommentsStore = new Store(AppDispatcher);
 var _image_comments = [];
 
 var resetImageComments = function(image_comments){
-  debugger
+
   _image_comments = image_comments.slice(0);
 };
 
 var addNewImageComment = function(newImageComment){
-  _image_comments.push(newImage);
+  debugger
+  _image_comments.push(newImageComment);
 };
 
 ImageCommentsStore.all = function () {
@@ -25,7 +26,7 @@ ImageCommentsStore.getByPostId = function(imageIdString) {
   var image_comments = ImageCommentsStore.all();
   var relevantImageComments = [];
 
-  debugger
+
   image_comments.forEach(function(comment){
 
     if (comment.image_id === imageId){
@@ -37,15 +38,15 @@ ImageCommentsStore.getByPostId = function(imageIdString) {
 };
 
 ImageCommentsStore.__onDispatch = function (payload) {
-  debugger
+
   switch(payload.actionType) {
     case ImageConstants.IMAGE_COMMENTS_RECEIVED:
-    debugger
+
       var result = resetImageComments(payload.image_comments);
       ImageCommentsStore.__emitChange();
       break;
     case ImageConstants.NEW_IMAGE_COMMENT_RECEIVED:
-      var result = addNewImageComment(payload.newImage);
+      var result = addNewImageComment(payload.newImageComment);
       ImageCommentsStore.__emitChange();
       break;
   }

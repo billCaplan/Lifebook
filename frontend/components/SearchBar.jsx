@@ -18,6 +18,7 @@ var SearchBar = React.createClass({
   handleSubjectClick: function(destinationId){
     this.setState({listVisible: false});
     this.history.pushState(null, "user/" + this.props.post.subject.id);
+    window.scrollTo(0, 0);
   },
 
   handleInput: function (event) {

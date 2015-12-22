@@ -9,21 +9,13 @@ NOTES:
 
 Still need:
 
-  Fix Sign Out Button
+  Change Profile Pics
+
 
   WORK ON FOLLOW BUTTON
     need to have an if conditional for follow / unfollow button
     and alter the feed to have only those
 
-    Integrate Photos
-
-    PICTURE COMMENTS table, controller, class, model, store, React Component
-
-
-  Build a React Component Navbar
-    will have two different nav bars
-      one for the react pages
-      one for the html login pages
 
   Followers count
 

@@ -62,7 +62,6 @@ var Feed = React.createClass({
                                 transitionAppearTimeout={500}
                                 transitionEnterTimeout={500}
                                 transitionLeaveTimeout={500}>
-        <h1>Fading at Initial Mount</h1>
         <div className="feed">
           <div className="feed-new-post">
             <NewPost/>

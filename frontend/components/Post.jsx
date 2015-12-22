@@ -16,12 +16,15 @@ var Post = React.createClass({
   },
   handleAuthorClick: function(destinationId){
     this.history.pushState(null, "user/" + this.props.post.author.id);
+    window.scrollTo(0, 0);
   },
   handleSubjectClick: function(destinationId){
     this.history.pushState(null, "user/" + this.props.post.subject.id);
+    window.scrollTo(0, 0);
   },
   handlePostClick: function (post) {
     this.history.pushState(null, "posts/" + this.props.post.id);
+    window.scrollTo(0, 0);
   },
   render: function(){
 

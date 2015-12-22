@@ -31,9 +31,11 @@ var ImageComment = React.createClass({
     },
     handleAuthorClick: function(authorId){
       this.history.pushState(null, "user/" + authorId);
+      window.scrollTo(0, 0);
     },
 
     render: function(){
+      debugger
       var that=this;
       var Comments = this.state.comments.map(function (comment, i) {
         return(
@@ -48,7 +50,7 @@ var ImageComment = React.createClass({
         );
       });
     return(
-      <div>
+      <div className="image-post-comments">
         {Comments}
       </div>
     );

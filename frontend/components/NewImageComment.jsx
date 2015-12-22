@@ -23,7 +23,7 @@ var NewImageComment = React.createClass({
 
   render: function(){
     return(
-      <div>
+      <div className="image-post-new-post">
         <div>
           <form onSubmit={this.handleSubmit}>
            <label htmlFor="comment_body">Leave a new comment</label>
