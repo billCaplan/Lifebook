@@ -76,6 +76,21 @@ var ApiUtil = {
       ApiActions.receiveNewImageComment(imageComment);
     });
   },
+  updateProfilePic: function(data){
+    var dataToSend = {user:{profile_image: data.profile_image }};
+
+    $.ajax({
+       method: 'PATCH',
+       url: '/api/users/' + data.user.id,
+       data: dataToSend,
+       success: function(users) {
+        ApiActions.receiveAllUsers(users);
+      },
+       error: function (xhr, ajaxOptions, thrownError) {
+          console.log("Fail");
+        }
+     });
+  },
 };
 
 module.exports = ApiUtil;

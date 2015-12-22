@@ -12,7 +12,7 @@ var resetImageComments = function(image_comments){
 };
 
 var addNewImageComment = function(newImageComment){
-  debugger
+
   _image_comments.push(newImageComment);
 };
 

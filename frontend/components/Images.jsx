@@ -10,6 +10,7 @@ var React = require('react'),
     Modal = require('react-modal'),
     ImageComments = require('../components/ImageComment'),
     NewImageComment = require('../components/NewImageComment'),
+    ProfilePicChangeButton = require('../components/ProfilePicChangeButton'),
     ImageModal = require('../components/ImageModal');
 
     var customStyles = {
@@ -97,6 +98,7 @@ var Images = React.createClass({
 
                <h2>Picture</h2>
                <button onClick={this.closeModal}>close</button>
+               <ProfilePicChangeButton image={this.state.selectedImage}/>
                <img src={that.buildModalUrl(that.state.selectedImage.image_path)} className="image-modal-image"></img>
                <NewImageComment image={this.state.selectedImage} className="image-modal-new-comments"/>
                <ImageComments image={this.state.selectedImage} className="image-modal-image-comments"/>

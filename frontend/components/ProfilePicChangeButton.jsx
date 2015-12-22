@@ -9,13 +9,14 @@ var UserProfileUserInfo = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
-  _getProfilePic: function(){
-    if(this.props.user.profile_image){
-      var profileLocation = this.buildUrl(this.props.user.profile_image);
-    } else {
-      var profileLocation = this.buildUrl("lifebook_default_pic");
-    }
-    return profileLocation;
+  // getInitialState: function(){
+  //   return ({})
+  // },
+
+  handleClick: function(event){
+    var image_path = this.props.image.image_path;
+    var current_user = UserStore.getCurrentUser();
+    ApiUtil.updateProfilePic({user: current_user, profile_image: image_path});
 
   },
   buildUrl: function(image_path){
@@ -26,7 +27,7 @@ var UserProfileUserInfo = React.createClass({
   render: function(){
     return(
       <div>
-
+        <button onClick={this.handleClick}>Make this your Profile Picture</button>
       </div>
     );
   }

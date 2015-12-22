@@ -14,10 +14,17 @@ var HeaderBar = React.createClass({
     router: React.PropTypes.func
   },
   getInitialState: function(){
+
     return {user: {}};
   },
   redirectToHome: function(){
     this.history.pushState(null, "/");
+  },
+  componentDidMount: function(){
+    this.userListener = UserStore.addListener(this._usersChanged);
+  },
+  _usersChanged: function(){
+    this.setState({user: UserStore.getCurrentUser()});
   },
   componentWillReceiveProps: function (newProps) {
     this.setState({user: newProps.currentUser});
@@ -34,6 +41,7 @@ var HeaderBar = React.createClass({
   },
 
   render: function(){
+    debugger
     var name, profile_image;
 
     if (this.state.user.real_name){

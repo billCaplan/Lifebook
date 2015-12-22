@@ -21,7 +21,7 @@ var SignoutButton = React.createClass({
        url: 'session/',
        success: function(resp) {
         //  $("content").hide().show(0);
-        window.location.replace(window.location.origin)
+        window.location.replace(window.location.origin);
        },
        error: function (xhr, ajaxOptions, thrownError) {
           // debugger;

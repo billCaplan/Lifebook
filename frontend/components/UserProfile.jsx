@@ -67,7 +67,7 @@ var UserProfile = React.createClass({
   },
   _renderPicturePage: function(){
     return <div className="user-profile-picture-content">
-              <button onClick={this._setPostsPage}>Return to Profile</button>
+              <button onClick={this._setPostsPage} className="return-to-profile">Return to Profile</button>
               <ImagesBody user={this.state.user.id} />
           </div>;
   },

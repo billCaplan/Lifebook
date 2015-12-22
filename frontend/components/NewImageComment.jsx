@@ -16,7 +16,6 @@ var NewImageComment = React.createClass({
   },
   handleSubmit: function(event){
     event.preventDefault();
-    debugger
     var post = {body: event.currentTarget[0].value, image_id: this.props.image.id};
     ApiUtil.createImageComment(post);
   },

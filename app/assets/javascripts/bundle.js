@@ -31493,6 +31493,21 @@
 	    $.post('api/image_comments', { image_comment: data }, function (imageComment) {
 	      ApiActions.receiveNewImageComment(imageComment);
 	    });
+	  },
+	  updateProfilePic: function (data) {
+	    var dataToSend = { user: { profile_image: data.profile_image } };
+	
+	    $.ajax({
+	      method: 'PATCH',
+	      url: '/api/users/' + data.user.id,
+	      data: dataToSend,
+	      success: function (users) {
+	        ApiActions.receiveAllUsers(users);
+	      },
+	      error: function (xhr, ajaxOptions, thrownError) {
+	        console.log("Fail");
+	      }
+	    });
 	  }
 	};
 	
@@ -32017,7 +32032,7 @@
 	      { className: 'user-profile-picture-content' },
 	      React.createElement(
 	        'button',
-	        { onClick: this._setPostsPage },
+	        { onClick: this._setPostsPage, className: 'return-to-profile' },
 	        'Return to Profile'
 	      ),
 	      React.createElement(ImagesBody, { user: this.state.user.id })
@@ -32344,6 +32359,7 @@
 	    Modal = __webpack_require__(260),
 	    ImageComments = __webpack_require__(290),
 	    NewImageComment = __webpack_require__(291),
+	    ProfilePicChangeButton = __webpack_require__(294),
 	    ImageModal = __webpack_require__(249);
 	
 	var customStyles = {
@@ -32451,6 +32467,7 @@
 	              { onClick: this.closeModal },
 	              'close'
 	            ),
+	            React.createElement(ProfilePicChangeButton, { image: this.state.selectedImage }),
 	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage.image_path), className: 'image-modal-image' }),
 	            React.createElement(NewImageComment, { image: this.state.selectedImage, className: 'image-modal-new-comments' }),
 	            React.createElement(ImageComments, { image: this.state.selectedImage, className: 'image-modal-image-comments' })
@@ -32877,10 +32894,17 @@
 	    router: React.PropTypes.func
 	  },
 	  getInitialState: function () {
+	
 	    return { user: {} };
 	  },
 	  redirectToHome: function () {
 	    this.history.pushState(null, "/");
+	  },
+	  componentDidMount: function () {
+	    this.userListener = UserStore.addListener(this._usersChanged);
+	  },
+	  _usersChanged: function () {
+	    this.setState({ user: UserStore.getCurrentUser() });
 	  },
 	  componentWillReceiveProps: function (newProps) {
 	    this.setState({ user: newProps.currentUser });
@@ -32897,6 +32921,7 @@
 	  },
 	
 	  render: function () {
+	    debugger;
 	    var name, profile_image;
 	
 	    if (this.state.user.real_name) {
@@ -35903,7 +35928,6 @@
 	  },
 	
 	  render: function () {
-	    debugger;
 	    var that = this;
 	    var Comments = this.state.comments.map(function (comment, i) {
 	      return React.createElement(
@@ -35955,7 +35979,6 @@
 	  },
 	  handleSubmit: function (event) {
 	    event.preventDefault();
-	    debugger;
 	    var post = { body: event.currentTarget[0].value, image_id: this.props.image.id };
 	    ApiUtil.createImageComment(post);
 	  },
@@ -36018,7 +36041,7 @@
 	};
 	
 	var addNewImageComment = function (newImageComment) {
-	  debugger;
+	
 	  _image_comments.push(newImageComment);
 	};
 	
@@ -36058,6 +36081,52 @@
 	};
 	
 	module.exports = ImageCommentsStore;
+
+/***/ },
+/* 294 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(237);
+	var UserStore = __webpack_require__(233);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var UserProfileUserInfo = React.createClass({
+	  displayName: 'UserProfileUserInfo',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  // getInitialState: function(){
+	  //   return ({})
+	  // },
+	
+	  handleClick: function (event) {
+	    var image_path = this.props.image.image_path;
+	    var current_user = UserStore.getCurrentUser();
+	    ApiUtil.updateProfilePic({ user: current_user, profile_image: image_path });
+	  },
+	  buildUrl: function (image_path) {
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_168,w_168/v1450463928/" + image_path;
+	    return url;
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'button',
+	        { onClick: this.handleClick },
+	        'Make this your Profile Picture'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = UserProfileUserInfo;
 
 /***/ }
 /******/ ]);

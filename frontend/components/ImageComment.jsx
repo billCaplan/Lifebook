@@ -35,7 +35,6 @@ var ImageComment = React.createClass({
     },
 
     render: function(){
-      debugger
       var that=this;
       var Comments = this.state.comments.map(function (comment, i) {
         return(
