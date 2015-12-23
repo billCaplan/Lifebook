@@ -14,7 +14,7 @@ var CommentLikeButton = React.createClass({
 
   handleLikeSubmit: function(event){
     event.preventDefault();
-    debugger
+
     var like = {author_id: this.props.currentUser.id,
                   like_type: "comment",
                   post_id: this.props.comment.id};

@@ -31943,7 +31943,6 @@
 	    window.scrollTo(0, 0);
 	  },
 	  likeButtonLogic: function (comment) {
-	    debugger;
 	    var likes = LikeStore.all();
 	    var current_comment = comment;
 	    var current_user = UserStore.getCurrentUser();
@@ -31963,8 +31962,6 @@
 	    return liking;
 	  },
 	  _buttonRenderFunction: function (comment) {
-	    // console.log(comment);
-	    // var targetComment = comment;
 	    var placeholder = this.likeButtonLogic(comment);
 	    var likeButton;
 	    var currentUser = UserStore.getCurrentUser();
@@ -31986,7 +31983,7 @@
 	          like: false })
 	      );
 	    }
-	    debugger;
+	
 	    return likeButton;
 	  },
 	
@@ -33822,10 +33819,12 @@
 	    ImageModal = __webpack_require__(265),
 	    UserStore = __webpack_require__(233),
 	    ImageStore = __webpack_require__(286),
+	    LikeStore = __webpack_require__(296),
 	    ApiUtil = __webpack_require__(235),
 	    Modal = __webpack_require__(266),
 	    ImageComments = __webpack_require__(288),
 	    NewImageComment = __webpack_require__(290),
+	    ImageLikeButton = __webpack_require__(298),
 	    ProfilePicChangeButton = __webpack_require__(291),
 	    ImageModal = __webpack_require__(265);
 	
@@ -33853,8 +33852,12 @@
 	  getInitialState: function () {
 	    ApiUtil.fetchImages();
 	    this.imageListener = ImageStore.addListener(this._imagesChanged);
+	    this.likesListener = LikeStore.addListener(this._likesChanged);
 	
 	    return { images: [], user: this.props.user, modalIsOpen: false, selectedImage: "" };
+	  },
+	  _likesChanged: function () {
+	    this.forceUpdate();
 	  },
 	  openModal: function (event) {
 	
@@ -33886,6 +33889,50 @@
 	  },
 	  modal: function () {
 	    return;
+	  },
+	  likeButtonLogic: function (image) {
+	    var likes = LikeStore.all();
+	    var current_image = image;
+	    var current_user = UserStore.getCurrentUser();
+	
+	    if (!current_image.id) {
+	      return false;
+	    }
+	    var liking = false;
+	    var that = this;
+	
+	    likes.forEach(function (like) {
+	      if (like.post_id === current_image.id && like.author_id === current_user.id && like.like_type === "image") {
+	        liking = true;
+	      }
+	    });
+	
+	    return liking;
+	  },
+	  _buttonRenderFunction: function (image) {
+	    var placeholder = this.likeButtonLogic(image);
+	    var likeButton;
+	    var currentUser = UserStore.getCurrentUser();
+	
+	    if (placeholder === true) {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(ImageLikeButton, { currentUser: currentUser,
+	          image: image,
+	          like: true })
+	      );
+	    } else {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(ImageLikeButton, { currentUser: currentUser,
+	          image: image,
+	          like: false })
+	      );
+	    }
+	
+	    return likeButton;
 	  },
 	
 	  render: function () {
@@ -33936,6 +33983,7 @@
 	              'close'
 	            ),
 	            React.createElement(ProfilePicChangeButton, { image: this.state.selectedImage }),
+	            that._buttonRenderFunction(this.state.selectedImage),
 	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage.image_path), className: 'image-modal-image' }),
 	            React.createElement(NewImageComment, { image: this.state.selectedImage, className: 'image-modal-new-comments' }),
 	            React.createElement(ImageComments, { image: this.state.selectedImage, className: 'image-modal-image-comments' })
@@ -36223,6 +36271,8 @@
 	    ImageModal = __webpack_require__(265),
 	    UserStore = __webpack_require__(233),
 	    ImageStore = __webpack_require__(286),
+	    LikeStore = __webpack_require__(296),
+	    ImageLikeButton = __webpack_require__(298),
 	    Modal = __webpack_require__(266),
 	    ImageComments = __webpack_require__(288),
 	    NewImageComment = __webpack_require__(290),
@@ -36255,10 +36305,14 @@
 	  },
 	  getInitialState: function () {
 	    ApiUtil.fetchImages();
+	    this.likesListener = LikeStore.addListener(this._likesChanged);
 	    return { images: ImageStore.getByUserId(this.props.user),
 	      user: this.props.user,
 	      modalIsOpen: false,
 	      selectedImage: "" };
+	  },
+	  _likesChanged: function () {
+	    this.forceUpdate();
 	  },
 	  openModal: function (event) {
 	    this.setState({ modalIsOpen: true,
@@ -36287,6 +36341,50 @@
 	  },
 	  modal: function () {
 	    return;
+	  },
+	  likeButtonLogic: function (image) {
+	    var likes = LikeStore.all();
+	    var current_image = image;
+	    var current_user = UserStore.getCurrentUser();
+	
+	    if (!current_image.id) {
+	      return false;
+	    }
+	    var liking = false;
+	    var that = this;
+	
+	    likes.forEach(function (like) {
+	      if (like.post_id === current_image.id && like.author_id === current_user.id && like.like_type === "image") {
+	        liking = true;
+	      }
+	    });
+	
+	    return liking;
+	  },
+	  _buttonRenderFunction: function (image) {
+	    var placeholder = this.likeButtonLogic(image);
+	    var likeButton;
+	    var currentUser = UserStore.getCurrentUser();
+	
+	    if (placeholder === true) {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(ImageLikeButton, { currentUser: currentUser,
+	          image: image,
+	          like: true })
+	      );
+	    } else {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(ImageLikeButton, { currentUser: currentUser,
+	          image: image,
+	          like: false })
+	      );
+	    }
+	
+	    return likeButton;
 	  },
 	
 	  render: function () {
@@ -36336,6 +36434,7 @@
 	              'close'
 	            ),
 	            React.createElement(ProfilePicChangeButton, { image: this.state.selectedImage }),
+	            that._buttonRenderFunction(this.state.selectedImage),
 	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage.image_path), className: 'image-modal-image' }),
 	            React.createElement(NewImageComment, { image: this.state.selectedImage, className: 'image-modal-new-comments' }),
 	            React.createElement(ImageComments, { image: this.state.selectedImage, className: 'image-modal-image-comments' })
@@ -36616,7 +36715,7 @@
 	
 	  handleLikeSubmit: function (event) {
 	    event.preventDefault();
-	    debugger;
+	
 	    var like = { author_id: this.props.currentUser.id,
 	      like_type: "comment",
 	      post_id: this.props.comment.id };
@@ -36656,6 +36755,69 @@
 	});
 	
 	module.exports = CommentLikeButton;
+
+/***/ },
+/* 298 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var FollowStore = __webpack_require__(261);
+	var LikeStore = __webpack_require__(296);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var ImageLikeButton = React.createClass({
+	  displayName: 'ImageLikeButton',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	
+	  handleLikeSubmit: function (event) {
+	    event.preventDefault();
+	
+	    var like = { author_id: this.props.currentUser.id,
+	      like_type: "image",
+	      post_id: this.props.image.id };
+	
+	    if (this.props.like) {
+	      var targetLike = LikeStore.getByLikeParties(like);
+	      ApiUtil.deleteLike(targetLike);
+	    } else {
+	      ApiUtil.createLike(like);
+	    }
+	  },
+	  componentWillReceiveProps: function (newProps) {},
+	  buttonText: function () {
+	    var text;
+	
+	    if (this.props.like) {
+	      text = "Unlike";
+	    } else {
+	      text = "Like";
+	    }
+	    return text;
+	  },
+	  render: function () {
+	    var properButton;
+	    properButton = React.createElement(
+	      'button',
+	      { className: 'button', onClick: this.handleLikeSubmit },
+	      this.buttonText()
+	    );
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      properButton
+	    );
+	  }
+	});
+	
+	module.exports = ImageLikeButton;
 
 /***/ }
 /******/ ]);

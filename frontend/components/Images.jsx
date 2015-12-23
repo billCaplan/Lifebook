@@ -6,10 +6,12 @@ var React = require('react'),
     ImageModal = require("../components/ImageModal"),
     UserStore = require("../stores/user"),
     ImageStore = require("../stores/image"),
+    LikeStore = require("../stores/like"),
     ApiUtil = require('../util/api_util'),
     Modal = require('react-modal'),
     ImageComments = require('../components/ImageComment'),
     NewImageComment = require('../components/NewImageComment'),
+    ImageLikeButton = require('../components/ImageLikeButton'),
     ProfilePicChangeButton = require('../components/ProfilePicChangeButton'),
     ImageModal = require('../components/ImageModal');
 
@@ -35,8 +37,12 @@ var Images = React.createClass({
   getInitialState: function () {
     ApiUtil.fetchImages();
     this.imageListener = ImageStore.addListener(this._imagesChanged);
+    this.likesListener = LikeStore.addListener(this._likesChanged);
 
     return { images: [], user: this.props.user, modalIsOpen: false, selectedImage: "" };
+  },
+  _likesChanged: function(){
+    this.forceUpdate();
   },
   openModal: function(event) {
 
@@ -69,6 +75,48 @@ var Images = React.createClass({
   modal: function(){
     return ;
   },
+  likeButtonLogic: function(image){
+    var likes = LikeStore.all();
+    var current_image = image;
+    var current_user = UserStore.getCurrentUser();
+
+    if (!current_image.id){
+      return false;
+    }
+    var liking = false;
+    var that = this;
+
+    likes.forEach(function(like){
+      if (like.post_id === current_image.id &&
+          like.author_id === current_user.id &&
+          like.like_type === "image"){
+        liking = true;
+      }
+    });
+
+    return liking;
+  },
+  _buttonRenderFunction: function(image){
+    var placeholder = this.likeButtonLogic(image);
+    var likeButton;
+    var currentUser = UserStore.getCurrentUser();
+
+    if (placeholder === true) {
+      likeButton = <div className="like-button">
+                        <ImageLikeButton currentUser={currentUser}
+                        image={image}
+                        like={true}/>
+                    </div>;
+    } else {
+      likeButton =  <div className="like-button">
+                        <ImageLikeButton currentUser={currentUser}
+                        image={image}
+                        like={false}/>
+                    </div>;
+    }
+
+    return likeButton;
+  },
 
   render: function () {
     var that = this;
@@ -100,6 +148,7 @@ var Images = React.createClass({
                <h2>Picture</h2>
                <button onClick={this.closeModal}>close</button>
                <ProfilePicChangeButton image={this.state.selectedImage}/>
+               {that._buttonRenderFunction(this.state.selectedImage)}
                <img src={that.buildModalUrl(that.state.selectedImage.image_path)} className="image-modal-image"></img>
                <NewImageComment image={this.state.selectedImage} className="image-modal-new-comments"/>
                <ImageComments image={this.state.selectedImage} className="image-modal-image-comments"/>

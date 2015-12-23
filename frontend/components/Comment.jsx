@@ -35,7 +35,6 @@ var Comment = React.createClass({
       window.scrollTo(0, 0);
     },
     likeButtonLogic: function(comment){
-      debugger
       var likes = LikeStore.all();
       var current_comment = comment;
       var current_user = UserStore.getCurrentUser();
@@ -57,8 +56,6 @@ var Comment = React.createClass({
       return liking;
     },
     _buttonRenderFunction: function(comment){
-      // console.log(comment);
-      // var targetComment = comment;
       var placeholder = this.likeButtonLogic(comment);
       var likeButton;
       var currentUser = UserStore.getCurrentUser();
@@ -76,7 +73,7 @@ var Comment = React.createClass({
                           like={false}/>
                       </div>;
       }
-      debugger
+
       return likeButton;
     },
 
