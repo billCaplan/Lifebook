@@ -11,7 +11,6 @@ var _users = [];
 var _currentUser = {};
 
 var resetUsers = function(users){
-
   _users = users.slice(0);
 };
 

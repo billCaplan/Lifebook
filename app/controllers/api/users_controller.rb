@@ -12,6 +12,7 @@ class Api::UsersController < ApplicationController
         @user = User.find(params[:id])
 
         if @user.update(user_params)
+          @users = User.all
           render :index
         else
           flash.now[:errors] = @user.errors.full_messages

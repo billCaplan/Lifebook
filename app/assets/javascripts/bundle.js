@@ -31351,7 +31351,6 @@
 	var _currentUser = {};
 	
 	var resetUsers = function (users) {
-	
 	  _users = users.slice(0);
 	};
 	
@@ -31502,6 +31501,7 @@
 	      data: dataToSend,
 	      success: function (users) {
 	        ApiActions.receiveAllUsers(users);
+	        ApiUtil.getCurrentUser();
 	      },
 	      error: function (xhr, ajaxOptions, thrownError) {
 	        console.log("Fail");
@@ -32947,7 +32947,7 @@
 	        null,
 	        'Search: '
 	      ),
-	      React.createElement('input', { onChange: this.handleInput, value: this.state.inputVal }),
+	      React.createElement('input', { onChange: this.handleInput, value: this.state.inputVal, size: '50' }),
 	      React.createElement(
 	        'ul',
 	        { className: this.listClass() },
@@ -36296,6 +36296,7 @@
 	    this.userListener = UserStore.addListener(this._usersChanged);
 	  },
 	  _usersChanged: function () {
+	    debugger;
 	    this.setState({ user: UserStore.getCurrentUser() });
 	  },
 	  componentWillReceiveProps: function (newProps) {
@@ -36308,7 +36309,7 @@
 	    } else {
 	      publicID = image_path;
 	    }
-	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + publicID;
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_30,w_30/v1450463928/" + publicID;
 	    return url;
 	  },
 	

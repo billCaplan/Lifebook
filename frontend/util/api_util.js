@@ -84,6 +84,7 @@ var ApiUtil = {
        data: dataToSend,
        success: function(users) {
         ApiActions.receiveAllUsers(users);
+        ApiUtil.getCurrentUser();
       },
        error: function (xhr, ajaxOptions, thrownError) {
           console.log("Fail");

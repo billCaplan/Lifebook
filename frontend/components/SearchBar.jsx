@@ -62,7 +62,7 @@ var SearchBar = React.createClass({
   _setContent: function(results){
   return  <div>
       <label>Search: </label>
-      <input onChange={this.handleInput} value={this.state.inputVal} />
+      <input onChange={this.handleInput} value={this.state.inputVal} size="50" />
       <ul className={this.listClass()}>
         {
           results.map(function (result, i) {

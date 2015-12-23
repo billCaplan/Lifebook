@@ -7,9 +7,12 @@ NOTES:
 
   Need to migrate DB changes to Heroku
 
+
+overflow is how to lock things with scroll
+
 Still need:
   Likes
-  
+
   Followers count
 
   Profile pictures next to posts

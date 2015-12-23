@@ -112,6 +112,12 @@ padding-right: 10px;
    overflow: scroll;
    font-family: 'Open Sans', sans-serif;
  }
+
+ textarea
+{
+   font-family: 'Open Sans', sans-serif;
+   font-size: 12px;
+}
  .body{
     position: relative;
     margin: 0 auto;
@@ -133,6 +139,7 @@ padding-right: 10px;
    width: auto;
    float: left;
    margin-top: 65px;
+   margin-left: px;
  }
  .feed:after {
    content: "";
@@ -142,7 +149,7 @@ padding-right: 10px;
  .feed-new-post{
    z-index: 1;
    display: block;
-   margin-left: 288px;
+   margin-left: 250px;
 
  }
 
@@ -251,12 +258,19 @@ padding-right: 10px;
 }
 
 .header-bar-go-home{
-  margin-left: 200px;
+  margin-left: 30px;
+  margin-bottom: 10px;
   font-family: 'Open Sans', sans-serif;
 }
 
 .header-bar-profile-pic{
-  margin-left: 100px;
+  margin-left: 150px;
+  margin-top: 15px;
+  border: 3px black;
+  border-radius: 5px;
+}
+.header-bar-profile-pic-actual-pic{
+
 }
 
 .header-bar-real-name{
