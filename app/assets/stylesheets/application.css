@@ -212,7 +212,7 @@ padding-right: 10px;
  .profile-images-body{
    height: auto;
    width: 550px;
-   background-color: cornflowerblue;
+   background-color: #FFFFFF;
    padding: 10px;
    min-height: 400px;
 
@@ -332,6 +332,7 @@ padding-right: 10px;
   width: 900px;
   float: left;
   margin-top: 65px;
+  background-color: #F6F7F8;
 
 }
 .user-profile:after {
@@ -361,6 +362,7 @@ padding-right: 10px;
   border-radius: 5px;
   border-color: grey;
   padding: 3px;
+  background-color: #FFFFFF;
 
 }
 .user-profile-new-post{
@@ -392,6 +394,7 @@ padding-right: 10px;
   padding: 5px;
   margin-bottom: 13px;
   box-shadow: 10px 10px 5px grey;
+  background-color: #FFFFFF;
 }
 
 .feed-post-new-comment{
