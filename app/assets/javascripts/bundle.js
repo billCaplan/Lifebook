@@ -36034,7 +36034,9 @@
 	var PostStore = __webpack_require__(211);
 	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
+	var ImageCommentLikeButton = __webpack_require__(299);
 	var ImageCommentStore = __webpack_require__(289);
+	var LikeStore = __webpack_require__(296);
 	
 	var ApiUtil = __webpack_require__(235);
 	var History = __webpack_require__(159).History;
@@ -36049,7 +36051,6 @@
 	  },
 	
 	  getInitialState: function () {
-	
 	    return {
 	      comments: ImageCommentStore.getByPostId(this.props.image.id)
 	    };
@@ -36067,6 +36068,50 @@
 	    this.history.pushState(null, "user/" + authorId);
 	    window.scrollTo(0, 0);
 	  },
+	  likeButtonLogic: function (comment) {
+	    var likes = LikeStore.all();
+	    var current_comment = comment;
+	    var current_user = UserStore.getCurrentUser();
+	
+	    if (!current_comment.id) {
+	      return false;
+	    }
+	    var liking = false;
+	    var that = this;
+	
+	    likes.forEach(function (like) {
+	      if (like.post_id === current_comment.id && like.author_id === current_user.id && like.like_type === "comment") {
+	        liking = true;
+	      }
+	    });
+	
+	    return liking;
+	  },
+	  _buttonRenderFunction: function (comment) {
+	    var placeholder = this.likeButtonLogic(comment);
+	    var likeButton;
+	    var currentUser = UserStore.getCurrentUser();
+	
+	    if (placeholder === true) {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(ImageCommentLikeButton, { currentUser: currentUser,
+	          comment: comment,
+	          like: true })
+	      );
+	    } else {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(ImageCommentLikeButton, { currentUser: currentUser,
+	          comment: comment,
+	          like: false })
+	      );
+	    }
+	
+	    return likeButton;
+	  },
 	
 	  render: function () {
 	    var that = this;
@@ -36083,7 +36128,8 @@
 	          'div',
 	          null,
 	          comment.body
-	        )
+	        ),
+	        that._buttonRenderFunction(comment)
 	      );
 	    });
 	    return React.createElement(
@@ -36818,6 +36864,69 @@
 	});
 	
 	module.exports = ImageLikeButton;
+
+/***/ },
+/* 299 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var FollowStore = __webpack_require__(261);
+	var LikeStore = __webpack_require__(296);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var ImageCommentLikeButton = React.createClass({
+	  displayName: 'ImageCommentLikeButton',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	
+	  handleLikeSubmit: function (event) {
+	    event.preventDefault();
+	    debugger;
+	    var like = { author_id: this.props.currentUser.id,
+	      like_type: "comment",
+	      post_id: this.props.comment.id };
+	
+	    if (this.props.like) {
+	      var targetLike = LikeStore.getByLikeParties(like);
+	      ApiUtil.deleteLike(targetLike);
+	    } else {
+	      ApiUtil.createLike(like);
+	    }
+	  },
+	  componentWillReceiveProps: function (newProps) {},
+	  buttonText: function () {
+	    var text;
+	
+	    if (this.props.like) {
+	      text = "Unlike";
+	    } else {
+	      text = "Like";
+	    }
+	    return text;
+	  },
+	  render: function () {
+	    var properButton;
+	    properButton = React.createElement(
+	      'button',
+	      { className: 'button', onClick: this.handleLikeSubmit },
+	      this.buttonText()
+	    );
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      properButton
+	    );
+	  }
+	});
+	
+	module.exports = ImageCommentLikeButton;
 
 /***/ }
 /******/ ]);
