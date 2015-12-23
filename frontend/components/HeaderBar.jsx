@@ -59,7 +59,7 @@ var HeaderBar = React.createClass({
       <nav className="header-bar">
         <div className="header-bar-search-bar"><SearchBar /></div>
         <div className="header-bar-go-home"><h1 onClick={this.redirectToHome}>Lifebook</h1></div>
-        <div className="header-bar-profile-pic"><img src={this._buildUrl(profile_image)}></img></div>
+        <div className="header-bar-profile-pic" onClick={this.handleAuthorClick}><img src={this._buildUrl(profile_image)}></img></div>
         <div className="header-bar-real-name" onClick={this.handleAuthorClick}>{name}</div>
         <SignoutButton />
       </nav>

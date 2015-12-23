@@ -33532,12 +33532,13 @@
 	var PostStore = __webpack_require__(211);
 	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
-	
+	var History = __webpack_require__(159).History;
 	var ApiUtil = __webpack_require__(235);
 	
 	var FriendsPane = React.createClass({
 	  displayName: 'FriendsPane',
 	
+	  mixins: [History],
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
@@ -33547,15 +33548,20 @@
 	  componentWillReceiveProps: function (newProps) {
 	    this.setState({ user: newProps.user });
 	  },
+	  handleAuthorClick: function (destinationId) {
+	    this.history.pushState(null, "user/" + destinationId);
+	    window.scrollTo(0, 0);
+	  },
 	
 	  render: function () {
+	    var that = this;
 	    if (!this.state.user.usersFollowing) {
 	      var users = React.createElement('div', null);
 	    } else {
 	      var users = this.state.user.usersFollowing.map(function (user) {
 	        return React.createElement(
 	          'div',
-	          { key: user.id },
+	          { key: user.id, onClick: that.handleAuthorClick.bind(null, user.id) },
 	          user.real_name
 	        );
 	      });
@@ -36642,7 +36648,7 @@
 	      ),
 	      React.createElement(
 	        'div',
-	        { className: 'header-bar-profile-pic' },
+	        { className: 'header-bar-profile-pic', onClick: this.handleAuthorClick },
 	        React.createElement('img', { src: this._buildUrl(profile_image) })
 	      ),
 	      React.createElement(
