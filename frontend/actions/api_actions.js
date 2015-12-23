@@ -97,6 +97,12 @@ var ApiActions = {
       newLike: newLike
     });
   },
+  removedLike: function(likes){
+    AppDispatcher.dispatch({
+      actionType: LikeConstants.LIKE_REMOVED,
+      likes: likes
+    });
+  }
 };
 
 module.exports = ApiActions;

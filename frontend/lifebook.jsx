@@ -23,6 +23,7 @@ var App = React.createClass({
   componentWillMount: function(){
     var that = this;
     ApiUtil.getCurrentUser();
+    ApiUtil.fetchLikes();
     UserStore.addListener(this._onChange);
   },
 
@@ -37,7 +38,7 @@ var App = React.createClass({
 
 
   render: function(){
-  
+
     return (
       <div className="app-body">
         <div>

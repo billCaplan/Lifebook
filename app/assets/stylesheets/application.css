@@ -331,7 +331,6 @@ padding-right: 10px;
 .user-profile{
   width: 900px;
   float: left;
-  margin-top: 65px;
   background-color: #F6F7F8;
 
 }
@@ -343,6 +342,7 @@ padding-right: 10px;
 .user-profile-content{
   width: 600px;
   float:left;
+  /*margin-top: 65px;*/
   border: 2px;
   border-color: black;
   padding: 10px;
@@ -362,11 +362,12 @@ padding-right: 10px;
   border-radius: 5px;
   border-color: grey;
   padding: 3px;
+  margin-top: 65px;
   background-color: #FFFFFF;
 
 }
 .user-profile-new-post{
-
+  margin-top: 65px;
   width: 500px;
   float:left;
   left: 300px;

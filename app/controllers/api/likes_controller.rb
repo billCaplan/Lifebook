@@ -14,7 +14,8 @@ class Api::LikesController < ApplicationController
     @like.author_id = current_user.id
 
     if @like.save
-      render :index
+      @likes = Like.all
+      render :create
     else
       render json: @like.errors.full_messages, status: 422
     end
@@ -27,6 +28,7 @@ class Api::LikesController < ApplicationController
     def destroy
      @like = Like.find(params[:id])
      @like.destroy
+     @likes = Like.all
      render :index
     end
 

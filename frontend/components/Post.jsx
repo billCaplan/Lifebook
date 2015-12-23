@@ -7,12 +7,26 @@ var ApiUtil = require('../util/api_util');
 var History = require('react-router').History;
 var NewComment = require('../components/NewComment');
 var Comment = require('../components/Comment');
+var UserStore = require('../stores/user');
+var LikeStore = require('../stores/like');
+var PostLikeButton = require('../components/PostLikeButton');
+
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 var Post = React.createClass({
   mixins: [History],
   contextTypes: {
     router: React.PropTypes.func
+  },
+  componentDidMount: function(){
+    ApiUtil.fetchLikes();
+    this.likeListener = LikeStore.addListener(this._likesChanged);
+  },
+  componentWillUnmount: function(){
+    this.likeListener.remove();
+  },
+  _likesChanged: function(){
+    this.forceUpdate();
   },
   handleAuthorClick: function(destinationId){
     this.history.pushState(null, "user/" + this.props.post.author.id);
@@ -26,8 +40,30 @@ var Post = React.createClass({
     this.history.pushState(null, "posts/" + this.props.post.id);
     window.scrollTo(0, 0);
   },
-  render: function(){
+  likeButtonLogic: function(){
+    var likes = LikeStore.all();
+    var current_post = this.props.post;
+    var current_user = UserStore.getCurrentUser();
 
+    if (!this.props.post.id){
+      return false;
+    }
+    var liking = false;
+    var that = this;
+
+    likes.forEach(function(like){
+      if (like.post_id === that.props.post.id &&
+          like.author_id === current_user.id &&
+          like.like_type === "post"){
+        liking = true;
+      }
+    });
+
+    return liking;
+  },
+
+  render: function(){
+    var currentUser = UserStore.getCurrentUser();
     var subjectName = this.props.post.subject.real_name;
     var authorName = this.props.post.author.real_name;
     var nameLine = {};
@@ -40,6 +76,23 @@ var Post = React.createClass({
                     <span className="post-user-name" onClick={this.handleSubjectClick}>{subjectName}</span>
                 </p>;
     }
+
+    var placeholder = this.likeButtonLogic();
+    var followButton;
+
+    if (placeholder === true) {
+      likeButton = <div className="like-button">
+                        <PostLikeButton currentUser={currentUser}
+                        post={this.props.post}
+                        like={true}/>
+                    </div>;
+    } else {
+      likeButton =  <div className="like-button">
+                        <PostLikeButton currentUser={currentUser}
+                        post={this.props.post}
+                        like={false}/>
+                    </div>;
+    }
     return(
     <ReactCSSTransitionGroup transitionName="example"
                               transitionAppear={true}
@@ -51,6 +104,7 @@ var Post = React.createClass({
          {nameLine}
          <p>{this.props.post.body}</p>
        </div>
+        {likeButton}
        <div>
           <Comment postId={this.props.post.id}/>
       </div>

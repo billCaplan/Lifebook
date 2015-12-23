@@ -25,7 +25,6 @@ var HeaderBar = React.createClass({
     this.userListener = UserStore.addListener(this._usersChanged);
   },
   _usersChanged: function(){
-    debugger
     this.setState({user: UserStore.getCurrentUser()});
   },
   componentWillReceiveProps: function (newProps) {

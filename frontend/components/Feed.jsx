@@ -33,6 +33,7 @@ var Feed = React.createClass({
   componentDidMount: function(){
     ApiUtil.fetchPosts();
     ApiUtil.fetchUsers();
+    ApiUtil.fetchLikes();
     this.postListener = PostStore.addListener(this._postsChanged);
     this.userListener = UserStore.addListener(this._usersChanged);
   },

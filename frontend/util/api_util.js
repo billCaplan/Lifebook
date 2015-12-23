@@ -92,7 +92,7 @@ var ApiUtil = {
      });
   },
   fetchLikes: function(){
-    $.get('/api/likes', function(likes){
+    $.get('api/likes', function(likes){
       ApiActions.receiveAllLikes(likes);
     });
   },

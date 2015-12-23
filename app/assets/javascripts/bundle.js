@@ -69,6 +69,7 @@
 	  componentWillMount: function () {
 	    var that = this;
 	    ApiUtil.getCurrentUser();
+	    ApiUtil.fetchLikes();
 	    UserStore.addListener(this._onChange);
 	  },
 	
@@ -24504,6 +24505,7 @@
 	  componentDidMount: function () {
 	    ApiUtil.fetchPosts();
 	    ApiUtil.fetchUsers();
+	    ApiUtil.fetchLikes();
 	    this.postListener = PostStore.addListener(this._postsChanged);
 	    this.userListener = UserStore.addListener(this._usersChanged);
 	  },
@@ -31509,7 +31511,7 @@
 	    });
 	  },
 	  fetchLikes: function () {
-	    $.get('/api/likes', function (likes) {
+	    $.get('api/likes', function (likes) {
 	      ApiActions.receiveAllLikes(likes);
 	    });
 	  },
@@ -31638,6 +31640,12 @@
 	      actionType: LikeConstants.NEW_LIKE_RECEIVED,
 	      newLike: newLike
 	    });
+	  },
+	  removedLike: function (likes) {
+	    AppDispatcher.dispatch({
+	      actionType: LikeConstants.LIKE_REMOVED,
+	      likes: likes
+	    });
 	  }
 	};
 	
@@ -31691,6 +31699,10 @@
 	var History = __webpack_require__(159).History;
 	var NewComment = __webpack_require__(241);
 	var Comment = __webpack_require__(242);
+	var UserStore = __webpack_require__(233);
+	var LikeStore = __webpack_require__(296);
+	var PostLikeButton = __webpack_require__(295);
+	
 	var ReactCSSTransitionGroup = __webpack_require__(245);
 	
 	var Post = React.createClass({
@@ -31699,6 +31711,16 @@
 	  mixins: [History],
 	  contextTypes: {
 	    router: React.PropTypes.func
+	  },
+	  componentDidMount: function () {
+	    ApiUtil.fetchLikes();
+	    this.likeListener = LikeStore.addListener(this._likesChanged);
+	  },
+	  componentWillUnmount: function () {
+	    this.likeListener.remove();
+	  },
+	  _likesChanged: function () {
+	    this.forceUpdate();
 	  },
 	  handleAuthorClick: function (destinationId) {
 	    this.history.pushState(null, "user/" + this.props.post.author.id);
@@ -31712,8 +31734,28 @@
 	    this.history.pushState(null, "posts/" + this.props.post.id);
 	    window.scrollTo(0, 0);
 	  },
-	  render: function () {
+	  likeButtonLogic: function () {
+	    var likes = LikeStore.all();
+	    var current_post = this.props.post;
+	    var current_user = UserStore.getCurrentUser();
 	
+	    if (!this.props.post.id) {
+	      return false;
+	    }
+	    var liking = false;
+	    var that = this;
+	
+	    likes.forEach(function (like) {
+	      if (like.post_id === that.props.post.id && like.author_id === current_user.id && like.like_type === "post") {
+	        liking = true;
+	      }
+	    });
+	
+	    return liking;
+	  },
+	
+	  render: function () {
+	    var currentUser = UserStore.getCurrentUser();
 	    var subjectName = this.props.post.subject.real_name;
 	    var authorName = this.props.post.author.real_name;
 	    var nameLine = {};
@@ -31740,6 +31782,27 @@
 	        )
 	      );
 	    }
+	
+	    var placeholder = this.likeButtonLogic();
+	    var followButton;
+	
+	    if (placeholder === true) {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(PostLikeButton, { currentUser: currentUser,
+	          post: this.props.post,
+	          like: true })
+	      );
+	    } else {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(PostLikeButton, { currentUser: currentUser,
+	          post: this.props.post,
+	          like: false })
+	      );
+	    }
 	    return React.createElement(
 	      ReactCSSTransitionGroup,
 	      { transitionName: 'example',
@@ -31760,6 +31823,7 @@
 	            this.props.post.body
 	          )
 	        ),
+	        likeButton,
 	        React.createElement(
 	          'div',
 	          null,
@@ -36296,7 +36360,6 @@
 	    this.userListener = UserStore.addListener(this._usersChanged);
 	  },
 	  _usersChanged: function () {
-	    debugger;
 	    this.setState({ user: UserStore.getCurrentUser() });
 	  },
 	  componentWillReceiveProps: function (newProps) {
@@ -36356,6 +36419,130 @@
 	});
 	
 	module.exports = HeaderBar;
+
+/***/ },
+/* 295 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var FollowStore = __webpack_require__(261);
+	var LikeStore = __webpack_require__(296);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var FollowButton = React.createClass({
+	  displayName: 'FollowButton',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	
+	  handleLikeSubmit: function (event) {
+	    event.preventDefault();
+	    debugger;
+	    var like = { author_id: this.props.currentUser.id,
+	      like_type: "post",
+	      post_id: this.props.post.id };
+	
+	    if (this.props.like) {
+	      var targetLike = LikeStore.getByLikeParties(like);
+	      ApiUtil.deleteLike(targetLike);
+	    } else {
+	      ApiUtil.createLike(like);
+	    }
+	  },
+	  componentWillReceiveProps: function (newProps) {},
+	  buttonText: function () {
+	    var text;
+	
+	    if (this.props.like) {
+	      text = "Unlike";
+	    } else {
+	      text = "Like";
+	    }
+	    return text;
+	  },
+	  render: function () {
+	    var properButton;
+	    debugger;
+	    properButton = React.createElement(
+	      'button',
+	      { className: 'button', onClick: this.handleLikeSubmit },
+	      this.buttonText()
+	    );
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      properButton
+	    );
+	  }
+	});
+	
+	module.exports = FollowButton;
+
+/***/ },
+/* 296 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var LikeConstants = __webpack_require__(239);
+	var AppDispatcher = __webpack_require__(230);
+	
+	var LikeStore = new Store(AppDispatcher);
+	
+	var _likes = [];
+	
+	var resetLikes = function (likes) {
+	  _likes = likes.slice(0);
+	};
+	
+	var addNewLike = function (newLike) {
+	  _likes.push(newLike);
+	};
+	
+	LikeStore.all = function () {
+	  return _likes.slice(0);
+	};
+	
+	LikeStore.getByLikeParties = function (like) {
+	  var author_id = parseInt(like.author_id);
+	  var post_id = parseInt(like.post_id);
+	  var like_type = like.like_type;
+	  var likes = LikeStore.all();
+	  var relevantLike = {};
+	
+	  likes.forEach(function (like) {
+	
+	    if (like.author_id === author_id && like.post_id === post_id && like.like_type === like_type) {
+	      relevantLike = like;
+	    }
+	  });
+	
+	  return relevantLike;
+	};
+	
+	LikeStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case LikeConstants.NEW_LIKE_RECEIVED:
+	      // var result = addNewLike(payload.newLike);
+	      var result = addNewLike(payload.newLike);
+	      LikeStore.__emitChange();
+	      break;
+	    case LikeConstants.LIKES_RECEIVED:
+	      var result = resetLikes(payload.likes);
+	      LikeStore.__emitChange();
+	      break;
+	    case LikeConstants.LIKE_REMOVED:
+	      var result = resetLikes(payload.likes);
+	      LikeStore.__emitChange();
+	  }
+	};
+	
+	module.exports = LikeStore;
 
 /***/ }
 /******/ ]);

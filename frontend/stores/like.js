@@ -18,15 +18,18 @@ LikeStore.all = function () {
   return _likes.slice(0);
 };
 
-LikeStore.getByLikeParties = function(likeParties) {
-  var author_id = parseInt(likeParties.author_id);
-  var likeed_user_id = parseInt(likeParties.likeed_user_id);
+LikeStore.getByLikeParties = function(like) {
+  var author_id = parseInt(like.author_id);
+  var post_id = parseInt(like.post_id);
+  var like_type = like.like_type;
   var likes = LikeStore.all();
   var relevantLike = {};
 
   likes.forEach(function(like){
 
-    if (like.author_id === author_id && like.likeed_user_id === likeed_user_id){
+    if (like.author_id === author_id &&
+      like.post_id === post_id &&
+      like.like_type === like_type){
       relevantLike = like;
     }
   });
@@ -36,9 +39,9 @@ LikeStore.getByLikeParties = function(likeParties) {
 
 LikeStore.__onDispatch = function (payload) {
   switch(payload.actionType) {
-    case UserConstants.LIKE_RECEIVED:
+    case LikeConstants.NEW_LIKE_RECEIVED:
       // var result = addNewLike(payload.newLike);
-      var result = resetLikes(payload.like);
+      var result = addNewLike(payload.newLike);
       LikeStore.__emitChange();
       break;
     case LikeConstants.LIKES_RECEIVED:
