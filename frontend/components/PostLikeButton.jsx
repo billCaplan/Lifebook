@@ -21,6 +21,9 @@ var PostLikeButton = React.createClass({
     return likeClass;
   },
   getAllLikers: function(){
+    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
+    // MUST BE A POST LIKE
+    // pass in 2 props, the post_id and the like_type=("post")
     var otherPeople = LikeStore.getTheUsers(this.props.like);
       return otherPeople;
   },
@@ -63,16 +66,22 @@ var PostLikeButton = React.createClass({
     }
     else {
       fellowLikers = people.map(function (person, i) {
-    return <div key={i}>{person.real_name}</div>;
-  });
-}
+        return <div key={i}>{person.real_name}</div>;
+        });
+    }
+
     var properButton;
     properButton = <button  className={this.likeClass()} onClick={this.handleLikeSubmit}>{this.buttonText()}</button>;
 
     return (
       <div>
-        {properButton}
+        <div>
+
+          <img src="/assets/thumb.png" height="20" width="20" className={this.likeClass()} onClick={this.handleLikeSubmit}></img>
+        </div>
+        <div>
         {fellowLikers}
+        </div>
       </div>
     );
   }

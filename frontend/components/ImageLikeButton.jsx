@@ -4,7 +4,7 @@ var Post = require('../components/Post');
 var UserStore = require('../stores/user');
 var FollowStore = require('../stores/follow');
 var LikeStore = require('../stores/like');
-
+var classNames = require('classnames');
 var ApiUtil = require('../util/api_util');
 
 var ImageLikeButton = React.createClass({
@@ -40,13 +40,38 @@ var ImageLikeButton = React.createClass({
     }
   return text;
   },
+  likeClass: function(){
+    var likeClass = classNames({
+      'like-button-liked': this.props.like,
+      'like-button-unliked': this.props.like === false
+    });
+    return likeClass;
+  },
+  getAllLikers: function(){
+    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
+    // MUST BE A POST LIKE
+    // pass in 2 props, the post_id and the like_type=("post")
+    var otherPeople = LikeStore.getTheUsers(this.props.like);
+      return otherPeople;
+  },
   render: function(){
+    var people = this.getAllLikers();
+
+    if (!people){
+      fellowLikers = <div>Loading</div>;
+    }
+    else {
+      fellowLikers = people.map(function (person, i) {
+        return <div key={i}>{person.real_name}</div>;
+        });
+    }
+
     var properButton;
-    properButton = <button  className="button" onClick={this.handleLikeSubmit}>{this.buttonText()}</button>;
+    properButton = <button  className={this.likeClass} onClick={this.handleLikeSubmit}>{this.buttonText()}</button>;
 
     return (
       <div>
-        {properButton}
+      <img src="/assets/thumb.png" height="20" width="20" className={this.likeClass()} onClick={this.handleLikeSubmit}></img>
       </div>
     );
   }

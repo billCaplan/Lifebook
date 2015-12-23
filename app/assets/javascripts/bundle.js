@@ -31992,7 +31992,7 @@
 	
 	    likes.forEach(function (like) {
 	      if (like.post_id === current_comment.id && like.author_id === current_user.id && like.like_type === "comment") {
-	        liking = true;
+	        liking = like;
 	      }
 	    });
 	
@@ -32003,13 +32003,13 @@
 	    var likeButton;
 	    var currentUser = UserStore.getCurrentUser();
 	
-	    if (placeholder === true) {
+	    if (placeholder) {
 	      likeButton = React.createElement(
 	        'div',
 	        { className: 'like-button' },
 	        React.createElement(CommentLikeButton, { currentUser: currentUser,
 	          comment: comment,
-	          like: true })
+	          like: placeholder })
 	      );
 	    } else {
 	      likeButton = React.createElement(
@@ -32017,7 +32017,7 @@
 	        { className: 'like-button' },
 	        React.createElement(CommentLikeButton, { currentUser: currentUser,
 	          comment: comment,
-	          like: false })
+	          like: placeholder })
 	      );
 	    }
 	
@@ -33946,7 +33946,7 @@
 	
 	    likes.forEach(function (like) {
 	      if (like.post_id === current_image.id && like.author_id === current_user.id && like.like_type === "image") {
-	        liking = true;
+	        liking = like;
 	      }
 	    });
 	
@@ -33957,13 +33957,13 @@
 	    var likeButton;
 	    var currentUser = UserStore.getCurrentUser();
 	
-	    if (placeholder === true) {
+	    if (placeholder) {
 	      likeButton = React.createElement(
 	        'div',
 	        { className: 'like-button' },
 	        React.createElement(ImageLikeButton, { currentUser: currentUser,
 	          image: image,
-	          like: true })
+	          like: placeholder })
 	      );
 	    } else {
 	      likeButton = React.createElement(
@@ -33971,7 +33971,7 @@
 	        { className: 'like-button' },
 	        React.createElement(ImageLikeButton, { currentUser: currentUser,
 	          image: image,
-	          like: false })
+	          like: placeholder })
 	      );
 	    }
 	
@@ -36124,7 +36124,7 @@
 	
 	    likes.forEach(function (like) {
 	      if (like.post_id === current_comment.id && like.author_id === current_user.id && like.like_type === "comment") {
-	        liking = true;
+	        liking = like;
 	      }
 	    });
 	
@@ -36135,13 +36135,13 @@
 	    var likeButton;
 	    var currentUser = UserStore.getCurrentUser();
 	
-	    if (placeholder === true) {
+	    if (placeholder) {
 	      likeButton = React.createElement(
 	        'div',
 	        { className: 'like-button' },
 	        React.createElement(ImageCommentLikeButton, { currentUser: currentUser,
 	          comment: comment,
-	          like: true })
+	          like: placeholder })
 	      );
 	    } else {
 	      likeButton = React.createElement(
@@ -36149,7 +36149,7 @@
 	        { className: 'like-button' },
 	        React.createElement(ImageCommentLikeButton, { currentUser: currentUser,
 	          comment: comment,
-	          like: false })
+	          like: placeholder })
 	      );
 	    }
 	
@@ -36444,7 +36444,7 @@
 	
 	    likes.forEach(function (like) {
 	      if (like.post_id === current_image.id && like.author_id === current_user.id && like.like_type === "image") {
-	        liking = true;
+	        liking = like;
 	      }
 	    });
 	
@@ -36455,13 +36455,13 @@
 	    var likeButton;
 	    var currentUser = UserStore.getCurrentUser();
 	
-	    if (placeholder === true) {
+	    if (placeholder) {
 	      likeButton = React.createElement(
 	        'div',
 	        { className: 'like-button' },
 	        React.createElement(ImageLikeButton, { currentUser: currentUser,
 	          image: image,
-	          like: true })
+	          like: placeholder })
 	      );
 	    } else {
 	      likeButton = React.createElement(
@@ -36469,7 +36469,7 @@
 	        { className: 'like-button' },
 	        React.createElement(ImageLikeButton, { currentUser: currentUser,
 	          image: image,
-	          like: false })
+	          like: placeholder })
 	      );
 	    }
 	
@@ -36691,6 +36691,9 @@
 	    return likeClass;
 	  },
 	  getAllLikers: function () {
+	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
+	    // MUST BE A POST LIKE
+	    // pass in 2 props, the post_id and the like_type=("post")
 	    var otherPeople = LikeStore.getTheUsers(this.props.like);
 	    return otherPeople;
 	  },
@@ -36740,6 +36743,7 @@
 	        );
 	      });
 	    }
+	
 	    var properButton;
 	    properButton = React.createElement(
 	      'button',
@@ -36750,8 +36754,16 @@
 	    return React.createElement(
 	      'div',
 	      null,
-	      properButton,
-	      fellowLikers
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        fellowLikers
+	      )
 	    );
 	  }
 	});
@@ -36818,6 +36830,7 @@
 	};
 	
 	LikeStore.getTheUsers = function (like) {
+	  debugger;
 	  var relevantLikes = LikeStore.getAllOtherLikers(like);
 	  var relevantUsers = [];
 	  relevantLikes.forEach(function (like) {
@@ -36855,7 +36868,7 @@
 	var UserStore = __webpack_require__(233);
 	var FollowStore = __webpack_require__(261);
 	var LikeStore = __webpack_require__(296);
-	
+	var classNames = __webpack_require__(255);
 	var ApiUtil = __webpack_require__(235);
 	
 	var CommentLikeButton = React.createClass({
@@ -36890,18 +36903,59 @@
 	    }
 	    return text;
 	  },
+	  getAllLikers: function () {
+	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
+	    // MUST BE A POST LIKE
+	    // pass in 2 props, the post_id and the like_type=("post")
+	    var otherPeople = LikeStore.getTheUsers(this.props.like);
+	    return otherPeople;
+	  },
+	  likeClass: function () {
+	    var likeClass = classNames({
+	      'like-button-liked': this.props.like,
+	      'like-button-unliked': this.props.like === false
+	    });
+	    return likeClass;
+	  },
 	  render: function () {
+	    var people = this.getAllLikers();
+	
+	    if (!people) {
+	      fellowLikers = React.createElement(
+	        'div',
+	        null,
+	        'Loading'
+	      );
+	    } else {
+	      fellowLikers = people.map(function (person, i) {
+	        return React.createElement(
+	          'div',
+	          { key: i },
+	          person.real_name
+	        );
+	      });
+	    }
+	
 	    var properButton;
 	    properButton = React.createElement(
 	      'button',
-	      { className: 'button', onClick: this.handleLikeSubmit },
+	      { className: this.likeClass(), onClick: this.handleLikeSubmit },
 	      this.buttonText()
 	    );
-	
+	    debugger;
 	    return React.createElement(
 	      'div',
 	      null,
-	      properButton
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        fellowLikers
+	      )
 	    );
 	  }
 	});
@@ -36918,7 +36972,7 @@
 	var UserStore = __webpack_require__(233);
 	var FollowStore = __webpack_require__(261);
 	var LikeStore = __webpack_require__(296);
-	
+	var classNames = __webpack_require__(255);
 	var ApiUtil = __webpack_require__(235);
 	
 	var ImageLikeButton = React.createClass({
@@ -36953,18 +37007,50 @@
 	    }
 	    return text;
 	  },
+	  likeClass: function () {
+	    var likeClass = classNames({
+	      'like-button-liked': this.props.like,
+	      'like-button-unliked': this.props.like === false
+	    });
+	    return likeClass;
+	  },
+	  getAllLikers: function () {
+	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
+	    // MUST BE A POST LIKE
+	    // pass in 2 props, the post_id and the like_type=("post")
+	    var otherPeople = LikeStore.getTheUsers(this.props.like);
+	    return otherPeople;
+	  },
 	  render: function () {
+	    var people = this.getAllLikers();
+	
+	    if (!people) {
+	      fellowLikers = React.createElement(
+	        'div',
+	        null,
+	        'Loading'
+	      );
+	    } else {
+	      fellowLikers = people.map(function (person, i) {
+	        return React.createElement(
+	          'div',
+	          { key: i },
+	          person.real_name
+	        );
+	      });
+	    }
+	
 	    var properButton;
 	    properButton = React.createElement(
 	      'button',
-	      { className: 'button', onClick: this.handleLikeSubmit },
+	      { className: this.likeClass, onClick: this.handleLikeSubmit },
 	      this.buttonText()
 	    );
 	
 	    return React.createElement(
 	      'div',
 	      null,
-	      properButton
+	      React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit })
 	    );
 	  }
 	});
@@ -36981,7 +37067,7 @@
 	var UserStore = __webpack_require__(233);
 	var FollowStore = __webpack_require__(261);
 	var LikeStore = __webpack_require__(296);
-	
+	var classNames = __webpack_require__(255);
 	var ApiUtil = __webpack_require__(235);
 	
 	var ImageCommentLikeButton = React.createClass({
@@ -36993,7 +37079,6 @@
 	
 	  handleLikeSubmit: function (event) {
 	    event.preventDefault();
-	    debugger;
 	    var like = { author_id: this.props.currentUser.id,
 	      like_type: "comment",
 	      post_id: this.props.comment.id };
@@ -37016,18 +37101,51 @@
 	    }
 	    return text;
 	  },
+	  likeClass: function () {
+	    var likeClass = classNames({
+	      'like-button-liked': this.props.like,
+	      'like-button-unliked': this.props.like === false
+	    });
+	    return likeClass;
+	  },
+	  getAllLikers: function () {
+	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
+	    // MUST BE A POST LIKE
+	    // pass in 2 props, the post_id and the like_type=("post")
+	    var otherPeople = LikeStore.getTheUsers(this.props.like);
+	    return otherPeople;
+	  },
 	  render: function () {
+	    var people = this.getAllLikers();
+	
+	    if (!people) {
+	      fellowLikers = React.createElement(
+	        'div',
+	        null,
+	        'Loading'
+	      );
+	    } else {
+	      fellowLikers = people.map(function (person, i) {
+	        return React.createElement(
+	          'div',
+	          { key: i },
+	          person.real_name
+	        );
+	      });
+	    }
+	
 	    var properButton;
 	    properButton = React.createElement(
 	      'button',
-	      { className: 'button', onClick: this.handleLikeSubmit },
+	      { className: this.likeClass, onClick: this.handleLikeSubmit },
 	      this.buttonText()
 	    );
 	
 	    return React.createElement(
 	      'div',
 	      null,
-	      properButton
+	      React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit }),
+	      fellowLikers
 	    );
 	  }
 	});

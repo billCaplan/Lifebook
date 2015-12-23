@@ -14,10 +14,17 @@
  *= require_self
  */
  .like-button-liked{
-   background-color: red;
+   background-color: #627CB4;
+   border: 0px;
+   border-radius: 5px;
+   overflow: hidden;
+
  }
  .like-button-unliked{
-   background-color: blue;
+   background-color: #F6F7F8;
+   border: 0px;
+   border-radius: 5px;
+   overflow: hidden;
  }
 
   .sign-up-link{
@@ -165,7 +172,7 @@ padding-right: 10px;
 
    margin-left: 150px;
    padding: 3px;
-   width: 500px;
+   width: 600px;
    display: block;
    background-color: white;
  }
@@ -174,7 +181,7 @@ padding-right: 10px;
    border-radius: 5px;
    border-width: 1.5px;
    padding: 5px;
-   width: 300px;
+   width: 500px;
    margin-top: 5px;
  }
 

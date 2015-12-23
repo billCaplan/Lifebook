@@ -49,7 +49,7 @@ var ImageComment = React.createClass({
         if (like.post_id === current_comment.id &&
             like.author_id === current_user.id &&
             like.like_type === "comment"){
-          liking = true;
+          liking = like;
         }
       });
 
@@ -60,17 +60,17 @@ var ImageComment = React.createClass({
       var likeButton;
       var currentUser = UserStore.getCurrentUser();
 
-      if (placeholder === true) {
+      if (placeholder) {
         likeButton = <div className="like-button">
                           <ImageCommentLikeButton currentUser={currentUser}
                           comment={comment}
-                          like={true}/>
+                          like={placeholder}/>
                       </div>;
       } else {
         likeButton =  <div className="like-button">
                           <ImageCommentLikeButton currentUser={currentUser}
                           comment={comment}
-                          like={false}/>
+                          like={placeholder}/>
                       </div>;
       }
 

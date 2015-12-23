@@ -59,6 +59,7 @@ LikeStore.getAllOtherLikers = function(like){
 };
 
 LikeStore.getTheUsers = function(like){
+  debugger
   var relevantLikes = LikeStore.getAllOtherLikers(like);
   var relevantUsers = [];
   relevantLikes.forEach(function(like){
