@@ -21,6 +21,10 @@ var HeaderBar = React.createClass({
     this.history.pushState(null, "/");
     window.scrollTo(0, 0);
   },
+  handleAuthorClick: function(destinationId){
+    this.history.pushState(null, "user/" + this.state.user.id);
+    window.scrollTo(0, 0);
+  },
   componentDidMount: function(){
     this.userListener = UserStore.addListener(this._usersChanged);
   },
@@ -56,7 +60,7 @@ var HeaderBar = React.createClass({
         <div className="header-bar-search-bar"><SearchBar /></div>
         <div className="header-bar-go-home"><h1 onClick={this.redirectToHome}>Lifebook</h1></div>
         <div className="header-bar-profile-pic"><img src={this._buildUrl(profile_image)}></img></div>
-        <div className="header-bar-real-name">{name}</div>
+        <div className="header-bar-real-name" onClick={this.handleAuthorClick}>{name}</div>
         <SignoutButton />
       </nav>
     );

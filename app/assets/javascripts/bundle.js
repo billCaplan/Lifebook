@@ -36589,6 +36589,10 @@
 	    this.history.pushState(null, "/");
 	    window.scrollTo(0, 0);
 	  },
+	  handleAuthorClick: function (destinationId) {
+	    this.history.pushState(null, "user/" + this.state.user.id);
+	    window.scrollTo(0, 0);
+	  },
 	  componentDidMount: function () {
 	    this.userListener = UserStore.addListener(this._usersChanged);
 	  },
@@ -36643,7 +36647,7 @@
 	      ),
 	      React.createElement(
 	        'div',
-	        { className: 'header-bar-real-name' },
+	        { className: 'header-bar-real-name', onClick: this.handleAuthorClick },
 	        name
 	      ),
 	      React.createElement(SignoutButton, null)
