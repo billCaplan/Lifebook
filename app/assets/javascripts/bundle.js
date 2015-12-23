@@ -31747,14 +31747,44 @@
 	
 	    likes.forEach(function (like) {
 	      if (like.post_id === that.props.post.id && like.author_id === current_user.id && like.like_type === "post") {
-	        liking = true;
+	        liking = like;
 	      }
 	    });
 	
 	    return liking;
 	  },
+	  //   timeSince: function(date) {
+	  //     var thing = date * 1000;
+	  //     debugger
+	  //     var seconds = Math.floor((new Date() - date) / 1000);
+	  //
+	  //     var interval = Math.floor(seconds / 31536000);
+	  //
+	  //     if (interval > 1) {
+	  //         return interval + " years";
+	  //     }
+	  //     interval = Math.floor(seconds / 2592000);
+	  //     if (interval > 1) {
+	  //         return interval + " months";
+	  //     }
+	  //     interval = Math.floor(seconds / 86400);
+	  //     if (interval > 1) {
+	  //         return interval + " days";
+	  //     }
+	  //     interval = Math.floor(seconds / 3600);
+	  //     if (interval > 1) {
+	  //         return interval + " hours";
+	  //     }
+	  //     interval = Math.floor(seconds / 60);
+	  //     if (interval > 1) {
+	  //         return interval + " minutes";
+	  //     }
+	  //     return Math.floor(seconds) + " seconds";
+	  // },
 	
 	  render: function () {
+	
+	    var time = this.props.post.created_at;
 	    var currentUser = UserStore.getCurrentUser();
 	    var subjectName = this.props.post.subject.real_name;
 	    var authorName = this.props.post.author.real_name;
@@ -31783,16 +31813,17 @@
 	      );
 	    }
 	
+	    // is like true or false
 	    var placeholder = this.likeButtonLogic();
 	    var followButton;
 	
-	    if (placeholder === true) {
+	    if (placeholder) {
 	      likeButton = React.createElement(
 	        'div',
 	        { className: 'like-button' },
 	        React.createElement(PostLikeButton, { currentUser: currentUser,
 	          post: this.props.post,
-	          like: true })
+	          like: placeholder })
 	      );
 	    } else {
 	      likeButton = React.createElement(
@@ -31800,9 +31831,10 @@
 	        { className: 'like-button' },
 	        React.createElement(PostLikeButton, { currentUser: currentUser,
 	          post: this.props.post,
-	          like: false })
+	          like: placeholder })
 	      );
 	    }
+	
 	    return React.createElement(
 	      ReactCSSTransitionGroup,
 	      { transitionName: 'example',
@@ -31821,9 +31853,14 @@
 	            'p',
 	            null,
 	            this.props.post.body
-	          )
+	          ),
+	          React.createElement(
+	            'div',
+	            null,
+	            time
+	          ),
+	          likeButton
 	        ),
-	        likeButton,
 	        React.createElement(
 	          'div',
 	          null,
@@ -36626,6 +36663,7 @@
 	var UserStore = __webpack_require__(233);
 	var FollowStore = __webpack_require__(261);
 	var LikeStore = __webpack_require__(296);
+	var classNames = __webpack_require__(255);
 	
 	var ApiUtil = __webpack_require__(235);
 	
@@ -36634,6 +36672,17 @@
 	
 	  contextTypes: {
 	    router: React.PropTypes.func
+	  },
+	  likeClass: function () {
+	    var likeClass = classNames({
+	      'like-button-liked': this.props.like,
+	      'like-button-unliked': this.props.like === false
+	    });
+	    return likeClass;
+	  },
+	  getAllLikers: function () {
+	    var otherPeople = LikeStore.getTheUsers(this.props.like);
+	    return otherPeople;
 	  },
 	
 	  handleLikeSubmit: function (event) {
@@ -36661,18 +36710,38 @@
 	    }
 	    return text;
 	  },
+	
+	  // <img src="app/assets/images/thumb.png" ></img>
 	  render: function () {
+	    var people = this.getAllLikers();
+	
+	    if (!people) {
+	      fellowLikers = React.createElement(
+	        'div',
+	        null,
+	        'Loading'
+	      );
+	    } else {
+	      fellowLikers = people.map(function (person, i) {
+	        return React.createElement(
+	          'div',
+	          { key: i },
+	          person.real_name
+	        );
+	      });
+	    }
 	    var properButton;
 	    properButton = React.createElement(
 	      'button',
-	      { className: 'button', onClick: this.handleLikeSubmit },
+	      { className: this.likeClass(), onClick: this.handleLikeSubmit },
 	      this.buttonText()
 	    );
 	
 	    return React.createElement(
 	      'div',
 	      null,
-	      properButton
+	      properButton,
+	      fellowLikers
 	    );
 	  }
 	});
@@ -36686,6 +36755,7 @@
 	var Store = __webpack_require__(212).Store;
 	var LikeConstants = __webpack_require__(239);
 	var AppDispatcher = __webpack_require__(230);
+	var UserStore = __webpack_require__(233);
 	
 	var LikeStore = new Store(AppDispatcher);
 	
@@ -36718,6 +36788,32 @@
 	  });
 	
 	  return relevantLike;
+	};
+	
+	LikeStore.getAllOtherLikers = function (like) {
+	  var users = UserStore.all();
+	  var likes = LikeStore.all();
+	  var author_id = parseInt(like.author_id);
+	  var post_id = parseInt(like.post_id);
+	  var like_type = like.like_type;
+	
+	  var relevantLikes = [];
+	  likes.forEach(function (like) {
+	    if (like.post_id === post_id && like.like_type === like_type) {
+	      relevantLikes.push(like);
+	    }
+	  });
+	
+	  return relevantLikes;
+	};
+	
+	LikeStore.getTheUsers = function (like) {
+	  var relevantLikes = LikeStore.getAllOtherLikers(like);
+	  var relevantUsers = [];
+	  relevantLikes.forEach(function (like) {
+	    relevantUsers.push(UserStore.findUser(like.author_id));
+	  });
+	  return relevantUsers;
 	};
 	
 	LikeStore.__onDispatch = function (payload) {

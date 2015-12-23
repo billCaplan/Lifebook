@@ -55,14 +55,44 @@ var Post = React.createClass({
       if (like.post_id === that.props.post.id &&
           like.author_id === current_user.id &&
           like.like_type === "post"){
-        liking = true;
+        liking = like;
       }
     });
 
     return liking;
   },
+//   timeSince: function(date) {
+//     var thing = date * 1000;
+//     debugger
+//     var seconds = Math.floor((new Date() - date) / 1000);
+//
+//     var interval = Math.floor(seconds / 31536000);
+//
+//     if (interval > 1) {
+//         return interval + " years";
+//     }
+//     interval = Math.floor(seconds / 2592000);
+//     if (interval > 1) {
+//         return interval + " months";
+//     }
+//     interval = Math.floor(seconds / 86400);
+//     if (interval > 1) {
+//         return interval + " days";
+//     }
+//     interval = Math.floor(seconds / 3600);
+//     if (interval > 1) {
+//         return interval + " hours";
+//     }
+//     interval = Math.floor(seconds / 60);
+//     if (interval > 1) {
+//         return interval + " minutes";
+//     }
+//     return Math.floor(seconds) + " seconds";
+// },
 
   render: function(){
+
+    var time = this.props.post.created_at;
     var currentUser = UserStore.getCurrentUser();
     var subjectName = this.props.post.subject.real_name;
     var authorName = this.props.post.author.real_name;
@@ -77,22 +107,24 @@ var Post = React.createClass({
                 </p>;
     }
 
+    // is like true or false
     var placeholder = this.likeButtonLogic();
     var followButton;
 
-    if (placeholder === true) {
+    if (placeholder) {
       likeButton = <div className="like-button">
                         <PostLikeButton currentUser={currentUser}
                         post={this.props.post}
-                        like={true}/>
+                        like={placeholder}/>
                     </div>;
     } else {
       likeButton =  <div className="like-button">
                         <PostLikeButton currentUser={currentUser}
                         post={this.props.post}
-                        like={false}/>
+                        like={placeholder}/>
                     </div>;
     }
+
     return(
     <ReactCSSTransitionGroup transitionName="example"
                               transitionAppear={true}
@@ -103,8 +135,9 @@ var Post = React.createClass({
         <div className="feed-post-body">
          {nameLine}
          <p>{this.props.post.body}</p>
+         <div>{time}</div>
+         {likeButton}
        </div>
-        {likeButton}
        <div>
           <Comment postId={this.props.post.id}/>
       </div>

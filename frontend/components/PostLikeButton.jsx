@@ -4,12 +4,25 @@ var Post = require('../components/Post');
 var UserStore = require('../stores/user');
 var FollowStore = require('../stores/follow');
 var LikeStore = require('../stores/like');
+var classNames = require('classnames');
+
 
 var ApiUtil = require('../util/api_util');
 
 var PostLikeButton = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
+  },
+  likeClass: function(){
+    var likeClass = classNames({
+      'like-button-liked': this.props.like,
+      'like-button-unliked': this.props.like === false
+    });
+    return likeClass;
+  },
+  getAllLikers: function(){
+    var otherPeople = LikeStore.getTheUsers(this.props.like);
+      return otherPeople;
   },
 
   handleLikeSubmit: function(event){
@@ -40,13 +53,26 @@ var PostLikeButton = React.createClass({
     }
   return text;
   },
+
+  // <img src="app/assets/images/thumb.png" ></img>
   render: function(){
+    var people = this.getAllLikers();
+
+    if (!people){
+      fellowLikers = <div>Loading</div>;
+    }
+    else {
+      fellowLikers = people.map(function (person, i) {
+    return <div key={i}>{person.real_name}</div>;
+  });
+}
     var properButton;
-    properButton = <button  className="button" onClick={this.handleLikeSubmit}>{this.buttonText()}</button>;
+    properButton = <button  className={this.likeClass()} onClick={this.handleLikeSubmit}>{this.buttonText()}</button>;
 
     return (
       <div>
         {properButton}
+        {fellowLikers}
       </div>
     );
   }

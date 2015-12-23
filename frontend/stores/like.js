@@ -1,6 +1,7 @@
 var Store = require('flux/utils').Store;
 var LikeConstants = require('../constants/like_constants');
 var AppDispatcher = require('../dispatcher/Dispatcher');
+var UserStore = require('../stores/user');
 
 var LikeStore = new Store(AppDispatcher);
 
@@ -35,6 +36,35 @@ LikeStore.getByLikeParties = function(like) {
   });
 
   return relevantLike;
+};
+
+LikeStore.getAllOtherLikers = function(like){
+  var users = UserStore.all();
+  var likes = LikeStore.all();
+  var author_id = parseInt(like.author_id);
+  var post_id = parseInt(like.post_id);
+  var like_type = like.like_type;
+
+
+  var relevantLikes = [];
+  likes.forEach(function(like){
+    if (like.post_id === post_id &&
+        like.like_type === like_type){
+        relevantLikes.push(like);
+    }
+  });
+
+  return relevantLikes;
+
+};
+
+LikeStore.getTheUsers = function(like){
+  var relevantLikes = LikeStore.getAllOtherLikers(like);
+  var relevantUsers = [];
+  relevantLikes.forEach(function(like){
+    relevantUsers.push(UserStore.findUser(like.author_id));
+  });
+  return relevantUsers;
 };
 
 LikeStore.__onDispatch = function (payload) {
