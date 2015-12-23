@@ -7,14 +7,14 @@ var LikeStore = require('../stores/like');
 
 var ApiUtil = require('../util/api_util');
 
-var FollowButton = React.createClass({
+var PostLikeButton = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
 
   handleLikeSubmit: function(event){
     event.preventDefault();
-    debugger
+
     var like = {author_id: this.props.currentUser.id,
                   like_type: "post",
                   post_id: this.props.post.id};
@@ -42,7 +42,6 @@ var FollowButton = React.createClass({
   },
   render: function(){
     var properButton;
-    debugger
     properButton = <button  className="button" onClick={this.handleLikeSubmit}>{this.buttonText()}</button>;
 
     return (
@@ -53,4 +52,4 @@ var FollowButton = React.createClass({
   }
 });
 
-module.exports = FollowButton;
+module.exports = PostLikeButton;

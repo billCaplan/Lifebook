@@ -31909,6 +31909,8 @@
 	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
 	var CommentStore = __webpack_require__(243);
+	var CommentLikeButton = __webpack_require__(297);
+	var LikeStore = __webpack_require__(296);
 	
 	var ApiUtil = __webpack_require__(235);
 	var History = __webpack_require__(159).History;
@@ -31940,9 +31942,57 @@
 	    this.history.pushState(null, "user/" + authorId);
 	    window.scrollTo(0, 0);
 	  },
+	  likeButtonLogic: function (comment) {
+	    debugger;
+	    var likes = LikeStore.all();
+	    var current_comment = comment;
+	    var current_user = UserStore.getCurrentUser();
+	
+	    if (!current_comment.id) {
+	      return false;
+	    }
+	    var liking = false;
+	    var that = this;
+	
+	    likes.forEach(function (like) {
+	      if (like.post_id === current_comment.id && like.author_id === current_user.id && like.like_type === "comment") {
+	        liking = true;
+	      }
+	    });
+	
+	    return liking;
+	  },
+	  _buttonRenderFunction: function (comment) {
+	    // console.log(comment);
+	    // var targetComment = comment;
+	    var placeholder = this.likeButtonLogic(comment);
+	    var likeButton;
+	    var currentUser = UserStore.getCurrentUser();
+	
+	    if (placeholder === true) {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(CommentLikeButton, { currentUser: currentUser,
+	          comment: comment,
+	          like: true })
+	      );
+	    } else {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(CommentLikeButton, { currentUser: currentUser,
+	          comment: comment,
+	          like: false })
+	      );
+	    }
+	    debugger;
+	    return likeButton;
+	  },
 	
 	  render: function () {
 	    var that = this;
+	
 	    var Comments = this.state.comments.map(function (comment, i) {
 	      return React.createElement(
 	        'div',
@@ -31956,7 +32006,8 @@
 	          'div',
 	          null,
 	          comment.body
-	        )
+	        ),
+	        that._buttonRenderFunction(comment)
 	      );
 	    });
 	    return React.createElement(
@@ -36433,8 +36484,8 @@
 	
 	var ApiUtil = __webpack_require__(235);
 	
-	var FollowButton = React.createClass({
-	  displayName: 'FollowButton',
+	var PostLikeButton = React.createClass({
+	  displayName: 'PostLikeButton',
 	
 	  contextTypes: {
 	    router: React.PropTypes.func
@@ -36442,7 +36493,7 @@
 	
 	  handleLikeSubmit: function (event) {
 	    event.preventDefault();
-	    debugger;
+	
 	    var like = { author_id: this.props.currentUser.id,
 	      like_type: "post",
 	      post_id: this.props.post.id };
@@ -36467,7 +36518,6 @@
 	  },
 	  render: function () {
 	    var properButton;
-	    debugger;
 	    properButton = React.createElement(
 	      'button',
 	      { className: 'button', onClick: this.handleLikeSubmit },
@@ -36482,7 +36532,7 @@
 	  }
 	});
 	
-	module.exports = FollowButton;
+	module.exports = PostLikeButton;
 
 /***/ },
 /* 296 */
@@ -36543,6 +36593,69 @@
 	};
 	
 	module.exports = LikeStore;
+
+/***/ },
+/* 297 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var FollowStore = __webpack_require__(261);
+	var LikeStore = __webpack_require__(296);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var CommentLikeButton = React.createClass({
+	  displayName: 'CommentLikeButton',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	
+	  handleLikeSubmit: function (event) {
+	    event.preventDefault();
+	    debugger;
+	    var like = { author_id: this.props.currentUser.id,
+	      like_type: "comment",
+	      post_id: this.props.comment.id };
+	
+	    if (this.props.like) {
+	      var targetLike = LikeStore.getByLikeParties(like);
+	      ApiUtil.deleteLike(targetLike);
+	    } else {
+	      ApiUtil.createLike(like);
+	    }
+	  },
+	  componentWillReceiveProps: function (newProps) {},
+	  buttonText: function () {
+	    var text;
+	
+	    if (this.props.like) {
+	      text = "Unlike";
+	    } else {
+	      text = "Like";
+	    }
+	    return text;
+	  },
+	  render: function () {
+	    var properButton;
+	    properButton = React.createElement(
+	      'button',
+	      { className: 'button', onClick: this.handleLikeSubmit },
+	      this.buttonText()
+	    );
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      properButton
+	    );
+	  }
+	});
+	
+	module.exports = CommentLikeButton;
 
 /***/ }
 /******/ ]);
