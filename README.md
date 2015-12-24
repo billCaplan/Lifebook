@@ -13,7 +13,7 @@ and React.js. Lifebook allows users to:
 
 - [ ] Create an account
 - [ ] Log in / Log out
-- [ ] Create a profile for themselves, businesses, or other media products
+- [ ] Create a user profile.
 - [ ] Post photos and updates to their profiles
 - [ ] Follow other users and keep up to date on their activities
 - [ ] Contact other users directly
