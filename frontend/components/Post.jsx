@@ -2,7 +2,7 @@
 
 var React = require('react');
 var PostStore = require('../stores/post');
-
+var moment = require('moment');
 var ApiUtil = require('../util/api_util');
 var History = require('react-router').History;
 var NewComment = require('../components/NewComment');
@@ -93,6 +93,7 @@ var Post = React.createClass({
   render: function(){
 
     var time = this.props.post.created_at;
+    var finalTime = moment(time*1000).fromNow();
     var currentUser = UserStore.getCurrentUser();
     var subjectName = this.props.post.subject.real_name;
     var authorName = this.props.post.author.real_name;
@@ -100,11 +101,11 @@ var Post = React.createClass({
     if (subjectName === authorName){
       nameLine = <div className="post-user-name" onClick={this.handleAuthorClick}>{authorName}</div>;
     } else {
-      nameLine = <p>
+      nameLine = <div>
                     <span className="post-user-name" onClick={this.handleAuthorClick}>{authorName}</span>
                      --->>>
                     <span className="post-user-name" onClick={this.handleSubjectClick}>{subjectName}</span>
-                </p>;
+                </div>;
     }
 
     // is like true or false
@@ -133,9 +134,8 @@ var Post = React.createClass({
                               transitionLeaveTimeout={500}>
       <div className="whole-post">
         <div className="feed-post-body">
-         {nameLine}
-         <p>{this.props.post.body}</p>
-         <div>{time}</div>
+         {nameLine}{finalTime}
+         <div className="post-only-the-body">{this.props.post.body}</div>
          {likeButton}
        </div>
        <div>

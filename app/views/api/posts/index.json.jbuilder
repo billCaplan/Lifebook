@@ -9,5 +9,5 @@ json.array!(@posts) do |post|
   json.subject do
     json.partial! 'api/users/user', user: post.subject
   end
-  json.created_at post.created_at
+  json.created_at post.created_at.to_datetime.to_i
 end

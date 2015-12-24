@@ -13,6 +13,41 @@
  *= require_tree .
  *= require_self
  */
+
+ .post-only-the-body{
+   margin: 10px;
+ }
+ .comment-only-the-body{
+   margin: 10px;
+ }
+
+
+.like-area{
+
+}
+.like-area:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+/*.like-button{
+  float:left;
+}*/
+.like-list-visible{
+  background-color: red;
+  }
+.like-list-invisible{
+background-color: green;
+visibility: hidden;
+  }
+
+.liker-name{
+  float: left;
+}
+.liker-name{
+  float: left;
+}
+
  .like-button-liked{
    background-color: #627CB4;
    border: 0px;

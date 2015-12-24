@@ -89,7 +89,7 @@ var Comment = React.createClass({
                   {comment.author.real_name}
             </div>
 
-            <div>{comment.body}</div>
+            <div className="comment-only-the-body">{comment.body}</div>
             {that._buttonRenderFunction(comment)}
           </div>
 

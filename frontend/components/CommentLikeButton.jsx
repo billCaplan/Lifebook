@@ -49,6 +49,7 @@ var CommentLikeButton = React.createClass({
   },
   likeClass: function(){
     var likeClass = classNames({
+      "like-button": true,
       'like-button-liked': this.props.like,
       'like-button-unliked': this.props.like === false
     });
@@ -62,19 +63,25 @@ var CommentLikeButton = React.createClass({
     }
     else {
       fellowLikers = people.map(function (person, i) {
-        return <div key={i}>{person.real_name}</div>;
+        return <div className="liker-name"
+                    key={i}>{person.real_name}</div>;
         });
     }
 
     var properButton;
-    properButton = <button  className={this.likeClass()} onClick={this.handleLikeSubmit}>{this.buttonText()}</button>;
-      debugger
+    properButton = <button className={this.likeClass()}
+                            onClick={this.handleLikeSubmit}>
+                            {this.buttonText()}</button>;
+
     return (
-      <div>
+      <div className="like-area">
         <div>
-          <img src="/assets/thumb.png" height="20" width="20" className={this.likeClass()} onClick={this.handleLikeSubmit}></img>
+          <img src="/assets/thumb.png"
+              height="20" width="20"
+              className={this.likeClass()}
+              onClick={this.handleLikeSubmit}></img>
         </div>
-        <div>
+        <div className="liker-names">
           {fellowLikers}
         </div>
       </div>
