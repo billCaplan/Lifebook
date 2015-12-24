@@ -89,11 +89,21 @@ var Post = React.createClass({
 //     }
 //     return Math.floor(seconds) + " seconds";
 // },
+getTimeFrame: function(){
+  var time;
+if (this.props.post.created_at.created_at){
+  time = this.props.post.created_at.created_at;
+} else {
+  time = this.props.post.created_at;
+}
+  var finalTime = moment(time*1000).fromNow();
+
+  return finalTime;
+},
 
   render: function(){
 
-    var time = this.props.post.created_at;
-    var finalTime = moment(time*1000).fromNow();
+
     var currentUser = UserStore.getCurrentUser();
     var subjectName = this.props.post.subject.real_name;
     var authorName = this.props.post.author.real_name;
@@ -134,7 +144,7 @@ var Post = React.createClass({
                               transitionLeaveTimeout={500}>
       <div className="whole-post">
         <div className="feed-post-body">
-         {nameLine}{finalTime}
+         {nameLine}{this.getTimeFrame()}
          <div className="post-only-the-body">{this.props.post.body}</div>
          {likeButton}
        </div>

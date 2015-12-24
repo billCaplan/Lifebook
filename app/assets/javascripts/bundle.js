@@ -54,14 +54,14 @@
 	var IndexRoute = ReactRouter.IndexRoute;
 	
 	var Feed = __webpack_require__(210);
-	var UserProfile = __webpack_require__(257);
-	var PostPage = __webpack_require__(293);
+	var UserProfile = __webpack_require__(349);
+	var PostPage = __webpack_require__(386);
 	var ApiUtil = __webpack_require__(235);
 	var UserStore = __webpack_require__(233);
-	var NewPost = __webpack_require__(252);
-	var NewComment = __webpack_require__(241);
-	var Comment = __webpack_require__(242);
-	var HeaderBar = __webpack_require__(294);
+	var NewPost = __webpack_require__(345);
+	var NewComment = __webpack_require__(329);
+	var Comment = __webpack_require__(330);
+	var HeaderBar = __webpack_require__(387);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -24474,10 +24474,10 @@
 	var Post = __webpack_require__(240);
 	
 	var ApiUtil = __webpack_require__(235);
-	var NewPost = __webpack_require__(252);
+	var NewPost = __webpack_require__(345);
 	var UserStore = __webpack_require__(233);
-	var ReactCSSTransitionGroup = __webpack_require__(245);
-	var Footer = __webpack_require__(253);
+	var ReactCSSTransitionGroup = __webpack_require__(338);
+	var Footer = __webpack_require__(346);
 	
 	var Feed = React.createClass({
 	  displayName: 'Feed',
@@ -31694,16 +31694,16 @@
 	
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
-	var moment = __webpack_require__(300);
+	var moment = __webpack_require__(241);
 	var ApiUtil = __webpack_require__(235);
 	var History = __webpack_require__(159).History;
-	var NewComment = __webpack_require__(241);
-	var Comment = __webpack_require__(242);
+	var NewComment = __webpack_require__(329);
+	var Comment = __webpack_require__(330);
 	var UserStore = __webpack_require__(233);
-	var LikeStore = __webpack_require__(296);
-	var PostLikeButton = __webpack_require__(295);
+	var LikeStore = __webpack_require__(335);
+	var PostLikeButton = __webpack_require__(337);
 	
-	var ReactCSSTransitionGroup = __webpack_require__(245);
+	var ReactCSSTransitionGroup = __webpack_require__(338);
 	
 	var Post = React.createClass({
 	  displayName: 'Post',
@@ -31781,11 +31781,20 @@
 	  //     }
 	  //     return Math.floor(seconds) + " seconds";
 	  // },
+	  getTimeFrame: function () {
+	    var time;
+	    if (this.props.post.created_at.created_at) {
+	      time = this.props.post.created_at.created_at;
+	    } else {
+	      time = this.props.post.created_at;
+	    }
+	    var finalTime = moment(time * 1000).fromNow();
+	
+	    return finalTime;
+	  },
 	
 	  render: function () {
 	
-	    var time = this.props.post.created_at;
-	    var finalTime = moment(time * 1000).fromNow();
 	    var currentUser = UserStore.getCurrentUser();
 	    var subjectName = this.props.post.subject.real_name;
 	    var authorName = this.props.post.author.real_name;
@@ -31850,7 +31859,7 @@
 	          'div',
 	          { className: 'feed-post-body' },
 	          nameLine,
-	          finalTime,
+	          this.getTimeFrame(),
 	          React.createElement(
 	            'div',
 	            { className: 'post-only-the-body' },
@@ -31878,5284 +31887,6 @@
 
 /***/ },
 /* 241 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var NewComment = React.createClass({
-	  displayName: 'NewComment',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  componentWillMount: function () {
-	    this.setState({ currentUser: UserStore.getCurrentUser() });
-	  },
-	  handleSubmit: function (event) {
-	    event.preventDefault();
-	    var post = { body: event.currentTarget[0].value, post_id: this.props.parentCommentId };
-	    ApiUtil.createComment(post);
-	    event.currentTarget[0].value = null;
-	  },
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'form',
-	          { onSubmit: this.handleSubmit },
-	          React.createElement(
-	            'label',
-	            { htmlFor: 'comment_body' },
-	            'Leave a new comment'
-	          ),
-	          React.createElement('br', null),
-	          React.createElement('textarea', {
-	            name: 'comment[body]',
-	            id: 'comment_body', rows: '4', cols: '50' }),
-	          React.createElement('br', null),
-	          React.createElement('input', { type: 'submit', value: 'Comment' })
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = NewComment;
-
-/***/ },
-/* 242 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	var CommentStore = __webpack_require__(243);
-	var CommentLikeButton = __webpack_require__(297);
-	var LikeStore = __webpack_require__(296);
-	
-	var ApiUtil = __webpack_require__(235);
-	var History = __webpack_require__(159).History;
-	
-	var Comment = React.createClass({
-	  displayName: 'Comment',
-	
-	  mixins: [History],
-	
-	  _commentsChanged: function () {
-	    this.setState({ comments: CommentStore.getByPostId(this.props.postId) });
-	  },
-	
-	  getInitialState: function () {
-	    return {
-	      comments: CommentStore.getByPostId(this.props.postId)
-	    };
-	  },
-	
-	  componentDidMount: function () {
-	    this.commentListener = CommentStore.addListener(this._commentsChanged);
-	    ApiUtil.fetchComments();
-	  },
-	
-	  componentWillUnmount: function () {
-	    this.commentListener.remove();
-	  },
-	  handleAuthorClick: function (authorId) {
-	    this.history.pushState(null, "user/" + authorId);
-	    window.scrollTo(0, 0);
-	  },
-	  likeButtonLogic: function (comment) {
-	    var likes = LikeStore.all();
-	    var current_comment = comment;
-	    var current_user = UserStore.getCurrentUser();
-	
-	    if (!current_comment.id) {
-	      return false;
-	    }
-	    var liking = false;
-	    var that = this;
-	
-	    likes.forEach(function (like) {
-	      if (like.post_id === current_comment.id && like.author_id === current_user.id && like.like_type === "comment") {
-	        liking = like;
-	      }
-	    });
-	
-	    return liking;
-	  },
-	  _buttonRenderFunction: function (comment) {
-	    var placeholder = this.likeButtonLogic(comment);
-	    var likeButton;
-	    var currentUser = UserStore.getCurrentUser();
-	
-	    if (placeholder) {
-	      likeButton = React.createElement(
-	        'div',
-	        { className: 'like-button' },
-	        React.createElement(CommentLikeButton, { currentUser: currentUser,
-	          comment: comment,
-	          like: placeholder })
-	      );
-	    } else {
-	      likeButton = React.createElement(
-	        'div',
-	        { className: 'like-button' },
-	        React.createElement(CommentLikeButton, { currentUser: currentUser,
-	          comment: comment,
-	          like: placeholder })
-	      );
-	    }
-	
-	    return likeButton;
-	  },
-	
-	  render: function () {
-	    var that = this;
-	
-	    var Comments = this.state.comments.map(function (comment, i) {
-	      return React.createElement(
-	        'div',
-	        { key: comment.id, className: 'post-comment' },
-	        React.createElement(
-	          'div',
-	          { onClick: that.handleAuthorClick.bind(null, comment.author.id) },
-	          comment.author.real_name
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'comment-only-the-body' },
-	          comment.body
-	        ),
-	        that._buttonRenderFunction(comment)
-	      );
-	    });
-	    return React.createElement(
-	      'div',
-	      null,
-	      Comments
-	    );
-	  }
-	});
-	
-	// render the top level comment, then render its kids
-	
-	module.exports = Comment;
-
-/***/ },
-/* 243 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(212).Store;
-	var CommentConstants = __webpack_require__(244);
-	var AppDispatcher = __webpack_require__(230);
-	
-	var CommentStore = new Store(AppDispatcher);
-	
-	var _comments = [];
-	
-	var resetComments = function (comments) {
-	  _comments = comments.slice(0);
-	};
-	
-	var addNewComment = function (newComment) {
-	  _comments.push(newComment);
-	};
-	
-	CommentStore.all = function () {
-	  return _comments.slice(0);
-	};
-	
-	CommentStore.getByPostId = function (postIdString) {
-	  var postId = parseInt(postIdString);
-	  var comments = CommentStore.all();
-	  var relevantComments = [];
-	
-	  comments.forEach(function (comment) {
-	
-	    if (comment.post_id === postId) {
-	      relevantComments.push(comment);
-	    }
-	  });
-	
-	  return relevantComments;
-	};
-	
-	CommentStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case CommentConstants.COMMENTS_RECEIVED:
-	      var result = resetComments(payload.comments);
-	      CommentStore.__emitChange();
-	      break;
-	    case CommentConstants.NEW_COMMENT_RECEIVED:
-	      var result = addNewComment(payload.newComment);
-	      CommentStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	module.exports = CommentStore;
-
-/***/ },
-/* 244 */
-/***/ function(module, exports) {
-
-	CommentConstants = {
-	  COMMENTS_RECEIVED: "COMMENTS_RECEIVED",
-	  NEW_COMMENT_RECEIVED: "NEW_COMMENT_RECEIVED"
-	};
-	
-	module.exports = CommentConstants;
-
-/***/ },
-/* 245 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(246);
-
-/***/ },
-/* 246 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @typechecks
-	 * @providesModule ReactCSSTransitionGroup
-	 */
-	
-	'use strict';
-	
-	var React = __webpack_require__(2);
-	
-	var assign = __webpack_require__(39);
-	
-	var ReactTransitionGroup = __webpack_require__(247);
-	var ReactCSSTransitionGroupChild = __webpack_require__(249);
-	
-	function createTransitionTimeoutPropValidator(transitionType) {
-	  var timeoutPropName = 'transition' + transitionType + 'Timeout';
-	  var enabledPropName = 'transition' + transitionType;
-	
-	  return function (props) {
-	    // If the transition is enabled
-	    if (props[enabledPropName]) {
-	      // If no timeout duration is provided
-	      if (props[timeoutPropName] == null) {
-	        return new Error(timeoutPropName + ' wasn\'t supplied to ReactCSSTransitionGroup: ' + 'this can cause unreliable animations and won\'t be supported in ' + 'a future version of React. See ' + 'https://fb.me/react-animation-transition-group-timeout for more ' + 'information.');
-	
-	        // If the duration isn't a number
-	      } else if (typeof props[timeoutPropName] !== 'number') {
-	          return new Error(timeoutPropName + ' must be a number (in milliseconds)');
-	        }
-	    }
-	  };
-	}
-	
-	var ReactCSSTransitionGroup = React.createClass({
-	  displayName: 'ReactCSSTransitionGroup',
-	
-	  propTypes: {
-	    transitionName: ReactCSSTransitionGroupChild.propTypes.name,
-	
-	    transitionAppear: React.PropTypes.bool,
-	    transitionEnter: React.PropTypes.bool,
-	    transitionLeave: React.PropTypes.bool,
-	    transitionAppearTimeout: createTransitionTimeoutPropValidator('Appear'),
-	    transitionEnterTimeout: createTransitionTimeoutPropValidator('Enter'),
-	    transitionLeaveTimeout: createTransitionTimeoutPropValidator('Leave')
-	  },
-	
-	  getDefaultProps: function () {
-	    return {
-	      transitionAppear: false,
-	      transitionEnter: true,
-	      transitionLeave: true
-	    };
-	  },
-	
-	  _wrapChild: function (child) {
-	    // We need to provide this childFactory so that
-	    // ReactCSSTransitionGroupChild can receive updates to name, enter, and
-	    // leave while it is leaving.
-	    return React.createElement(ReactCSSTransitionGroupChild, {
-	      name: this.props.transitionName,
-	      appear: this.props.transitionAppear,
-	      enter: this.props.transitionEnter,
-	      leave: this.props.transitionLeave,
-	      appearTimeout: this.props.transitionAppearTimeout,
-	      enterTimeout: this.props.transitionEnterTimeout,
-	      leaveTimeout: this.props.transitionLeaveTimeout
-	    }, child);
-	  },
-	
-	  render: function () {
-	    return React.createElement(ReactTransitionGroup, assign({}, this.props, { childFactory: this._wrapChild }));
-	  }
-	});
-	
-	module.exports = ReactCSSTransitionGroup;
-
-/***/ },
-/* 247 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule ReactTransitionGroup
-	 */
-	
-	'use strict';
-	
-	var React = __webpack_require__(2);
-	var ReactTransitionChildMapping = __webpack_require__(248);
-	
-	var assign = __webpack_require__(39);
-	var emptyFunction = __webpack_require__(15);
-	
-	var ReactTransitionGroup = React.createClass({
-	  displayName: 'ReactTransitionGroup',
-	
-	  propTypes: {
-	    component: React.PropTypes.any,
-	    childFactory: React.PropTypes.func
-	  },
-	
-	  getDefaultProps: function () {
-	    return {
-	      component: 'span',
-	      childFactory: emptyFunction.thatReturnsArgument
-	    };
-	  },
-	
-	  getInitialState: function () {
-	    return {
-	      children: ReactTransitionChildMapping.getChildMapping(this.props.children)
-	    };
-	  },
-	
-	  componentWillMount: function () {
-	    this.currentlyTransitioningKeys = {};
-	    this.keysToEnter = [];
-	    this.keysToLeave = [];
-	  },
-	
-	  componentDidMount: function () {
-	    var initialChildMapping = this.state.children;
-	    for (var key in initialChildMapping) {
-	      if (initialChildMapping[key]) {
-	        this.performAppear(key);
-	      }
-	    }
-	  },
-	
-	  componentWillReceiveProps: function (nextProps) {
-	    var nextChildMapping = ReactTransitionChildMapping.getChildMapping(nextProps.children);
-	    var prevChildMapping = this.state.children;
-	
-	    this.setState({
-	      children: ReactTransitionChildMapping.mergeChildMappings(prevChildMapping, nextChildMapping)
-	    });
-	
-	    var key;
-	
-	    for (key in nextChildMapping) {
-	      var hasPrev = prevChildMapping && prevChildMapping.hasOwnProperty(key);
-	      if (nextChildMapping[key] && !hasPrev && !this.currentlyTransitioningKeys[key]) {
-	        this.keysToEnter.push(key);
-	      }
-	    }
-	
-	    for (key in prevChildMapping) {
-	      var hasNext = nextChildMapping && nextChildMapping.hasOwnProperty(key);
-	      if (prevChildMapping[key] && !hasNext && !this.currentlyTransitioningKeys[key]) {
-	        this.keysToLeave.push(key);
-	      }
-	    }
-	
-	    // If we want to someday check for reordering, we could do it here.
-	  },
-	
-	  componentDidUpdate: function () {
-	    var keysToEnter = this.keysToEnter;
-	    this.keysToEnter = [];
-	    keysToEnter.forEach(this.performEnter);
-	
-	    var keysToLeave = this.keysToLeave;
-	    this.keysToLeave = [];
-	    keysToLeave.forEach(this.performLeave);
-	  },
-	
-	  performAppear: function (key) {
-	    this.currentlyTransitioningKeys[key] = true;
-	
-	    var component = this.refs[key];
-	
-	    if (component.componentWillAppear) {
-	      component.componentWillAppear(this._handleDoneAppearing.bind(this, key));
-	    } else {
-	      this._handleDoneAppearing(key);
-	    }
-	  },
-	
-	  _handleDoneAppearing: function (key) {
-	    var component = this.refs[key];
-	    if (component.componentDidAppear) {
-	      component.componentDidAppear();
-	    }
-	
-	    delete this.currentlyTransitioningKeys[key];
-	
-	    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
-	
-	    if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key)) {
-	      // This was removed before it had fully appeared. Remove it.
-	      this.performLeave(key);
-	    }
-	  },
-	
-	  performEnter: function (key) {
-	    this.currentlyTransitioningKeys[key] = true;
-	
-	    var component = this.refs[key];
-	
-	    if (component.componentWillEnter) {
-	      component.componentWillEnter(this._handleDoneEntering.bind(this, key));
-	    } else {
-	      this._handleDoneEntering(key);
-	    }
-	  },
-	
-	  _handleDoneEntering: function (key) {
-	    var component = this.refs[key];
-	    if (component.componentDidEnter) {
-	      component.componentDidEnter();
-	    }
-	
-	    delete this.currentlyTransitioningKeys[key];
-	
-	    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
-	
-	    if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key)) {
-	      // This was removed before it had fully entered. Remove it.
-	      this.performLeave(key);
-	    }
-	  },
-	
-	  performLeave: function (key) {
-	    this.currentlyTransitioningKeys[key] = true;
-	
-	    var component = this.refs[key];
-	    if (component.componentWillLeave) {
-	      component.componentWillLeave(this._handleDoneLeaving.bind(this, key));
-	    } else {
-	      // Note that this is somewhat dangerous b/c it calls setState()
-	      // again, effectively mutating the component before all the work
-	      // is done.
-	      this._handleDoneLeaving(key);
-	    }
-	  },
-	
-	  _handleDoneLeaving: function (key) {
-	    var component = this.refs[key];
-	
-	    if (component.componentDidLeave) {
-	      component.componentDidLeave();
-	    }
-	
-	    delete this.currentlyTransitioningKeys[key];
-	
-	    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
-	
-	    if (currentChildMapping && currentChildMapping.hasOwnProperty(key)) {
-	      // This entered again before it fully left. Add it again.
-	      this.performEnter(key);
-	    } else {
-	      this.setState(function (state) {
-	        var newChildren = assign({}, state.children);
-	        delete newChildren[key];
-	        return { children: newChildren };
-	      });
-	    }
-	  },
-	
-	  render: function () {
-	    // TODO: we could get rid of the need for the wrapper node
-	    // by cloning a single child
-	    var childrenToRender = [];
-	    for (var key in this.state.children) {
-	      var child = this.state.children[key];
-	      if (child) {
-	        // You may need to apply reactive updates to a child as it is leaving.
-	        // The normal React way to do it won't work since the child will have
-	        // already been removed. In case you need this behavior you can provide
-	        // a childFactory function to wrap every child, even the ones that are
-	        // leaving.
-	        childrenToRender.push(React.cloneElement(this.props.childFactory(child), { ref: key, key: key }));
-	      }
-	    }
-	    return React.createElement(this.props.component, this.props, childrenToRender);
-	  }
-	});
-	
-	module.exports = ReactTransitionGroup;
-
-/***/ },
-/* 248 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @typechecks static-only
-	 * @providesModule ReactTransitionChildMapping
-	 */
-	
-	'use strict';
-	
-	var flattenChildren = __webpack_require__(116);
-	
-	var ReactTransitionChildMapping = {
-	  /**
-	   * Given `this.props.children`, return an object mapping key to child. Just
-	   * simple syntactic sugar around flattenChildren().
-	   *
-	   * @param {*} children `this.props.children`
-	   * @return {object} Mapping of key to child
-	   */
-	  getChildMapping: function (children) {
-	    if (!children) {
-	      return children;
-	    }
-	    return flattenChildren(children);
-	  },
-	
-	  /**
-	   * When you're adding or removing children some may be added or removed in the
-	   * same render pass. We want to show *both* since we want to simultaneously
-	   * animate elements in and out. This function takes a previous set of keys
-	   * and a new set of keys and merges them with its best guess of the correct
-	   * ordering. In the future we may expose some of the utilities in
-	   * ReactMultiChild to make this easy, but for now React itself does not
-	   * directly have this concept of the union of prevChildren and nextChildren
-	   * so we implement it here.
-	   *
-	   * @param {object} prev prev children as returned from
-	   * `ReactTransitionChildMapping.getChildMapping()`.
-	   * @param {object} next next children as returned from
-	   * `ReactTransitionChildMapping.getChildMapping()`.
-	   * @return {object} a key set that contains all keys in `prev` and all keys
-	   * in `next` in a reasonable order.
-	   */
-	  mergeChildMappings: function (prev, next) {
-	    prev = prev || {};
-	    next = next || {};
-	
-	    function getValueForKey(key) {
-	      if (next.hasOwnProperty(key)) {
-	        return next[key];
-	      } else {
-	        return prev[key];
-	      }
-	    }
-	
-	    // For each key of `next`, the list of keys to insert before that key in
-	    // the combined list
-	    var nextKeysPending = {};
-	
-	    var pendingKeys = [];
-	    for (var prevKey in prev) {
-	      if (next.hasOwnProperty(prevKey)) {
-	        if (pendingKeys.length) {
-	          nextKeysPending[prevKey] = pendingKeys;
-	          pendingKeys = [];
-	        }
-	      } else {
-	        pendingKeys.push(prevKey);
-	      }
-	    }
-	
-	    var i;
-	    var childMapping = {};
-	    for (var nextKey in next) {
-	      if (nextKeysPending.hasOwnProperty(nextKey)) {
-	        for (i = 0; i < nextKeysPending[nextKey].length; i++) {
-	          var pendingNextKey = nextKeysPending[nextKey][i];
-	          childMapping[nextKeysPending[nextKey][i]] = getValueForKey(pendingNextKey);
-	        }
-	      }
-	      childMapping[nextKey] = getValueForKey(nextKey);
-	    }
-	
-	    // Finally, add the keys which didn't appear before any key in `next`
-	    for (i = 0; i < pendingKeys.length; i++) {
-	      childMapping[pendingKeys[i]] = getValueForKey(pendingKeys[i]);
-	    }
-	
-	    return childMapping;
-	  }
-	};
-	
-	module.exports = ReactTransitionChildMapping;
-
-/***/ },
-/* 249 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @typechecks
-	 * @providesModule ReactCSSTransitionGroupChild
-	 */
-	
-	'use strict';
-	
-	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(3);
-	
-	var CSSCore = __webpack_require__(250);
-	var ReactTransitionEvents = __webpack_require__(251);
-	
-	var onlyChild = __webpack_require__(156);
-	
-	// We don't remove the element from the DOM until we receive an animationend or
-	// transitionend event. If the user screws up and forgets to add an animation
-	// their node will be stuck in the DOM forever, so we detect if an animation
-	// does not start and if it doesn't, we just call the end listener immediately.
-	var TICK = 17;
-	
-	var ReactCSSTransitionGroupChild = React.createClass({
-	  displayName: 'ReactCSSTransitionGroupChild',
-	
-	  propTypes: {
-	    name: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.shape({
-	      enter: React.PropTypes.string,
-	      leave: React.PropTypes.string,
-	      active: React.PropTypes.string
-	    }), React.PropTypes.shape({
-	      enter: React.PropTypes.string,
-	      enterActive: React.PropTypes.string,
-	      leave: React.PropTypes.string,
-	      leaveActive: React.PropTypes.string,
-	      appear: React.PropTypes.string,
-	      appearActive: React.PropTypes.string
-	    })]).isRequired,
-	
-	    // Once we require timeouts to be specified, we can remove the
-	    // boolean flags (appear etc.) and just accept a number
-	    // or a bool for the timeout flags (appearTimeout etc.)
-	    appear: React.PropTypes.bool,
-	    enter: React.PropTypes.bool,
-	    leave: React.PropTypes.bool,
-	    appearTimeout: React.PropTypes.number,
-	    enterTimeout: React.PropTypes.number,
-	    leaveTimeout: React.PropTypes.number
-	  },
-	
-	  transition: function (animationType, finishCallback, userSpecifiedDelay) {
-	    var node = ReactDOM.findDOMNode(this);
-	
-	    if (!node) {
-	      if (finishCallback) {
-	        finishCallback();
-	      }
-	      return;
-	    }
-	
-	    var className = this.props.name[animationType] || this.props.name + '-' + animationType;
-	    var activeClassName = this.props.name[animationType + 'Active'] || className + '-active';
-	    var timeout = null;
-	
-	    var endListener = function (e) {
-	      if (e && e.target !== node) {
-	        return;
-	      }
-	
-	      clearTimeout(timeout);
-	
-	      CSSCore.removeClass(node, className);
-	      CSSCore.removeClass(node, activeClassName);
-	
-	      ReactTransitionEvents.removeEndEventListener(node, endListener);
-	
-	      // Usually this optional callback is used for informing an owner of
-	      // a leave animation and telling it to remove the child.
-	      if (finishCallback) {
-	        finishCallback();
-	      }
-	    };
-	
-	    CSSCore.addClass(node, className);
-	
-	    // Need to do this to actually trigger a transition.
-	    this.queueClass(activeClassName);
-	
-	    // If the user specified a timeout delay.
-	    if (userSpecifiedDelay) {
-	      // Clean-up the animation after the specified delay
-	      timeout = setTimeout(endListener, userSpecifiedDelay);
-	      this.transitionTimeouts.push(timeout);
-	    } else {
-	      // DEPRECATED: this listener will be removed in a future version of react
-	      ReactTransitionEvents.addEndEventListener(node, endListener);
-	    }
-	  },
-	
-	  queueClass: function (className) {
-	    this.classNameQueue.push(className);
-	
-	    if (!this.timeout) {
-	      this.timeout = setTimeout(this.flushClassNameQueue, TICK);
-	    }
-	  },
-	
-	  flushClassNameQueue: function () {
-	    if (this.isMounted()) {
-	      this.classNameQueue.forEach(CSSCore.addClass.bind(CSSCore, ReactDOM.findDOMNode(this)));
-	    }
-	    this.classNameQueue.length = 0;
-	    this.timeout = null;
-	  },
-	
-	  componentWillMount: function () {
-	    this.classNameQueue = [];
-	    this.transitionTimeouts = [];
-	  },
-	
-	  componentWillUnmount: function () {
-	    if (this.timeout) {
-	      clearTimeout(this.timeout);
-	    }
-	    this.transitionTimeouts.forEach(function (timeout) {
-	      clearTimeout(timeout);
-	    });
-	  },
-	
-	  componentWillAppear: function (done) {
-	    if (this.props.appear) {
-	      this.transition('appear', done, this.props.appearTimeout);
-	    } else {
-	      done();
-	    }
-	  },
-	
-	  componentWillEnter: function (done) {
-	    if (this.props.enter) {
-	      this.transition('enter', done, this.props.enterTimeout);
-	    } else {
-	      done();
-	    }
-	  },
-	
-	  componentWillLeave: function (done) {
-	    if (this.props.leave) {
-	      this.transition('leave', done, this.props.leaveTimeout);
-	    } else {
-	      done();
-	    }
-	  },
-	
-	  render: function () {
-	    return onlyChild(this.props.children);
-	  }
-	});
-	
-	module.exports = ReactCSSTransitionGroupChild;
-
-/***/ },
-/* 250 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule CSSCore
-	 * @typechecks
-	 */
-	
-	'use strict';
-	
-	var invariant = __webpack_require__(13);
-	
-	/**
-	 * The CSSCore module specifies the API (and implements most of the methods)
-	 * that should be used when dealing with the display of elements (via their
-	 * CSS classes and visibility on screen. It is an API focused on mutating the
-	 * display and not reading it as no logical state should be encoded in the
-	 * display of elements.
-	 */
-	
-	var CSSCore = {
-	
-	  /**
-	   * Adds the class passed in to the element if it doesn't already have it.
-	   *
-	   * @param {DOMElement} element the element to set the class on
-	   * @param {string} className the CSS className
-	   * @return {DOMElement} the element passed in
-	   */
-	  addClass: function (element, className) {
-	    !!/\s/.test(className) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'CSSCore.addClass takes only a single class name. "%s" contains ' + 'multiple classes.', className) : invariant(false) : undefined;
-	
-	    if (className) {
-	      if (element.classList) {
-	        element.classList.add(className);
-	      } else if (!CSSCore.hasClass(element, className)) {
-	        element.className = element.className + ' ' + className;
-	      }
-	    }
-	    return element;
-	  },
-	
-	  /**
-	   * Removes the class passed in from the element
-	   *
-	   * @param {DOMElement} element the element to set the class on
-	   * @param {string} className the CSS className
-	   * @return {DOMElement} the element passed in
-	   */
-	  removeClass: function (element, className) {
-	    !!/\s/.test(className) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'CSSCore.removeClass takes only a single class name. "%s" contains ' + 'multiple classes.', className) : invariant(false) : undefined;
-	
-	    if (className) {
-	      if (element.classList) {
-	        element.classList.remove(className);
-	      } else if (CSSCore.hasClass(element, className)) {
-	        element.className = element.className.replace(new RegExp('(^|\\s)' + className + '(?:\\s|$)', 'g'), '$1').replace(/\s+/g, ' ') // multiple spaces to one
-	        .replace(/^\s*|\s*$/g, ''); // trim the ends
-	      }
-	    }
-	    return element;
-	  },
-	
-	  /**
-	   * Helper to add or remove a class from an element based on a condition.
-	   *
-	   * @param {DOMElement} element the element to set the class on
-	   * @param {string} className the CSS className
-	   * @param {*} bool condition to whether to add or remove the class
-	   * @return {DOMElement} the element passed in
-	   */
-	  conditionClass: function (element, className, bool) {
-	    return (bool ? CSSCore.addClass : CSSCore.removeClass)(element, className);
-	  },
-	
-	  /**
-	   * Tests whether the element has the class specified.
-	   *
-	   * @param {DOMNode|DOMWindow} element the element to set the class on
-	   * @param {string} className the CSS className
-	   * @return {boolean} true if the element has the class, false if not
-	   */
-	  hasClass: function (element, className) {
-	    !!/\s/.test(className) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'CSS.hasClass takes only a single class name.') : invariant(false) : undefined;
-	    if (element.classList) {
-	      return !!className && element.classList.contains(className);
-	    }
-	    return (' ' + element.className + ' ').indexOf(' ' + className + ' ') > -1;
-	  }
-	
-	};
-	
-	module.exports = CSSCore;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
-
-/***/ },
-/* 251 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule ReactTransitionEvents
-	 */
-	
-	'use strict';
-	
-	var ExecutionEnvironment = __webpack_require__(9);
-	
-	/**
-	 * EVENT_NAME_MAP is used to determine which event fired when a
-	 * transition/animation ends, based on the style property used to
-	 * define that event.
-	 */
-	var EVENT_NAME_MAP = {
-	  transitionend: {
-	    'transition': 'transitionend',
-	    'WebkitTransition': 'webkitTransitionEnd',
-	    'MozTransition': 'mozTransitionEnd',
-	    'OTransition': 'oTransitionEnd',
-	    'msTransition': 'MSTransitionEnd'
-	  },
-	
-	  animationend: {
-	    'animation': 'animationend',
-	    'WebkitAnimation': 'webkitAnimationEnd',
-	    'MozAnimation': 'mozAnimationEnd',
-	    'OAnimation': 'oAnimationEnd',
-	    'msAnimation': 'MSAnimationEnd'
-	  }
-	};
-	
-	var endEvents = [];
-	
-	function detectEvents() {
-	  var testEl = document.createElement('div');
-	  var style = testEl.style;
-	
-	  // On some platforms, in particular some releases of Android 4.x,
-	  // the un-prefixed "animation" and "transition" properties are defined on the
-	  // style object but the events that fire will still be prefixed, so we need
-	  // to check if the un-prefixed events are useable, and if not remove them
-	  // from the map
-	  if (!('AnimationEvent' in window)) {
-	    delete EVENT_NAME_MAP.animationend.animation;
-	  }
-	
-	  if (!('TransitionEvent' in window)) {
-	    delete EVENT_NAME_MAP.transitionend.transition;
-	  }
-	
-	  for (var baseEventName in EVENT_NAME_MAP) {
-	    var baseEvents = EVENT_NAME_MAP[baseEventName];
-	    for (var styleName in baseEvents) {
-	      if (styleName in style) {
-	        endEvents.push(baseEvents[styleName]);
-	        break;
-	      }
-	    }
-	  }
-	}
-	
-	if (ExecutionEnvironment.canUseDOM) {
-	  detectEvents();
-	}
-	
-	// We use the raw {add|remove}EventListener() call because EventListener
-	// does not know how to remove event listeners and we really should
-	// clean up. Also, these events are not triggered in older browsers
-	// so we should be A-OK here.
-	
-	function addEventListener(node, eventName, eventListener) {
-	  node.addEventListener(eventName, eventListener, false);
-	}
-	
-	function removeEventListener(node, eventName, eventListener) {
-	  node.removeEventListener(eventName, eventListener, false);
-	}
-	
-	var ReactTransitionEvents = {
-	  addEndEventListener: function (node, eventListener) {
-	    if (endEvents.length === 0) {
-	      // If CSS transitions are not supported, trigger an "end animation"
-	      // event immediately.
-	      window.setTimeout(eventListener, 0);
-	      return;
-	    }
-	    endEvents.forEach(function (endEvent) {
-	      addEventListener(node, endEvent, eventListener);
-	    });
-	  },
-	
-	  removeEndEventListener: function (node, eventListener) {
-	    if (endEvents.length === 0) {
-	      return;
-	    }
-	    endEvents.forEach(function (endEvent) {
-	      removeEventListener(node, endEvent, eventListener);
-	    });
-	  }
-	};
-	
-	module.exports = ReactTransitionEvents;
-
-/***/ },
-/* 252 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	
-	var ApiUtil = __webpack_require__(235);
-	var UserStore = __webpack_require__(233);
-	
-	var History = __webpack_require__(159).History;
-	
-	var NewPost = React.createClass({
-	  displayName: 'NewPost',
-	
-	  mixins: [History],
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	
-	  navigateToFeed: function () {
-	    this.props.history.pushState(null, "/");
-	  },
-	  componentWillMount: function () {
-	    this.setState({ currentUser: UserStore.getCurrentUser() });
-	  },
-	
-	  handleSubmit: function (event) {
-	    event.preventDefault();
-	
-	    var post = { body: event.currentTarget[0].value, target_id: this.props.targetUserId };
-	    ApiUtil.createPost(post);
-	    event.currentTarget[0].value = null;
-	  },
-	
-	  render: function () {
-	
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'form',
-	        { onSubmit: this.handleSubmit },
-	        React.createElement(
-	          'label',
-	          { htmlFor: 'post_body' },
-	          'What\'s on your mind?'
-	        ),
-	        React.createElement('br', null),
-	        React.createElement('textarea', {
-	          name: 'post[body]',
-	          id: 'post_body', rows: '4', cols: '50' }),
-	        React.createElement('br', null),
-	        React.createElement('input', { type: 'submit', value: 'Post' })
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = NewPost;
-
-/***/ },
-/* 253 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	var SearchBar = __webpack_require__(254);
-	var History = __webpack_require__(159).History;
-	var SignoutButton = __webpack_require__(256);
-	var ApiUtil = __webpack_require__(235);
-	
-	var Footer = React.createClass({
-	  displayName: 'Footer',
-	
-	  mixins: [History],
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	
-	  render: function () {
-	    var name, profile_image;
-	
-	    if (this.state.user.real_name) {
-	      name = this.state.user.real_name;
-	      profile_image = this.state.user.profile_image;
-	    } else {
-	      name = "Loading";
-	    }
-	
-	    return React.createElement(
-	      'div',
-	      { className: 'footer-bar' },
-	      React.createElement(
-	        'div',
-	        null,
-	        'End of Page'
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = Footer;
-
-/***/ },
-/* 254 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var UserStore = __webpack_require__(233);
-	var History = __webpack_require__(159).History;
-	var classNames = __webpack_require__(255);
-	
-	var SearchBar = React.createClass({
-	  displayName: 'SearchBar',
-	
-	  mixins: [History],
-	  getInitialState: function () {
-	    this.userListener = UserStore.addListener(this._usersChanged);
-	    return { inputVal: "",
-	      users: UserStore.all(),
-	      listVisible: false
-	    };
-	  },
-	  _usersChanged: function () {
-	    this.setState({ users: UserStore.all() });
-	  },
-	  handleSubjectClick: function (destinationId) {
-	    this.setState({ listVisible: false });
-	    this.history.pushState(null, "user/" + this.props.post.subject.id);
-	  },
-	
-	  handleInput: function (event) {
-	    this.setState({ inputVal: event.currentTarget.value });
-	    if (event.currentTarget.value.length !== 0) {
-	      this.setState({ listVisible: true });
-	    } else {
-	      this.setState({ listVisible: false });
-	    }
-	  },
-	
-	  matches: function () {
-	    var matches = [];
-	    if (this.state.inputVal.length === 0) {
-	      return this.state.users;
-	    }
-	
-	    this.state.users.forEach((function (user) {
-	
-	      var name = user.real_name;
-	      var sub = name.slice(0, this.state.inputVal.length);
-	      if (sub.toLowerCase() === this.state.inputVal.toLowerCase()) {
-	        matches.push(user);
-	      }
-	    }).bind(this));
-	
-	    if (matches.length === 0) {
-	      matches.push("No matches");
-	    }
-	    return matches;
-	  },
-	
-	  selectName: function (result) {
-	    // debugger
-	    // var name = event.currentTarget.innerText;
-	    this.setState({ listVisible: false, inputVal: "" });
-	    this.history.pushState(null, "user/" + result.id);
-	    window.scrollTo(0, 0);
-	  },
-	  _setContent: function (results) {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'label',
-	        null,
-	        'Search: '
-	      ),
-	      React.createElement('input', { onChange: this.handleInput, value: this.state.inputVal, size: '50' }),
-	      React.createElement(
-	        'ul',
-	        { className: this.listClass() },
-	        results.map((function (result, i) {
-	          return React.createElement(
-	            'li',
-	            { key: i, onClick: this.selectName.bind(null, result) },
-	            result.real_name
-	          );
-	        }).bind(this))
-	      )
-	    );
-	  },
-	  componentWillUnmount: function () {
-	    this.userListener.remove();
-	  },
-	  listClass: function () {
-	    var listClass = classNames({
-	      'search-list': true,
-	      'search-list-hidden': this.state.listVisible === false,
-	      'search-list-visible': this.state.listVisible
-	    });
-	    return listClass;
-	  },
-	
-	  render: function () {
-	    var results = this.matches();
-	
-	    if (this.state.users && results) {
-	      var content = this._setContent(results);
-	    } else {
-	      var content = React.createElement(
-	        'div',
-	        null,
-	        'Loading'
-	      );
-	    }
-	    return React.createElement(
-	      'div',
-	      null,
-	      content
-	    );
-	  }
-	});
-	
-	module.exports = SearchBar;
-
-/***/ },
-/* 255 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
-	  Copyright (c) 2015 Jed Watson.
-	  Licensed under the MIT License (MIT), see
-	  http://jedwatson.github.io/classnames
-	*/
-	/* global define */
-	
-	(function () {
-		'use strict';
-	
-		var hasOwn = {}.hasOwnProperty;
-	
-		function classNames () {
-			var classes = '';
-	
-			for (var i = 0; i < arguments.length; i++) {
-				var arg = arguments[i];
-				if (!arg) continue;
-	
-				var argType = typeof arg;
-	
-				if (argType === 'string' || argType === 'number') {
-					classes += ' ' + arg;
-				} else if (Array.isArray(arg)) {
-					classes += ' ' + classNames.apply(null, arg);
-				} else if (argType === 'object') {
-					for (var key in arg) {
-						if (hasOwn.call(arg, key) && arg[key]) {
-							classes += ' ' + key;
-						}
-					}
-				}
-			}
-	
-			return classes.substr(1);
-		}
-	
-		if (typeof module !== 'undefined' && module.exports) {
-			module.exports = classNames;
-		} else if (true) {
-			// register as 'classnames', consistent with npm package name
-			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
-				return classNames;
-			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-		} else {
-			window.classNames = classNames;
-		}
-	}());
-
-
-/***/ },
-/* 256 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	var History = __webpack_require__(159).History;
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var SignoutButton = React.createClass({
-	  displayName: 'SignoutButton',
-	
-	  mixins: [History],
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  logout: function () {},
-	  handleSignout: function () {
-	    var that = this;
-	    $.ajax({
-	      method: 'DELETE',
-	      url: 'session/',
-	      success: function (resp) {
-	        //  $("content").hide().show(0);
-	        window.location.replace(window.location.origin);
-	      },
-	      error: function (xhr, ajaxOptions, thrownError) {
-	        // debugger;
-	        // that.history.pushState(null, "/");
-	      }
-	    });
-	  },
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      { className: 'header-bar-signout-button' },
-	      React.createElement(
-	        'button',
-	        { onClick: this.handleSignout },
-	        'Sign Out'
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = SignoutButton;
-
-/***/ },
-/* 257 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	
-	var ApiUtil = __webpack_require__(235);
-	var UserProfileUserInfo = __webpack_require__(258);
-	var NewPost = __webpack_require__(252);
-	var UserStore = __webpack_require__(233);
-	var FriendsPane = __webpack_require__(259);
-	var FollowButton = __webpack_require__(260);
-	var UnfollowButton = __webpack_require__(262);
-	var Images = __webpack_require__(263);
-	var ImagesBody = __webpack_require__(292);
-	var ReactCSSTransitionGroup = __webpack_require__(245);
-	var FollowStore = __webpack_require__(261);
-	
-	function _getRelevantPosts(userId) {
-	  return PostStore.getByUserId(userId);
-	}
-	
-	function _getApplicableUser(currentProfileUserId) {
-	  var user = UserStore.findUser(currentProfileUserId);
-	  return user;
-	}
-	
-	var UserProfile = React.createClass({
-	  displayName: 'UserProfile',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  getInitialState: function () {
-	    var user_id = this.props.routeParams.userId;
-	    return {
-	      user_id: user_id,
-	      posts: _getRelevantPosts(user_id),
-	      user: {},
-	      showing: "posts",
-	      nothing: {}
-	    };
-	  },
-	  componentDidMount: function () {
-	    //ApiUtil to fetch users
-	
-	    ApiUtil.fetchPosts();
-	    ApiUtil.fetchUsers();
-	    ApiUtil.fetchImages();
-	    ApiUtil.fetchFollows();
-	    ApiUtil.fetchImageComments();
-	    //Add listener to update state
-	    this.postListener = PostStore.addListener(this._postsChanged);
-	    this.userListener = UserStore.addListener(this._usersChanged);
-	    this.followListener = FollowStore.addListener(this._followsChanged);
-	  },
-	  componentWillUnmount: function () {
-	    this.postListener.remove();
-	    this.userListener.remove();
-	    this.followListener.remove();
-	  },
-	  //Fixes navigating to new user id
-	  componentWillReceiveProps: function (newProps) {
-	    var userId = this.props.routeParams.userId;
-	    this.setState({ user_id: userId, user: UserStore.findUser(userId) });
-	    ApiUtil.fetchPosts();
-	  },
-	
-	  _postsChanged: function () {
-	    this.setState({ posts: _getRelevantPosts(this.state.user_id) });
-	    window.scrollTo(0, 0);
-	  },
-	
-	  _usersChanged: function () {
-	    this.setState({ user: _getApplicableUser(this.state.user_id) });
-	    window.scrollTo(0, 0);
-	  },
-	  _followsChanged: function () {
-	    this.setState({ nothing: {} });
-	  },
-	  _renderPicturePage: function () {
-	    return React.createElement(
-	      'div',
-	      { className: 'user-profile-picture-content' },
-	      React.createElement(
-	        'button',
-	        { onClick: this._setPostsPage, className: 'return-to-profile' },
-	        'Return to Profile'
-	      ),
-	      React.createElement(ImagesBody, { user: this.state.user.id })
-	    );
-	  },
-	  _renderPostsPage: function () {
-	    var Posts = this.state.posts.map(function (post) {
-	      return React.createElement(Post, { key: post.id, post: post });
-	    });
-	
-	    return Posts;
-	  },
-	  _setPicturePage: function () {
-	    this.setState({ showing: "pictures" });
-	  },
-	  _setPostsPage: function () {
-	    this.setState({ showing: "posts" });
-	  },
-	  followButtonLogic: function () {
-	    var follows = FollowStore.all();
-	    var profile_user = this.state.user;
-	    var current_user = UserStore.getCurrentUser();
-	
-	    if (!this.state.user.id) {
-	      return false;
-	    }
-	    var following = false;
-	    var that = this;
-	
-	    follows.forEach(function (follow) {
-	      if (follow.followed_user_id === that.state.user.id && follow.author_id === current_user.id) {
-	        following = true;
-	      }
-	    });
-	
-	    return following;
-	  },
-	
-	  // <div>
-	  //   <FollowButton user={this.state.user} />
-	  // </div>
-	
-	  render: function () {
-	    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
-	    var placeholder = this.followButtonLogic();
-	    var followButton;
-	
-	    if (placeholder === true) {
-	      followButton = React.createElement(UnfollowButton, { user: this.state.user });
-	    } else {
-	      followButton = React.createElement(FollowButton, { user: this.state.user });
-	    }
-	
-	    if (this.state.showing === "posts") {
-	      var content = this._renderPostsPage();
-	    } else if (this.state.showing === "pictures") {
-	      var content = this._renderPicturePage();
-	    }
-	
-	    return React.createElement(
-	      ReactCSSTransitionGroup,
-	      { transitionName: 'example',
-	        transitionAppear: true,
-	        transitionAppearTimeout: 500,
-	        transitionEnterTimeout: 500,
-	        transitionLeaveTimeout: 500 },
-	      React.createElement(
-	        'div',
-	        { className: 'user-profile' },
-	        React.createElement(
-	          'div',
-	          { className: 'user-profile-info' },
-	          React.createElement(
-	            'div',
-	            null,
-	            React.createElement(UserProfileUserInfo, { userId: this.state.user_id, user: this.state.user })
-	          ),
-	          React.createElement(
-	            'div',
-	            null,
-	            React.createElement(FriendsPane, { user: this.state.user })
-	          ),
-	          React.createElement(
-	            'div',
-	            null,
-	            followButton
-	          ),
-	          React.createElement(
-	            'div',
-	            null,
-	            React.createElement(Images, { user: this.state.user.id }),
-	            React.createElement(
-	              'button',
-	              { className: 'button', onClick: this._setPicturePage },
-	              'View All Picture'
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'user-profile-new-post' },
-	          React.createElement(NewPost, { targetUserId: this.state.user.id })
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'user-profile-content' },
-	          content
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = UserProfile;
-
-/***/ },
-/* 258 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var UserProfileUserInfo = React.createClass({
-	  displayName: 'UserProfileUserInfo',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  _getProfilePic: function () {
-	    if (this.props.user.profile_image) {
-	      var profileLocation = this.buildUrl(this.props.user.profile_image);
-	    } else {
-	      var profileLocation = this.buildUrl("lifebook_default_pic");
-	    }
-	    return profileLocation;
-	  },
-	  buildUrl: function (image_path) {
-	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_168,w_168/v1450463928/" + image_path;
-	    return url;
-	  },
-	
-	  render: function () {
-	    //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'h2',
-	        null,
-	        'User Profile User Info'
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'profile-pic' },
-	        React.createElement('img', { src: this._getProfilePic() })
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.props.user.real_name
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.props.user.age
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.props.user.location
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.props.user.email
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = UserProfileUserInfo;
-
-/***/ },
-/* 259 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	var History = __webpack_require__(159).History;
-	var ApiUtil = __webpack_require__(235);
-	
-	var FriendsPane = React.createClass({
-	  displayName: 'FriendsPane',
-	
-	  mixins: [History],
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  getInitialState: function () {
-	    return { user: {} };
-	  },
-	  componentWillReceiveProps: function (newProps) {
-	    this.setState({ user: newProps.user });
-	  },
-	  handleAuthorClick: function (destinationId) {
-	    this.history.pushState(null, "user/" + destinationId);
-	    window.scrollTo(0, 0);
-	  },
-	
-	  render: function () {
-	    var that = this;
-	    if (!this.state.user.usersFollowing) {
-	      var users = React.createElement('div', null);
-	    } else {
-	      var users = this.state.user.usersFollowing.map(function (user) {
-	        return React.createElement(
-	          'div',
-	          { key: user.id, onClick: that.handleAuthorClick.bind(null, user.id) },
-	          user.real_name
-	        );
-	      });
-	    }
-	
-	    return React.createElement(
-	      'div',
-	      { className: 'profile-friends-pane' },
-	      React.createElement(
-	        'h2',
-	        null,
-	        'Following'
-	      ),
-	      users
-	    );
-	  }
-	});
-	
-	module.exports = FriendsPane;
-
-/***/ },
-/* 260 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	var FollowStore = __webpack_require__(261);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var FollowButton = React.createClass({
-	  displayName: 'FollowButton',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  // getInitialState: function(){
-	  //   ApiUtil.fetchFollows();
-	  //   return {user: {}, isFollowing:{}, newProps:{}};
-	  // },
-	  // componentDidMount: function(){
-	  //   this.followListener = FollowStore.addListener(this._followsChanged);
-	  // },
-	  // _followsChanged: function(){
-	  //   debugger
-	  //   this.setState({
-	  //     user: UserStore.findUser(this.state.user.id),
-	  //     isFollowing: this.decideIfFollowOrUnfollow({user: UserStore.findUser(this.state.user.id)})
-	  //   });
-	  // },
-	  // componentWillUnmount: function(){
-	  //   this.followListener.remove();
-	  // },
-	  // componentWillReceiveProps: function (newProps) {
-	  //   debugger;
-	  //   this.setState({user: newProps.user,
-	  //                 isFollowing: this.decideIfFollowOrUnfollow(newProps)
-	  //
-	  //                   });
-	  // },
-	  // old handleSubmit
-	  // handleSubmit: function(event){
-	  //   event.preventDefault();
-	  //
-	  //   var follow = {followed_user_id: this.state.user.id};
-	  //   ApiUtil.createFollow(follow);
-	  // },
-	  // decideIfFollowOrUnfollow: function(newProps){
-	  //   debugger
-	  //   if (!newProps.user.id){
-	  //     return false;
-	  //   }
-	  //   var profile_user = newProps.user;
-	  //   var current_user = UserStore.getCurrentUser();
-	  //
-	  //   var followingList = current_user.usersFollowing;
-	  //   var following = false;
-	  //   var that = this;
-	  //
-	  //   followingList.forEach(function(user){
-	  //     if (user.id === that.state.user.id){
-	  //       following = true;
-	  //     }
-	  //   });
-	  //   return following;
-	  //
-	  // },
-	  handleFollowSubmit: function (event) {
-	    event.preventDefault();
-	    var follow = { followed_user_id: this.props.user.id };
-	    ApiUtil.createFollow(follow);
-	  },
-	  // handleUnfollowSubmit: function(event){
-	  //   event.preventDefault();
-	  //   var current_user = UserStore.getCurrentUser();
-	  //
-	  //   var followParams = {followed_user_id: this.state.user.id, author_id: current_user.id };
-	  //
-	  //   var follow = FollowStore.getByFollowParties(followParams);
-	  //
-	  //   ApiUtil.deleteFollow(follow);
-	  //
-	  //   // going to need to find the follow by the combo, then pass that id to destroy
-	  //   // ApiUtil.deleteFollow(follow);
-	  // },
-	
-	  render: function () {
-	    var properButton;
-	
-	    properButton = React.createElement(
-	      'button',
-	      { className: 'button', onClick: this.handleFollowSubmit },
-	      'Follow'
-	    );
-	
-	    return React.createElement(
-	      'div',
-	      null,
-	      properButton
-	    );
-	  }
-	});
-	
-	module.exports = FollowButton;
-
-/***/ },
-/* 261 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(212).Store;
-	var FollowConstants = __webpack_require__(237);
-	var AppDispatcher = __webpack_require__(230);
-	
-	var FollowStore = new Store(AppDispatcher);
-	
-	var _follows = [];
-	
-	var resetFollows = function (follows) {
-	  _follows = follows.slice(0);
-	};
-	
-	var addNewFollow = function (newFollow) {
-	  _follows.push(newFollow);
-	};
-	
-	FollowStore.all = function () {
-	  return _follows.slice(0);
-	};
-	
-	FollowStore.getByFollowParties = function (followParties) {
-	  var author_id = parseInt(followParties.author_id);
-	  var followed_user_id = parseInt(followParties.followed_user_id);
-	  var follows = FollowStore.all();
-	  var relevantFollow = {};
-	
-	  follows.forEach(function (follow) {
-	
-	    if (follow.author_id === author_id && follow.followed_user_id === followed_user_id) {
-	      relevantFollow = follow;
-	    }
-	  });
-	
-	  return relevantFollow;
-	};
-	
-	FollowStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case UserConstants.FOLLOW_RECEIVED:
-	      // var result = addNewFollow(payload.newFollow);
-	      var result = resetFollows(payload.follow);
-	      FollowStore.__emitChange();
-	      break;
-	    case FollowConstants.FOLLOWS_RECEIVED:
-	      var result = resetFollows(payload.follows);
-	      FollowStore.__emitChange();
-	      break;
-	    case FollowConstants.FOLLOW_REMOVED:
-	      var result = resetFollows(payload.follows);
-	      FollowStore.__emitChange();
-	  }
-	};
-	
-	module.exports = FollowStore;
-
-/***/ },
-/* 262 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	var FollowStore = __webpack_require__(261);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var UnfollowButton = React.createClass({
-	  displayName: 'UnfollowButton',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  // getInitialState: function(){
-	  //   ApiUtil.fetchFollows();
-	  //   return {user: {}, isFollowing:{}, newProps:{}};
-	  // },
-	  // componentDidMount: function(){
-	  //   this.followListener = FollowStore.addListener(this._followsChanged);
-	  // },
-	  // _followsChanged: function(){
-	  //   debugger
-	  //   this.setState({
-	  //     user: UserStore.findUser(this.state.user.id),
-	  //     isFollowing: this.decideIfFollowOrUnfollow({user: UserStore.findUser(this.state.user.id)})
-	  //   });
-	  // },
-	  // componentWillUnmount: function(){
-	  //   this.followListener.remove();
-	  // },
-	  // componentWillReceiveProps: function (newProps) {
-	  //   debugger;
-	  //   this.setState({user: newProps.user,
-	  //                 isFollowing: this.decideIfFollowOrUnfollow(newProps)
-	  //
-	  //                   });
-	  // },
-	  // old handleSubmit
-	  // handleSubmit: function(event){
-	  //   event.preventDefault();
-	  //
-	  //   var follow = {followed_user_id: this.state.user.id};
-	  //   ApiUtil.createFollow(follow);
-	  // },
-	  // decideIfFollowOrUnfollow: function(newProps){
-	  //   debugger
-	  //   if (!newProps.user.id){
-	  //     return false;
-	  //   }
-	  //   var profile_user = newProps.user;
-	  //   var current_user = UserStore.getCurrentUser();
-	  //
-	  //   var followingList = current_user.usersFollowing;
-	  //   var following = false;
-	  //   var that = this;
-	  //
-	  //   followingList.forEach(function(user){
-	  //     if (user.id === that.state.user.id){
-	  //       following = true;
-	  //     }
-	  //   });
-	  //   return following;
-	  //
-	  // },
-	  handleUnfollowSubmit: function (event) {
-	    event.preventDefault();
-	    var current_user = UserStore.getCurrentUser();
-	
-	    var followParams = { followed_user_id: this.props.user.id, author_id: current_user.id };
-	
-	    var follow = FollowStore.getByFollowParties(followParams);
-	
-	    ApiUtil.deleteFollow(follow);
-	
-	    // going to need to find the follow by the combo, then pass that id to destroy
-	    // ApiUtil.deleteFollow(follow);
-	  },
-	
-	  render: function () {
-	    var properButton;
-	
-	    properButton = React.createElement(
-	      'button',
-	      { className: 'button', onClick: this.handleUnfollowSubmit },
-	      'Unfollow'
-	    );
-	
-	    return React.createElement(
-	      'div',
-	      null,
-	      properButton
-	    );
-	  }
-	});
-	
-	module.exports = UnfollowButton;
-
-/***/ },
-/* 263 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Really the Image Pane, includes the individual images and Upload Button
-	
-	var React = __webpack_require__(1),
-	    ReactDOM = __webpack_require__(158),
-	    UploadButton = __webpack_require__(264),
-	    ImageModal = __webpack_require__(265),
-	    UserStore = __webpack_require__(233),
-	    ImageStore = __webpack_require__(286),
-	    LikeStore = __webpack_require__(296),
-	    ApiUtil = __webpack_require__(235),
-	    Modal = __webpack_require__(266),
-	    ImageComments = __webpack_require__(288),
-	    NewImageComment = __webpack_require__(290),
-	    ImageLikeButton = __webpack_require__(298),
-	    ProfilePicChangeButton = __webpack_require__(291),
-	    ImageModal = __webpack_require__(265);
-	
-	var customStyles = {
-	  overlay: {
-	    position: 'fixed',
-	    backgroundColor: 'rgba(255, 255, 255, 0.90)',
-	    zIndex: 5
-	  },
-	  content: {
-	    top: '50%',
-	    left: '50%',
-	    right: 'auto',
-	    bottom: 'auto',
-	    height: '600px',
-	    width: '1200px',
-	    marginRight: '-50%',
-	    transform: 'translate(-50%, -50%)'
-	  }
-	};
-	
-	var Images = React.createClass({
-	  displayName: 'Images',
-	
-	  getInitialState: function () {
-	    ApiUtil.fetchImages();
-	    this.imageListener = ImageStore.addListener(this._imagesChanged);
-	    this.likesListener = LikeStore.addListener(this._likesChanged);
-	
-	    return { images: [], user: this.props.user, modalIsOpen: false, selectedImage: "" };
-	  },
-	  _likesChanged: function () {
-	    this.forceUpdate();
-	  },
-	  openModal: function (event) {
-	
-	    this.setState({ modalIsOpen: true,
-	      selectedImage: event });
-	  },
-	
-	  closeModal: function () {
-	    this.setState({ modalIsOpen: false, selectedImage: "" });
-	  },
-	  componentWillReceiveProps: function (newProps) {
-	    ApiUtil.fetchImages();
-	    this.setState({ user: newProps.user });
-	    this.setState({ images: ImageStore.getByUserIdOnlyFirstNine(newProps.user) });
-	  },
-	  _imagesChanged: function () {
-	    this.setState({ images: ImageStore.getByUserIdOnlyFirstNine(this.state.user) });
-	  },
-	  componentWillUnmount: function () {
-	    this.imageListener.remove();
-	  },
-	  buildUrl: function (image_path) {
-	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + image_path;
-	    return url;
-	  },
-	  buildModalUrl: function (image_path) {
-	    var url = "http://res.cloudinary.com/lifebook/image/upload/v1450463928/" + image_path;
-	    return url;
-	  },
-	  modal: function () {
-	    return;
-	  },
-	  likeButtonLogic: function (image) {
-	    var likes = LikeStore.all();
-	    var current_image = image;
-	    var current_user = UserStore.getCurrentUser();
-	
-	    if (!current_image.id) {
-	      return false;
-	    }
-	    var liking = false;
-	    var that = this;
-	
-	    likes.forEach(function (like) {
-	      if (like.post_id === current_image.id && like.author_id === current_user.id && like.like_type === "image") {
-	        liking = like;
-	      }
-	    });
-	
-	    return liking;
-	  },
-	  _buttonRenderFunction: function (image) {
-	    var placeholder = this.likeButtonLogic(image);
-	    var likeButton;
-	    var currentUser = UserStore.getCurrentUser();
-	
-	    if (placeholder) {
-	      likeButton = React.createElement(
-	        'div',
-	        { className: 'like-button' },
-	        React.createElement(ImageLikeButton, { currentUser: currentUser,
-	          image: image,
-	          like: placeholder })
-	      );
-	    } else {
-	      likeButton = React.createElement(
-	        'div',
-	        { className: 'like-button' },
-	        React.createElement(ImageLikeButton, { currentUser: currentUser,
-	          image: image,
-	          like: placeholder })
-	      );
-	    }
-	
-	    return likeButton;
-	  },
-	
-	  render: function () {
-	    var that = this;
-	    if (this.state.images) {
-	      var images = this.state.images.map((function (image) {
-	        return React.createElement(
-	          'div',
-	          { key: image.id,
-	            className: 'pictures-in-pane' },
-	          React.createElement('img', { onClick: this.openModal.bind(null, image),
-	            src: that.buildUrl(image.image_path) })
-	        );
-	      }).bind(this));
-	    } else {
-	      var images = React.createElement(
-	        'div',
-	        null,
-	        ' no images'
-	      );
-	    }
-	
-	    return React.createElement(
-	      'div',
-	      { className: 'profile-images-pane' },
-	      images,
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'div',
-	          { className: 'image-modal-outside' },
-	          React.createElement(
-	            Modal,
-	            {
-	              isOpen: this.state.modalIsOpen,
-	              onRequestClose: this.closeModal,
-	              style: customStyles,
-	              className: 'image-modal' },
-	            React.createElement(
-	              'h2',
-	              null,
-	              'Picture'
-	            ),
-	            React.createElement(
-	              'button',
-	              { onClick: this.closeModal },
-	              'close'
-	            ),
-	            React.createElement(ProfilePicChangeButton, { image: this.state.selectedImage }),
-	            that._buttonRenderFunction(this.state.selectedImage),
-	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage.image_path), className: 'image-modal-image' }),
-	            React.createElement(NewImageComment, { image: this.state.selectedImage, className: 'image-modal-new-comments' }),
-	            React.createElement(ImageComments, { image: this.state.selectedImage, className: 'image-modal-image-comments' })
-	          )
-	        )
-	      ),
-	      React.createElement(UploadButton, null)
-	    );
-	  }
-	});
-	
-	module.exports = Images;
-
-/***/ },
-/* 264 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var ApiUtil = __webpack_require__(235);
-	
-	var UploadButton = React.createClass({
-	  displayName: "UploadButton",
-	
-	  upload: function (e) {
-	    e.preventDefault();
-	    cloudinary.openUploadWidget(CLOUDINARY_OPTIONS, (function (error, results) {
-	      if (!error) {
-	        ApiUtil.createImage(results[0]);
-	      }
-	    }).bind(this));
-	  },
-	  render: function () {
-	    return React.createElement(
-	      "div",
-	      { className: "upload-form" },
-	      React.createElement(
-	        "button",
-	        { onClick: this.upload },
-	        "Upload new image!"
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = UploadButton;
-	
-	// the postImage function will no longet exist.  Needs to be a store action I believe
-
-/***/ },
-/* 265 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	var Modal = __webpack_require__(266);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var customStyles = {
-	  content: {
-	    top: '50%',
-	    left: '50%',
-	    right: 'auto',
-	    bottom: 'auto',
-	    marginRight: '-50%',
-	    transform: 'translate(-50%, -50%)'
-	  }
-	};
-	
-	var ImageModal = React.createClass({
-	  displayName: 'ImageModal',
-	
-	  getInitialState: function () {
-	
-	    return { modalIsOpen: false };
-	  },
-	
-	  openModal: function () {
-	    this.setState({ modalIsOpen: true });
-	  },
-	
-	  closeModal: function () {
-	    this.setState({ modalIsOpen: false });
-	  },
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        Modal,
-	        {
-	          isOpen: this.state.modalIsOpen,
-	          onRequestClose: this.closeModal,
-	          style: customStyles },
-	        React.createElement(
-	          'h2',
-	          null,
-	          'Hello'
-	        ),
-	        React.createElement(
-	          'button',
-	          { onClick: this.closeModal },
-	          'close'
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          'I am a modal'
-	        ),
-	        React.createElement(
-	          'form',
-	          null,
-	          React.createElement('input', null),
-	          React.createElement(
-	            'button',
-	            null,
-	            'tab navigation'
-	          ),
-	          React.createElement(
-	            'button',
-	            null,
-	            'stays'
-	          ),
-	          React.createElement(
-	            'button',
-	            null,
-	            'inside'
-	          ),
-	          React.createElement(
-	            'button',
-	            null,
-	            'the modal'
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = ImageModal;
-
-/***/ },
-/* 266 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(267);
-	
-
-
-/***/ },
-/* 267 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {var React = __webpack_require__(1);
-	var ReactDOM = __webpack_require__(158);
-	var ExecutionEnvironment = __webpack_require__(268);
-	var ModalPortal = React.createFactory(__webpack_require__(269));
-	var ariaAppHider = __webpack_require__(284);
-	var elementClass = __webpack_require__(285);
-	var renderSubtreeIntoContainer = __webpack_require__(158).unstable_renderSubtreeIntoContainer;
-	
-	var SafeHTMLElement = ExecutionEnvironment.canUseDOM ? window.HTMLElement : {};
-	
-	var Modal = module.exports = React.createClass({
-	
-	  displayName: 'Modal',
-	  statics: {
-	    setAppElement: ariaAppHider.setElement,
-	    injectCSS: function() {
-	      "production" !== process.env.NODE_ENV
-	        && console.warn('React-Modal: injectCSS has been deprecated ' +
-	                        'and no longer has any effect. It will be removed in a later version');
-	    }
-	  },
-	
-	  propTypes: {
-	    isOpen: React.PropTypes.bool.isRequired,
-	    style: React.PropTypes.shape({
-	      content: React.PropTypes.object,
-	      overlay: React.PropTypes.object
-	    }),
-	    appElement: React.PropTypes.instanceOf(SafeHTMLElement),
-	    onRequestClose: React.PropTypes.func,
-	    closeTimeoutMS: React.PropTypes.number,
-	    ariaHideApp: React.PropTypes.bool
-	  },
-	
-	  getDefaultProps: function () {
-	    return {
-	      isOpen: false,
-	      ariaHideApp: true,
-	      closeTimeoutMS: 0
-	    };
-	  },
-	
-	  componentDidMount: function() {
-	    this.node = document.createElement('div');
-	    this.node.className = 'ReactModalPortal';
-	    document.body.appendChild(this.node);
-	    this.renderPortal(this.props);
-	  },
-	
-	  componentWillReceiveProps: function(newProps) {
-	    this.renderPortal(newProps);
-	  },
-	
-	  componentWillUnmount: function() {
-	    ReactDOM.unmountComponentAtNode(this.node);
-	    document.body.removeChild(this.node);
-	  },
-	
-	  renderPortal: function(props) {
-	    if (props.isOpen) {
-	      elementClass(document.body).add('ReactModal__Body--open');
-	    } else {
-	      elementClass(document.body).remove('ReactModal__Body--open');
-	    }
-	
-	    if (props.ariaHideApp) {
-	      ariaAppHider.toggle(props.isOpen, props.appElement);
-	    }
-	    sanitizeProps(props);
-	    this.portal = renderSubtreeIntoContainer(this, ModalPortal(props), this.node);
-	  },
-	
-	  render: function () {
-	    return React.DOM.noscript();
-	  }
-	});
-	
-	function sanitizeProps(props) {
-	  delete props.ref;
-	}
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
-
-/***/ },
-/* 268 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
-	  Copyright (c) 2015 Jed Watson.
-	  Based on code that is Copyright 2013-2015, Facebook, Inc.
-	  All rights reserved.
-	*/
-	
-	(function () {
-		'use strict';
-	
-		var canUseDOM = !!(
-			typeof window !== 'undefined' &&
-			window.document &&
-			window.document.createElement
-		);
-	
-		var ExecutionEnvironment = {
-	
-			canUseDOM: canUseDOM,
-	
-			canUseWorkers: typeof Worker !== 'undefined',
-	
-			canUseEventListeners:
-				canUseDOM && !!(window.addEventListener || window.attachEvent),
-	
-			canUseViewport: canUseDOM && !!window.screen
-	
-		};
-	
-		if (true) {
-			!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
-				return ExecutionEnvironment;
-			}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-		} else if (typeof module !== 'undefined' && module.exports) {
-			module.exports = ExecutionEnvironment;
-		} else {
-			window.ExecutionEnvironment = ExecutionEnvironment;
-		}
-	
-	}());
-
-
-/***/ },
-/* 269 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var div = React.DOM.div;
-	var focusManager = __webpack_require__(270);
-	var scopeTab = __webpack_require__(272);
-	var Assign = __webpack_require__(273);
-	
-	
-	// so that our CSS is statically analyzable
-	var CLASS_NAMES = {
-	  overlay: {
-	    base: 'ReactModal__Overlay',
-	    afterOpen: 'ReactModal__Overlay--after-open',
-	    beforeClose: 'ReactModal__Overlay--before-close'
-	  },
-	  content: {
-	    base: 'ReactModal__Content',
-	    afterOpen: 'ReactModal__Content--after-open',
-	    beforeClose: 'ReactModal__Content--before-close'
-	  }
-	};
-	
-	var defaultStyles = {
-	  overlay: {
-	    position        : 'fixed',
-	    top             : 0,
-	    left            : 0,
-	    right           : 0,
-	    bottom          : 0,
-	    backgroundColor : 'rgba(255, 255, 255, 0.75)'
-	  },
-	  content: {
-	    position                : 'absolute',
-	    top                     : '40px',
-	    left                    : '40px',
-	    right                   : '40px',
-	    bottom                  : '40px',
-	    border                  : '1px solid #ccc',
-	    background              : '#fff',
-	    overflow                : 'auto',
-	    WebkitOverflowScrolling : 'touch',
-	    borderRadius            : '4px',
-	    outline                 : 'none',
-	    padding                 : '20px'
-	  }
-	};
-	
-	function stopPropagation(event) {
-	  event.stopPropagation();
-	}
-	
-	var ModalPortal = module.exports = React.createClass({
-	
-	  displayName: 'ModalPortal',
-	
-	  getDefaultProps: function() {
-	    return {
-	      style: {
-	        overlay: {},
-	        content: {}
-	      }
-	    };
-	  },
-	
-	  getInitialState: function() {
-	    return {
-	      afterOpen: false,
-	      beforeClose: false
-	    };
-	  },
-	
-	  componentDidMount: function() {
-	    // Focus needs to be set when mounting and already open
-	    if (this.props.isOpen) {
-	      this.setFocusAfterRender(true);
-	      this.open();
-	    }
-	  },
-	
-	  componentWillUnmount: function() {
-	    clearTimeout(this.closeTimer);
-	  },
-	
-	  componentWillReceiveProps: function(newProps) {
-	    // Focus only needs to be set once when the modal is being opened
-	    if (!this.props.isOpen && newProps.isOpen) {
-	      this.setFocusAfterRender(true);
-	      this.open();
-	    } else if (this.props.isOpen && !newProps.isOpen) {
-	      this.close();
-	    }
-	  },
-	
-	  componentDidUpdate: function () {
-	    if (this.focusAfterRender) {
-	      this.focusContent();
-	      this.setFocusAfterRender(false);
-	    }
-	  },
-	
-	  setFocusAfterRender: function (focus) {
-	    this.focusAfterRender = focus;
-	  },
-	
-	  open: function() {
-	    focusManager.setupScopedFocus(this.node);
-	    focusManager.markForFocusLater();
-	    this.setState({isOpen: true}, function() {
-	      this.setState({afterOpen: true});
-	    }.bind(this));
-	  },
-	
-	  close: function() {
-	    if (!this.ownerHandlesClose())
-	      return;
-	    if (this.props.closeTimeoutMS > 0)
-	      this.closeWithTimeout();
-	    else
-	      this.closeWithoutTimeout();
-	  },
-	
-	  focusContent: function() {
-	    this.refs.content.focus();
-	  },
-	
-	  closeWithTimeout: function() {
-	    this.setState({beforeClose: true}, function() {
-	      this.closeTimer = setTimeout(this.closeWithoutTimeout, this.props.closeTimeoutMS);
-	    }.bind(this));
-	  },
-	
-	  closeWithoutTimeout: function() {
-	    this.setState({
-	      afterOpen: false,
-	      beforeClose: false
-	    }, this.afterClose);
-	  },
-	
-	  afterClose: function() {
-	    focusManager.returnFocus();
-	    focusManager.teardownScopedFocus();
-	  },
-	
-	  handleKeyDown: function(event) {
-	    if (event.keyCode == 9 /*tab*/) scopeTab(this.refs.content, event);
-	    if (event.keyCode == 27 /*esc*/) this.requestClose();
-	  },
-	
-	  handleOverlayClick: function() {
-	    if (this.ownerHandlesClose())
-	      this.requestClose();
-	    else
-	      this.focusContent();
-	  },
-	
-	  requestClose: function() {
-	    if (this.ownerHandlesClose())
-	      this.props.onRequestClose();
-	  },
-	
-	  ownerHandlesClose: function() {
-	    return this.props.onRequestClose;
-	  },
-	
-	  shouldBeClosed: function() {
-	    return !this.props.isOpen && !this.state.beforeClose;
-	  },
-	
-	  buildClassName: function(which, additional) {
-	    var className = CLASS_NAMES[which].base;
-	    if (this.state.afterOpen)
-	      className += ' '+CLASS_NAMES[which].afterOpen;
-	    if (this.state.beforeClose)
-	      className += ' '+CLASS_NAMES[which].beforeClose;
-	    return additional ? className + ' ' + additional : className;
-	  },
-	
-	  render: function() {
-	    return this.shouldBeClosed() ? div() : (
-	      div({
-	        ref: "overlay",
-	        className: this.buildClassName('overlay', this.props.overlayClassName),
-	        style: Assign({}, defaultStyles.overlay, this.props.style.overlay || {}),
-	        onClick: this.handleOverlayClick
-	      },
-	        div({
-	          ref: "content",
-	          style: Assign({}, defaultStyles.content, this.props.style.content || {}),
-	          className: this.buildClassName('content', this.props.className),
-	          tabIndex: "-1",
-	          onClick: stopPropagation,
-	          onKeyDown: this.handleKeyDown
-	        },
-	          this.props.children
-	        )
-	      )
-	    );
-	  }
-	});
-
-
-/***/ },
-/* 270 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var findTabbable = __webpack_require__(271);
-	var modalElement = null;
-	var focusLaterElement = null;
-	var needToFocus = false;
-	
-	function handleBlur(event) {
-	  needToFocus = true;
-	}
-	
-	function handleFocus(event) {
-	  if (needToFocus) {
-	    needToFocus = false;
-	    if (!modalElement) {
-	      return;
-	    }
-	    // need to see how jQuery shims document.on('focusin') so we don't need the
-	    // setTimeout, firefox doesn't support focusin, if it did, we could focus
-	    // the element outside of a setTimeout. Side-effect of this implementation 
-	    // is that the document.body gets focus, and then we focus our element right 
-	    // after, seems fine.
-	    setTimeout(function() {
-	      if (modalElement.contains(document.activeElement))
-	        return;
-	      var el = (findTabbable(modalElement)[0] || modalElement);
-	      el.focus();
-	    }, 0);
-	  }
-	}
-	
-	exports.markForFocusLater = function() {
-	  focusLaterElement = document.activeElement;
-	};
-	
-	exports.returnFocus = function() {
-	  try {
-	    focusLaterElement.focus();
-	  }
-	  catch (e) {
-	    console.warn('You tried to return focus to '+focusLaterElement+' but it is not in the DOM anymore');
-	  }
-	  focusLaterElement = null;
-	};
-	
-	exports.setupScopedFocus = function(element) {
-	  modalElement = element;
-	
-	  if (window.addEventListener) {
-	    window.addEventListener('blur', handleBlur, false);
-	    document.addEventListener('focus', handleFocus, true);
-	  } else {
-	    window.attachEvent('onBlur', handleBlur);
-	    document.attachEvent('onFocus', handleFocus);
-	  }
-	};
-	
-	exports.teardownScopedFocus = function() {
-	  modalElement = null;
-	
-	  if (window.addEventListener) {
-	    window.removeEventListener('blur', handleBlur);
-	    document.removeEventListener('focus', handleFocus);
-	  } else {
-	    window.detachEvent('onBlur', handleBlur);
-	    document.detachEvent('onFocus', handleFocus);
-	  }
-	};
-	
-	
-
-
-/***/ },
-/* 271 */
-/***/ function(module, exports) {
-
-	/*!
-	 * Adapted from jQuery UI core
-	 *
-	 * http://jqueryui.com
-	 *
-	 * Copyright 2014 jQuery Foundation and other contributors
-	 * Released under the MIT license.
-	 * http://jquery.org/license
-	 *
-	 * http://api.jqueryui.com/category/ui-core/
-	 */
-	
-	function focusable(element, isTabIndexNotNaN) {
-	  var nodeName = element.nodeName.toLowerCase();
-	  return (/input|select|textarea|button|object/.test(nodeName) ?
-	    !element.disabled :
-	    "a" === nodeName ?
-	      element.href || isTabIndexNotNaN :
-	      isTabIndexNotNaN) && visible(element);
-	}
-	
-	function hidden(el) {
-	  return (el.offsetWidth <= 0 && el.offsetHeight <= 0) ||
-	    el.style.display === 'none';
-	}
-	
-	function visible(element) {
-	  while (element) {
-	    if (element === document.body) break;
-	    if (hidden(element)) return false;
-	    element = element.parentNode;
-	  }
-	  return true;
-	}
-	
-	function tabbable(element) {
-	  var tabIndex = element.getAttribute('tabindex');
-	  if (tabIndex === null) tabIndex = undefined;
-	  var isTabIndexNaN = isNaN(tabIndex);
-	  return (isTabIndexNaN || tabIndex >= 0) && focusable(element, !isTabIndexNaN);
-	}
-	
-	function findTabbableDescendants(element) {
-	  return [].slice.call(element.querySelectorAll('*'), 0).filter(function(el) {
-	    return tabbable(el);
-	  });
-	}
-	
-	module.exports = findTabbableDescendants;
-	
-
-
-/***/ },
-/* 272 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var findTabbable = __webpack_require__(271);
-	
-	module.exports = function(node, event) {
-	  var tabbable = findTabbable(node);
-	  var finalTabbable = tabbable[event.shiftKey ? 0 : tabbable.length - 1];
-	  var leavingFinalTabbable = (
-	    finalTabbable === document.activeElement ||
-	    // handle immediate shift+tab after opening with mouse
-	    node === document.activeElement
-	  );
-	  if (!leavingFinalTabbable) return;
-	  event.preventDefault();
-	  var target = tabbable[event.shiftKey ? tabbable.length - 1 : 0];
-	  target.focus();
-	};
-
-
-/***/ },
-/* 273 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * lodash 3.2.0 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	var baseAssign = __webpack_require__(274),
-	    createAssigner = __webpack_require__(280),
-	    keys = __webpack_require__(276);
-	
-	/**
-	 * A specialized version of `_.assign` for customizing assigned values without
-	 * support for argument juggling, multiple sources, and `this` binding `customizer`
-	 * functions.
-	 *
-	 * @private
-	 * @param {Object} object The destination object.
-	 * @param {Object} source The source object.
-	 * @param {Function} customizer The function to customize assigned values.
-	 * @returns {Object} Returns `object`.
-	 */
-	function assignWith(object, source, customizer) {
-	  var index = -1,
-	      props = keys(source),
-	      length = props.length;
-	
-	  while (++index < length) {
-	    var key = props[index],
-	        value = object[key],
-	        result = customizer(value, source[key], key, object, source);
-	
-	    if ((result === result ? (result !== value) : (value === value)) ||
-	        (value === undefined && !(key in object))) {
-	      object[key] = result;
-	    }
-	  }
-	  return object;
-	}
-	
-	/**
-	 * Assigns own enumerable properties of source object(s) to the destination
-	 * object. Subsequent sources overwrite property assignments of previous sources.
-	 * If `customizer` is provided it is invoked to produce the assigned values.
-	 * The `customizer` is bound to `thisArg` and invoked with five arguments:
-	 * (objectValue, sourceValue, key, object, source).
-	 *
-	 * **Note:** This method mutates `object` and is based on
-	 * [`Object.assign`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.assign).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @alias extend
-	 * @category Object
-	 * @param {Object} object The destination object.
-	 * @param {...Object} [sources] The source objects.
-	 * @param {Function} [customizer] The function to customize assigned values.
-	 * @param {*} [thisArg] The `this` binding of `customizer`.
-	 * @returns {Object} Returns `object`.
-	 * @example
-	 *
-	 * _.assign({ 'user': 'barney' }, { 'age': 40 }, { 'user': 'fred' });
-	 * // => { 'user': 'fred', 'age': 40 }
-	 *
-	 * // using a customizer callback
-	 * var defaults = _.partialRight(_.assign, function(value, other) {
-	 *   return _.isUndefined(value) ? other : value;
-	 * });
-	 *
-	 * defaults({ 'user': 'barney' }, { 'age': 36 }, { 'user': 'fred' });
-	 * // => { 'user': 'barney', 'age': 36 }
-	 */
-	var assign = createAssigner(function(object, source, customizer) {
-	  return customizer
-	    ? assignWith(object, source, customizer)
-	    : baseAssign(object, source);
-	});
-	
-	module.exports = assign;
-
-
-/***/ },
-/* 274 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * lodash 3.2.0 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	var baseCopy = __webpack_require__(275),
-	    keys = __webpack_require__(276);
-	
-	/**
-	 * The base implementation of `_.assign` without support for argument juggling,
-	 * multiple sources, and `customizer` functions.
-	 *
-	 * @private
-	 * @param {Object} object The destination object.
-	 * @param {Object} source The source object.
-	 * @returns {Object} Returns `object`.
-	 */
-	function baseAssign(object, source) {
-	  return source == null
-	    ? object
-	    : baseCopy(source, keys(source), object);
-	}
-	
-	module.exports = baseAssign;
-
-
-/***/ },
-/* 275 */
-/***/ function(module, exports) {
-
-	/**
-	 * lodash 3.0.1 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	
-	/**
-	 * Copies properties of `source` to `object`.
-	 *
-	 * @private
-	 * @param {Object} source The object to copy properties from.
-	 * @param {Array} props The property names to copy.
-	 * @param {Object} [object={}] The object to copy properties to.
-	 * @returns {Object} Returns `object`.
-	 */
-	function baseCopy(source, props, object) {
-	  object || (object = {});
-	
-	  var index = -1,
-	      length = props.length;
-	
-	  while (++index < length) {
-	    var key = props[index];
-	    object[key] = source[key];
-	  }
-	  return object;
-	}
-	
-	module.exports = baseCopy;
-
-
-/***/ },
-/* 276 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * lodash 3.1.2 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	var getNative = __webpack_require__(277),
-	    isArguments = __webpack_require__(278),
-	    isArray = __webpack_require__(279);
-	
-	/** Used to detect unsigned integer values. */
-	var reIsUint = /^\d+$/;
-	
-	/** Used for native method references. */
-	var objectProto = Object.prototype;
-	
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-	
-	/* Native method references for those with the same name as other `lodash` methods. */
-	var nativeKeys = getNative(Object, 'keys');
-	
-	/**
-	 * Used as the [maximum length](http://ecma-international.org/ecma-262/6.0/#sec-number.max_safe_integer)
-	 * of an array-like value.
-	 */
-	var MAX_SAFE_INTEGER = 9007199254740991;
-	
-	/**
-	 * The base implementation of `_.property` without support for deep paths.
-	 *
-	 * @private
-	 * @param {string} key The key of the property to get.
-	 * @returns {Function} Returns the new function.
-	 */
-	function baseProperty(key) {
-	  return function(object) {
-	    return object == null ? undefined : object[key];
-	  };
-	}
-	
-	/**
-	 * Gets the "length" property value of `object`.
-	 *
-	 * **Note:** This function is used to avoid a [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792)
-	 * that affects Safari on at least iOS 8.1-8.3 ARM64.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {*} Returns the "length" value.
-	 */
-	var getLength = baseProperty('length');
-	
-	/**
-	 * Checks if `value` is array-like.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
-	 */
-	function isArrayLike(value) {
-	  return value != null && isLength(getLength(value));
-	}
-	
-	/**
-	 * Checks if `value` is a valid array-like index.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
-	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
-	 */
-	function isIndex(value, length) {
-	  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
-	  length = length == null ? MAX_SAFE_INTEGER : length;
-	  return value > -1 && value % 1 == 0 && value < length;
-	}
-	
-	/**
-	 * Checks if `value` is a valid array-like length.
-	 *
-	 * **Note:** This function is based on [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
-	 */
-	function isLength(value) {
-	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-	}
-	
-	/**
-	 * A fallback implementation of `Object.keys` which creates an array of the
-	 * own enumerable property names of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function shimKeys(object) {
-	  var props = keysIn(object),
-	      propsLength = props.length,
-	      length = propsLength && object.length;
-	
-	  var allowIndexes = !!length && isLength(length) &&
-	    (isArray(object) || isArguments(object));
-	
-	  var index = -1,
-	      result = [];
-	
-	  while (++index < propsLength) {
-	    var key = props[index];
-	    if ((allowIndexes && isIndex(key, length)) || hasOwnProperty.call(object, key)) {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-	
-	/**
-	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
-	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
-	 * @example
-	 *
-	 * _.isObject({});
-	 * // => true
-	 *
-	 * _.isObject([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObject(1);
-	 * // => false
-	 */
-	function isObject(value) {
-	  // Avoid a V8 JIT bug in Chrome 19-20.
-	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-	  var type = typeof value;
-	  return !!value && (type == 'object' || type == 'function');
-	}
-	
-	/**
-	 * Creates an array of the own enumerable property names of `object`.
-	 *
-	 * **Note:** Non-object values are coerced to objects. See the
-	 * [ES spec](http://ecma-international.org/ecma-262/6.0/#sec-object.keys)
-	 * for more details.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 * @example
-	 *
-	 * function Foo() {
-	 *   this.a = 1;
-	 *   this.b = 2;
-	 * }
-	 *
-	 * Foo.prototype.c = 3;
-	 *
-	 * _.keys(new Foo);
-	 * // => ['a', 'b'] (iteration order is not guaranteed)
-	 *
-	 * _.keys('hi');
-	 * // => ['0', '1']
-	 */
-	var keys = !nativeKeys ? shimKeys : function(object) {
-	  var Ctor = object == null ? undefined : object.constructor;
-	  if ((typeof Ctor == 'function' && Ctor.prototype === object) ||
-	      (typeof object != 'function' && isArrayLike(object))) {
-	    return shimKeys(object);
-	  }
-	  return isObject(object) ? nativeKeys(object) : [];
-	};
-	
-	/**
-	 * Creates an array of the own and inherited enumerable property names of `object`.
-	 *
-	 * **Note:** Non-object values are coerced to objects.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 * @example
-	 *
-	 * function Foo() {
-	 *   this.a = 1;
-	 *   this.b = 2;
-	 * }
-	 *
-	 * Foo.prototype.c = 3;
-	 *
-	 * _.keysIn(new Foo);
-	 * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
-	 */
-	function keysIn(object) {
-	  if (object == null) {
-	    return [];
-	  }
-	  if (!isObject(object)) {
-	    object = Object(object);
-	  }
-	  var length = object.length;
-	  length = (length && isLength(length) &&
-	    (isArray(object) || isArguments(object)) && length) || 0;
-	
-	  var Ctor = object.constructor,
-	      index = -1,
-	      isProto = typeof Ctor == 'function' && Ctor.prototype === object,
-	      result = Array(length),
-	      skipIndexes = length > 0;
-	
-	  while (++index < length) {
-	    result[index] = (index + '');
-	  }
-	  for (var key in object) {
-	    if (!(skipIndexes && isIndex(key, length)) &&
-	        !(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-	
-	module.exports = keys;
-
-
-/***/ },
-/* 277 */
-/***/ function(module, exports) {
-
-	/**
-	 * lodash 3.9.1 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	
-	/** `Object#toString` result references. */
-	var funcTag = '[object Function]';
-	
-	/** Used to detect host constructors (Safari > 5). */
-	var reIsHostCtor = /^\[object .+?Constructor\]$/;
-	
-	/**
-	 * Checks if `value` is object-like.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-	 */
-	function isObjectLike(value) {
-	  return !!value && typeof value == 'object';
-	}
-	
-	/** Used for native method references. */
-	var objectProto = Object.prototype;
-	
-	/** Used to resolve the decompiled source of functions. */
-	var fnToString = Function.prototype.toString;
-	
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-	
-	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var objToString = objectProto.toString;
-	
-	/** Used to detect if a method is native. */
-	var reIsNative = RegExp('^' +
-	  fnToString.call(hasOwnProperty).replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')
-	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
-	);
-	
-	/**
-	 * Gets the native function at `key` of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {string} key The key of the method to get.
-	 * @returns {*} Returns the function if it's native, else `undefined`.
-	 */
-	function getNative(object, key) {
-	  var value = object == null ? undefined : object[key];
-	  return isNative(value) ? value : undefined;
-	}
-	
-	/**
-	 * Checks if `value` is classified as a `Function` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
-	 * @example
-	 *
-	 * _.isFunction(_);
-	 * // => true
-	 *
-	 * _.isFunction(/abc/);
-	 * // => false
-	 */
-	function isFunction(value) {
-	  // The use of `Object#toString` avoids issues with the `typeof` operator
-	  // in older versions of Chrome and Safari which return 'function' for regexes
-	  // and Safari 8 equivalents which return 'object' for typed array constructors.
-	  return isObject(value) && objToString.call(value) == funcTag;
-	}
-	
-	/**
-	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
-	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
-	 * @example
-	 *
-	 * _.isObject({});
-	 * // => true
-	 *
-	 * _.isObject([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObject(1);
-	 * // => false
-	 */
-	function isObject(value) {
-	  // Avoid a V8 JIT bug in Chrome 19-20.
-	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-	  var type = typeof value;
-	  return !!value && (type == 'object' || type == 'function');
-	}
-	
-	/**
-	 * Checks if `value` is a native function.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a native function, else `false`.
-	 * @example
-	 *
-	 * _.isNative(Array.prototype.push);
-	 * // => true
-	 *
-	 * _.isNative(_);
-	 * // => false
-	 */
-	function isNative(value) {
-	  if (value == null) {
-	    return false;
-	  }
-	  if (isFunction(value)) {
-	    return reIsNative.test(fnToString.call(value));
-	  }
-	  return isObjectLike(value) && reIsHostCtor.test(value);
-	}
-	
-	module.exports = getNative;
-
-
-/***/ },
-/* 278 */
-/***/ function(module, exports) {
-
-	/**
-	 * lodash 3.0.4 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	
-	/**
-	 * Checks if `value` is object-like.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-	 */
-	function isObjectLike(value) {
-	  return !!value && typeof value == 'object';
-	}
-	
-	/** Used for native method references. */
-	var objectProto = Object.prototype;
-	
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-	
-	/** Native method references. */
-	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-	
-	/**
-	 * Used as the [maximum length](http://ecma-international.org/ecma-262/6.0/#sec-number.max_safe_integer)
-	 * of an array-like value.
-	 */
-	var MAX_SAFE_INTEGER = 9007199254740991;
-	
-	/**
-	 * The base implementation of `_.property` without support for deep paths.
-	 *
-	 * @private
-	 * @param {string} key The key of the property to get.
-	 * @returns {Function} Returns the new function.
-	 */
-	function baseProperty(key) {
-	  return function(object) {
-	    return object == null ? undefined : object[key];
-	  };
-	}
-	
-	/**
-	 * Gets the "length" property value of `object`.
-	 *
-	 * **Note:** This function is used to avoid a [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792)
-	 * that affects Safari on at least iOS 8.1-8.3 ARM64.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {*} Returns the "length" value.
-	 */
-	var getLength = baseProperty('length');
-	
-	/**
-	 * Checks if `value` is array-like.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
-	 */
-	function isArrayLike(value) {
-	  return value != null && isLength(getLength(value));
-	}
-	
-	/**
-	 * Checks if `value` is a valid array-like length.
-	 *
-	 * **Note:** This function is based on [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
-	 */
-	function isLength(value) {
-	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-	}
-	
-	/**
-	 * Checks if `value` is classified as an `arguments` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
-	 * @example
-	 *
-	 * _.isArguments(function() { return arguments; }());
-	 * // => true
-	 *
-	 * _.isArguments([1, 2, 3]);
-	 * // => false
-	 */
-	function isArguments(value) {
-	  return isObjectLike(value) && isArrayLike(value) &&
-	    hasOwnProperty.call(value, 'callee') && !propertyIsEnumerable.call(value, 'callee');
-	}
-	
-	module.exports = isArguments;
-
-
-/***/ },
-/* 279 */
-/***/ function(module, exports) {
-
-	/**
-	 * lodash 3.0.4 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	
-	/** `Object#toString` result references. */
-	var arrayTag = '[object Array]',
-	    funcTag = '[object Function]';
-	
-	/** Used to detect host constructors (Safari > 5). */
-	var reIsHostCtor = /^\[object .+?Constructor\]$/;
-	
-	/**
-	 * Checks if `value` is object-like.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-	 */
-	function isObjectLike(value) {
-	  return !!value && typeof value == 'object';
-	}
-	
-	/** Used for native method references. */
-	var objectProto = Object.prototype;
-	
-	/** Used to resolve the decompiled source of functions. */
-	var fnToString = Function.prototype.toString;
-	
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-	
-	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var objToString = objectProto.toString;
-	
-	/** Used to detect if a method is native. */
-	var reIsNative = RegExp('^' +
-	  fnToString.call(hasOwnProperty).replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')
-	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
-	);
-	
-	/* Native method references for those with the same name as other `lodash` methods. */
-	var nativeIsArray = getNative(Array, 'isArray');
-	
-	/**
-	 * Used as the [maximum length](http://ecma-international.org/ecma-262/6.0/#sec-number.max_safe_integer)
-	 * of an array-like value.
-	 */
-	var MAX_SAFE_INTEGER = 9007199254740991;
-	
-	/**
-	 * Gets the native function at `key` of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {string} key The key of the method to get.
-	 * @returns {*} Returns the function if it's native, else `undefined`.
-	 */
-	function getNative(object, key) {
-	  var value = object == null ? undefined : object[key];
-	  return isNative(value) ? value : undefined;
-	}
-	
-	/**
-	 * Checks if `value` is a valid array-like length.
-	 *
-	 * **Note:** This function is based on [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
-	 */
-	function isLength(value) {
-	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-	}
-	
-	/**
-	 * Checks if `value` is classified as an `Array` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
-	 * @example
-	 *
-	 * _.isArray([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArray(function() { return arguments; }());
-	 * // => false
-	 */
-	var isArray = nativeIsArray || function(value) {
-	  return isObjectLike(value) && isLength(value.length) && objToString.call(value) == arrayTag;
-	};
-	
-	/**
-	 * Checks if `value` is classified as a `Function` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
-	 * @example
-	 *
-	 * _.isFunction(_);
-	 * // => true
-	 *
-	 * _.isFunction(/abc/);
-	 * // => false
-	 */
-	function isFunction(value) {
-	  // The use of `Object#toString` avoids issues with the `typeof` operator
-	  // in older versions of Chrome and Safari which return 'function' for regexes
-	  // and Safari 8 equivalents which return 'object' for typed array constructors.
-	  return isObject(value) && objToString.call(value) == funcTag;
-	}
-	
-	/**
-	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
-	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
-	 * @example
-	 *
-	 * _.isObject({});
-	 * // => true
-	 *
-	 * _.isObject([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObject(1);
-	 * // => false
-	 */
-	function isObject(value) {
-	  // Avoid a V8 JIT bug in Chrome 19-20.
-	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-	  var type = typeof value;
-	  return !!value && (type == 'object' || type == 'function');
-	}
-	
-	/**
-	 * Checks if `value` is a native function.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a native function, else `false`.
-	 * @example
-	 *
-	 * _.isNative(Array.prototype.push);
-	 * // => true
-	 *
-	 * _.isNative(_);
-	 * // => false
-	 */
-	function isNative(value) {
-	  if (value == null) {
-	    return false;
-	  }
-	  if (isFunction(value)) {
-	    return reIsNative.test(fnToString.call(value));
-	  }
-	  return isObjectLike(value) && reIsHostCtor.test(value);
-	}
-	
-	module.exports = isArray;
-
-
-/***/ },
-/* 280 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * lodash 3.1.1 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	var bindCallback = __webpack_require__(281),
-	    isIterateeCall = __webpack_require__(282),
-	    restParam = __webpack_require__(283);
-	
-	/**
-	 * Creates a function that assigns properties of source object(s) to a given
-	 * destination object.
-	 *
-	 * **Note:** This function is used to create `_.assign`, `_.defaults`, and `_.merge`.
-	 *
-	 * @private
-	 * @param {Function} assigner The function to assign values.
-	 * @returns {Function} Returns the new assigner function.
-	 */
-	function createAssigner(assigner) {
-	  return restParam(function(object, sources) {
-	    var index = -1,
-	        length = object == null ? 0 : sources.length,
-	        customizer = length > 2 ? sources[length - 2] : undefined,
-	        guard = length > 2 ? sources[2] : undefined,
-	        thisArg = length > 1 ? sources[length - 1] : undefined;
-	
-	    if (typeof customizer == 'function') {
-	      customizer = bindCallback(customizer, thisArg, 5);
-	      length -= 2;
-	    } else {
-	      customizer = typeof thisArg == 'function' ? thisArg : undefined;
-	      length -= (customizer ? 1 : 0);
-	    }
-	    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
-	      customizer = length < 3 ? undefined : customizer;
-	      length = 1;
-	    }
-	    while (++index < length) {
-	      var source = sources[index];
-	      if (source) {
-	        assigner(object, source, customizer);
-	      }
-	    }
-	    return object;
-	  });
-	}
-	
-	module.exports = createAssigner;
-
-
-/***/ },
-/* 281 */
-/***/ function(module, exports) {
-
-	/**
-	 * lodash 3.0.1 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	
-	/**
-	 * A specialized version of `baseCallback` which only supports `this` binding
-	 * and specifying the number of arguments to provide to `func`.
-	 *
-	 * @private
-	 * @param {Function} func The function to bind.
-	 * @param {*} thisArg The `this` binding of `func`.
-	 * @param {number} [argCount] The number of arguments to provide to `func`.
-	 * @returns {Function} Returns the callback.
-	 */
-	function bindCallback(func, thisArg, argCount) {
-	  if (typeof func != 'function') {
-	    return identity;
-	  }
-	  if (thisArg === undefined) {
-	    return func;
-	  }
-	  switch (argCount) {
-	    case 1: return function(value) {
-	      return func.call(thisArg, value);
-	    };
-	    case 3: return function(value, index, collection) {
-	      return func.call(thisArg, value, index, collection);
-	    };
-	    case 4: return function(accumulator, value, index, collection) {
-	      return func.call(thisArg, accumulator, value, index, collection);
-	    };
-	    case 5: return function(value, other, key, object, source) {
-	      return func.call(thisArg, value, other, key, object, source);
-	    };
-	  }
-	  return function() {
-	    return func.apply(thisArg, arguments);
-	  };
-	}
-	
-	/**
-	 * This method returns the first argument provided to it.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Utility
-	 * @param {*} value Any value.
-	 * @returns {*} Returns `value`.
-	 * @example
-	 *
-	 * var object = { 'user': 'fred' };
-	 *
-	 * _.identity(object) === object;
-	 * // => true
-	 */
-	function identity(value) {
-	  return value;
-	}
-	
-	module.exports = bindCallback;
-
-
-/***/ },
-/* 282 */
-/***/ function(module, exports) {
-
-	/**
-	 * lodash 3.0.9 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	
-	/** Used to detect unsigned integer values. */
-	var reIsUint = /^\d+$/;
-	
-	/**
-	 * Used as the [maximum length](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.max_safe_integer)
-	 * of an array-like value.
-	 */
-	var MAX_SAFE_INTEGER = 9007199254740991;
-	
-	/**
-	 * The base implementation of `_.property` without support for deep paths.
-	 *
-	 * @private
-	 * @param {string} key The key of the property to get.
-	 * @returns {Function} Returns the new function.
-	 */
-	function baseProperty(key) {
-	  return function(object) {
-	    return object == null ? undefined : object[key];
-	  };
-	}
-	
-	/**
-	 * Gets the "length" property value of `object`.
-	 *
-	 * **Note:** This function is used to avoid a [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792)
-	 * that affects Safari on at least iOS 8.1-8.3 ARM64.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {*} Returns the "length" value.
-	 */
-	var getLength = baseProperty('length');
-	
-	/**
-	 * Checks if `value` is array-like.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
-	 */
-	function isArrayLike(value) {
-	  return value != null && isLength(getLength(value));
-	}
-	
-	/**
-	 * Checks if `value` is a valid array-like index.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
-	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
-	 */
-	function isIndex(value, length) {
-	  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
-	  length = length == null ? MAX_SAFE_INTEGER : length;
-	  return value > -1 && value % 1 == 0 && value < length;
-	}
-	
-	/**
-	 * Checks if the provided arguments are from an iteratee call.
-	 *
-	 * @private
-	 * @param {*} value The potential iteratee value argument.
-	 * @param {*} index The potential iteratee index or key argument.
-	 * @param {*} object The potential iteratee object argument.
-	 * @returns {boolean} Returns `true` if the arguments are from an iteratee call, else `false`.
-	 */
-	function isIterateeCall(value, index, object) {
-	  if (!isObject(object)) {
-	    return false;
-	  }
-	  var type = typeof index;
-	  if (type == 'number'
-	      ? (isArrayLike(object) && isIndex(index, object.length))
-	      : (type == 'string' && index in object)) {
-	    var other = object[index];
-	    return value === value ? (value === other) : (other !== other);
-	  }
-	  return false;
-	}
-	
-	/**
-	 * Checks if `value` is a valid array-like length.
-	 *
-	 * **Note:** This function is based on [`ToLength`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength).
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
-	 */
-	function isLength(value) {
-	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-	}
-	
-	/**
-	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
-	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
-	 * @example
-	 *
-	 * _.isObject({});
-	 * // => true
-	 *
-	 * _.isObject([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObject(1);
-	 * // => false
-	 */
-	function isObject(value) {
-	  // Avoid a V8 JIT bug in Chrome 19-20.
-	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-	  var type = typeof value;
-	  return !!value && (type == 'object' || type == 'function');
-	}
-	
-	module.exports = isIterateeCall;
-
-
-/***/ },
-/* 283 */
-/***/ function(module, exports) {
-
-	/**
-	 * lodash 3.6.1 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	
-	/** Used as the `TypeError` message for "Functions" methods. */
-	var FUNC_ERROR_TEXT = 'Expected a function';
-	
-	/* Native method references for those with the same name as other `lodash` methods. */
-	var nativeMax = Math.max;
-	
-	/**
-	 * Creates a function that invokes `func` with the `this` binding of the
-	 * created function and arguments from `start` and beyond provided as an array.
-	 *
-	 * **Note:** This method is based on the [rest parameter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Function
-	 * @param {Function} func The function to apply a rest parameter to.
-	 * @param {number} [start=func.length-1] The start position of the rest parameter.
-	 * @returns {Function} Returns the new function.
-	 * @example
-	 *
-	 * var say = _.restParam(function(what, names) {
-	 *   return what + ' ' + _.initial(names).join(', ') +
-	 *     (_.size(names) > 1 ? ', & ' : '') + _.last(names);
-	 * });
-	 *
-	 * say('hello', 'fred', 'barney', 'pebbles');
-	 * // => 'hello fred, barney, & pebbles'
-	 */
-	function restParam(func, start) {
-	  if (typeof func != 'function') {
-	    throw new TypeError(FUNC_ERROR_TEXT);
-	  }
-	  start = nativeMax(start === undefined ? (func.length - 1) : (+start || 0), 0);
-	  return function() {
-	    var args = arguments,
-	        index = -1,
-	        length = nativeMax(args.length - start, 0),
-	        rest = Array(length);
-	
-	    while (++index < length) {
-	      rest[index] = args[start + index];
-	    }
-	    switch (start) {
-	      case 0: return func.call(this, rest);
-	      case 1: return func.call(this, args[0], rest);
-	      case 2: return func.call(this, args[0], args[1], rest);
-	    }
-	    var otherArgs = Array(start + 1);
-	    index = -1;
-	    while (++index < start) {
-	      otherArgs[index] = args[index];
-	    }
-	    otherArgs[start] = rest;
-	    return func.apply(this, otherArgs);
-	  };
-	}
-	
-	module.exports = restParam;
-
-
-/***/ },
-/* 284 */
-/***/ function(module, exports) {
-
-	var _element = typeof document !== 'undefined' ? document.body : null;
-	
-	function setElement(element) {
-	  if (typeof element === 'string') {
-	    var el = document.querySelectorAll(element);
-	    element = 'length' in el ? el[0] : el;
-	  }
-	  _element = element || _element;
-	}
-	
-	function hide(appElement) {
-	  validateElement(appElement);
-	  (appElement || _element).setAttribute('aria-hidden', 'true');
-	}
-	
-	function show(appElement) {
-	  validateElement(appElement);
-	  (appElement || _element).removeAttribute('aria-hidden');
-	}
-	
-	function toggle(shouldHide, appElement) {
-	  if (shouldHide)
-	    hide(appElement);
-	  else
-	    show(appElement);
-	}
-	
-	function validateElement(appElement) {
-	  if (!appElement && !_element)
-	    throw new Error('react-modal: You must set an element with `Modal.setAppElement(el)` to make this accessible');
-	}
-	
-	function resetForTesting() {
-	  _element = document.body;
-	}
-	
-	exports.toggle = toggle;
-	exports.setElement = setElement;
-	exports.show = show;
-	exports.hide = hide;
-	exports.resetForTesting = resetForTesting;
-
-
-/***/ },
-/* 285 */
-/***/ function(module, exports) {
-
-	module.exports = function(opts) {
-	  return new ElementClass(opts)
-	}
-	
-	function indexOf(arr, prop) {
-	  if (arr.indexOf) return arr.indexOf(prop)
-	  for (var i = 0, len = arr.length; i < len; i++)
-	    if (arr[i] === prop) return i
-	  return -1
-	}
-	
-	function ElementClass(opts) {
-	  if (!(this instanceof ElementClass)) return new ElementClass(opts)
-	  var self = this
-	  if (!opts) opts = {}
-	
-	  // similar doing instanceof HTMLElement but works in IE8
-	  if (opts.nodeType) opts = {el: opts}
-	
-	  this.opts = opts
-	  this.el = opts.el || document.body
-	  if (typeof this.el !== 'object') this.el = document.querySelector(this.el)
-	}
-	
-	ElementClass.prototype.add = function(className) {
-	  var el = this.el
-	  if (!el) return
-	  if (el.className === "") return el.className = className
-	  var classes = el.className.split(' ')
-	  if (indexOf(classes, className) > -1) return classes
-	  classes.push(className)
-	  el.className = classes.join(' ')
-	  return classes
-	}
-	
-	ElementClass.prototype.remove = function(className) {
-	  var el = this.el
-	  if (!el) return
-	  if (el.className === "") return
-	  var classes = el.className.split(' ')
-	  var idx = indexOf(classes, className)
-	  if (idx > -1) classes.splice(idx, 1)
-	  el.className = classes.join(' ')
-	  return classes
-	}
-	
-	ElementClass.prototype.has = function(className) {
-	  var el = this.el
-	  if (!el) return
-	  var classes = el.className.split(' ')
-	  return indexOf(classes, className) > -1
-	}
-	
-	ElementClass.prototype.toggle = function(className) {
-	  var el = this.el
-	  if (!el) return
-	  if (this.has(className)) this.remove(className)
-	  else this.add(className)
-	}
-
-
-/***/ },
-/* 286 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(212).Store;
-	var ImageConstants = __webpack_require__(287);
-	var AppDispatcher = __webpack_require__(230);
-	var UserStore = __webpack_require__(233);
-	
-	var ImageStore = new Store(AppDispatcher);
-	
-	var _images = [];
-	
-	var resetImages = function (images) {
-	  _images = images.slice(0);
-	};
-	
-	var addNewImage = function (newImage) {
-	  _images.unshift(newImage);
-	};
-	
-	ImageStore.all = function () {
-	  return _images.slice(0);
-	};
-	
-	// for use on profile page, will return images the user imageed
-	// or images imageed to their wall
-	ImageStore.getByUserId = function (userIdString) {
-	
-	  var userId = parseInt(userIdString);
-	  var images = ImageStore.all();
-	  var relevantImages = [];
-	
-	  images.forEach(function (image) {
-	
-	    if (image.owner_id === userId) {
-	      relevantImages.push(image);
-	    }
-	  });
-	
-	  return relevantImages;
-	};
-	
-	ImageStore.getByUserIdOnlyFirstNine = function (userIdString) {
-	
-	  var userId = parseInt(userIdString);
-	  var images = ImageStore.all();
-	  var relevantImages = [];
-	
-	  images.forEach(function (image) {
-	
-	    if (image.owner_id === userId) {
-	      relevantImages.push(image);
-	    }
-	  });
-	
-	  return relevantImages.slice(0, 9);
-	};
-	
-	// Could be useful for putting images in the feed, not sure yet
-	// ImageStore.getUsersFollowedImages = function(userIdString){
-	//   var userId = parseInt(userIdString);
-	//   var user = UserStore.findUser(userId);
-	//   var images = ImageStore.all();
-	//
-	//   if(images === [] || user.string === "Bad User"){
-	//     return null;
-	//   }
-	//   var relevantImages = [];
-	//   var relevantUsers = [];
-	//
-	// // now we get an array of good user ids
-	//     user.usersFollowing.forEach(function(user){
-	//       relevantUsers.push(user.id);
-	//     });
-	//
-	// // now we reference the images against the
-	//   images.forEach(function(image){
-	//     if (relevantUsers.indexOf(image.author_id) !== -1){
-	//       relevantImages.push(image);
-	//     }
-	//   });
-	//   return relevantImages;
-	// },
-	
-	ImageStore.__onDispatch = function (payload) {
-	
-	  switch (payload.actionType) {
-	    case ImageConstants.IMAGES_RECEIVED:
-	      var result = resetImages(payload.images);
-	      ImageStore.__emitChange();
-	      break;
-	    case ImageConstants.NEW_IMAGE_RECEIVED:
-	      var result = addNewImage(payload.newImage);
-	      ImageStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	module.exports = ImageStore;
-
-/***/ },
-/* 287 */
-/***/ function(module, exports) {
-
-	ImageConstants = {
-	  IMAGES_RECEIVED: "IMAGES_RECEIVED",
-	  NEW_IMAGE_RECEIVED: "NEW_IMAGE_RECEIVED"
-	};
-	module.exports = ImageConstants;
-
-/***/ },
-/* 288 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	var ImageCommentLikeButton = __webpack_require__(299);
-	var ImageCommentStore = __webpack_require__(289);
-	var LikeStore = __webpack_require__(296);
-	
-	var ApiUtil = __webpack_require__(235);
-	var History = __webpack_require__(159).History;
-	
-	var ImageComment = React.createClass({
-	  displayName: 'ImageComment',
-	
-	  mixins: [History],
-	
-	  _commentsChanged: function () {
-	    this.setState({ comments: ImageCommentStore.getByPostId(this.props.image.id) });
-	  },
-	
-	  getInitialState: function () {
-	    return {
-	      comments: ImageCommentStore.getByPostId(this.props.image.id)
-	    };
-	  },
-	
-	  componentDidMount: function () {
-	    this.commentListener = ImageCommentStore.addListener(this._commentsChanged);
-	    ApiUtil.fetchComments();
-	  },
-	
-	  componentWillUnmount: function () {
-	    this.commentListener.remove();
-	  },
-	  handleAuthorClick: function (authorId) {
-	    this.history.pushState(null, "user/" + authorId);
-	    window.scrollTo(0, 0);
-	  },
-	  likeButtonLogic: function (comment) {
-	    var likes = LikeStore.all();
-	    var current_comment = comment;
-	    var current_user = UserStore.getCurrentUser();
-	
-	    if (!current_comment.id) {
-	      return false;
-	    }
-	    var liking = false;
-	    var that = this;
-	
-	    likes.forEach(function (like) {
-	      if (like.post_id === current_comment.id && like.author_id === current_user.id && like.like_type === "comment") {
-	        liking = like;
-	      }
-	    });
-	
-	    return liking;
-	  },
-	  _buttonRenderFunction: function (comment) {
-	    var placeholder = this.likeButtonLogic(comment);
-	    var likeButton;
-	    var currentUser = UserStore.getCurrentUser();
-	
-	    if (placeholder) {
-	      likeButton = React.createElement(
-	        'div',
-	        { className: 'like-button' },
-	        React.createElement(ImageCommentLikeButton, { currentUser: currentUser,
-	          comment: comment,
-	          like: placeholder })
-	      );
-	    } else {
-	      likeButton = React.createElement(
-	        'div',
-	        { className: 'like-button' },
-	        React.createElement(ImageCommentLikeButton, { currentUser: currentUser,
-	          comment: comment,
-	          like: placeholder })
-	      );
-	    }
-	
-	    return likeButton;
-	  },
-	
-	  render: function () {
-	    var that = this;
-	    var Comments = this.state.comments.map(function (comment, i) {
-	      return React.createElement(
-	        'div',
-	        { key: comment.id, className: 'post-comment' },
-	        React.createElement(
-	          'div',
-	          { onClick: that.handleAuthorClick.bind(null, comment.author.id) },
-	          comment.author.real_name
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          comment.body
-	        ),
-	        that._buttonRenderFunction(comment)
-	      );
-	    });
-	    return React.createElement(
-	      'div',
-	      { className: 'image-post-comments' },
-	      Comments
-	    );
-	  }
-	});
-	
-	module.exports = ImageComment;
-
-/***/ },
-/* 289 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(212).Store;
-	var ImageConstants = __webpack_require__(238);
-	var AppDispatcher = __webpack_require__(230);
-	
-	var ImageCommentsStore = new Store(AppDispatcher);
-	
-	var _image_comments = [];
-	
-	var resetImageComments = function (image_comments) {
-	
-	  _image_comments = image_comments.slice(0);
-	};
-	
-	var addNewImageComment = function (newImageComment) {
-	
-	  _image_comments.push(newImageComment);
-	};
-	
-	ImageCommentsStore.all = function () {
-	  return _image_comments.slice(0);
-	};
-	
-	ImageCommentsStore.getByPostId = function (imageIdString) {
-	
-	  var imageId = parseInt(imageIdString);
-	  var image_comments = ImageCommentsStore.all();
-	  var relevantImageComments = [];
-	
-	  image_comments.forEach(function (comment) {
-	
-	    if (comment.image_id === imageId) {
-	      relevantImageComments.push(comment);
-	    }
-	  });
-	
-	  return relevantImageComments;
-	};
-	
-	ImageCommentsStore.__onDispatch = function (payload) {
-	
-	  switch (payload.actionType) {
-	    case ImageConstants.IMAGE_COMMENTS_RECEIVED:
-	
-	      var result = resetImageComments(payload.image_comments);
-	      ImageCommentsStore.__emitChange();
-	      break;
-	    case ImageConstants.NEW_IMAGE_COMMENT_RECEIVED:
-	      var result = addNewImageComment(payload.newImageComment);
-	      ImageCommentsStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	module.exports = ImageCommentsStore;
-
-/***/ },
-/* 290 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var NewImageComment = React.createClass({
-	  displayName: 'NewImageComment',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  componentWillMount: function () {
-	    this.setState({ currentUser: UserStore.getCurrentUser() });
-	  },
-	  handleSubmit: function (event) {
-	    event.preventDefault();
-	    var post = { body: event.currentTarget[0].value, image_id: this.props.image.id };
-	    ApiUtil.createImageComment(post);
-	    event.currentTarget[0].value = null;
-	  },
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      { className: 'image-post-new-post' },
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'form',
-	          { onSubmit: this.handleSubmit },
-	          React.createElement(
-	            'label',
-	            { htmlFor: 'comment_body' },
-	            'Leave a new comment'
-	          ),
-	          React.createElement('br', null),
-	          React.createElement('textarea', {
-	            name: 'comment[body]',
-	            id: 'comment_body', rows: '4', cols: '50' }),
-	          React.createElement('br', null),
-	          React.createElement('input', { type: 'submit', value: 'Comment' })
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = NewImageComment;
-
-/***/ },
-/* 291 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var UserProfileUserInfo = React.createClass({
-	  displayName: 'UserProfileUserInfo',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  // getInitialState: function(){
-	  //   return ({})
-	  // },
-	
-	  handleClick: function (event) {
-	    var image_path = this.props.image.image_path;
-	    var current_user = UserStore.getCurrentUser();
-	    ApiUtil.updateProfilePic({ user: current_user, profile_image: image_path });
-	  },
-	  buildUrl: function (image_path) {
-	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_168,w_168/v1450463928/" + image_path;
-	    return url;
-	  },
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'button',
-	        { onClick: this.handleClick },
-	        'Make this your Profile Picture'
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = UserProfileUserInfo;
-
-/***/ },
-/* 292 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Really the Image Pane, includes the individual images and Upload Button
-	
-	var React = __webpack_require__(1),
-	    ReactDOM = __webpack_require__(158),
-	    UploadButton = __webpack_require__(264),
-	    ImageModal = __webpack_require__(265),
-	    UserStore = __webpack_require__(233),
-	    ImageStore = __webpack_require__(286),
-	    LikeStore = __webpack_require__(296),
-	    ImageLikeButton = __webpack_require__(298),
-	    Modal = __webpack_require__(266),
-	    ImageComments = __webpack_require__(288),
-	    NewImageComment = __webpack_require__(290),
-	    ProfilePicChangeButton = __webpack_require__(291),
-	    ApiUtil = __webpack_require__(235);
-	
-	var customStyles = {
-	  overlay: {
-	    position: 'fixed',
-	    backgroundColor: 'rgba(255, 255, 255, 0.75)',
-	    zIndex: 5
-	  },
-	  content: {
-	    top: '50%',
-	    left: '50%',
-	    right: 'auto',
-	    bottom: 'auto',
-	    height: '600px',
-	    width: '1200px',
-	    marginRight: '-50%',
-	    transform: 'translate(-50%, -50%)'
-	  }
-	};
-	
-	var ImagesBody = React.createClass({
-	  displayName: 'ImagesBody',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  getInitialState: function () {
-	    ApiUtil.fetchImages();
-	    this.likesListener = LikeStore.addListener(this._likesChanged);
-	    return { images: ImageStore.getByUserId(this.props.user),
-	      user: this.props.user,
-	      modalIsOpen: false,
-	      selectedImage: "" };
-	  },
-	  _likesChanged: function () {
-	    this.forceUpdate();
-	  },
-	  openModal: function (event) {
-	    this.setState({ modalIsOpen: true,
-	      selectedImage: event });
-	  },
-	
-	  closeModal: function () {
-	    this.setState({ modalIsOpen: false, selectedImage: "" });
-	  },
-	
-	  componentWillReceiveProps: function (newProps) {
-	    ApiUtil.fetchImages();
-	    this.setState({ user: newProps.user });
-	    this.setState({ images: ImageStore.getByUserId(newProps.user) });
-	  },
-	  // componentWillUnmount: function(){
-	  //   this.setState({user: null});
-	  // },
-	  buildUrl: function (image_path) {
-	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_200,w_200/v1450463928/" + image_path;
-	    return url;
-	  },
-	  buildModalUrl: function (image_path) {
-	    var url = "http://res.cloudinary.com/lifebook/image/upload/v1450463928/" + image_path;
-	    return url;
-	  },
-	  modal: function () {
-	    return;
-	  },
-	  likeButtonLogic: function (image) {
-	    var likes = LikeStore.all();
-	    var current_image = image;
-	    var current_user = UserStore.getCurrentUser();
-	
-	    if (!current_image.id) {
-	      return false;
-	    }
-	    var liking = false;
-	    var that = this;
-	
-	    likes.forEach(function (like) {
-	      if (like.post_id === current_image.id && like.author_id === current_user.id && like.like_type === "image") {
-	        liking = like;
-	      }
-	    });
-	
-	    return liking;
-	  },
-	  _buttonRenderFunction: function (image) {
-	    var placeholder = this.likeButtonLogic(image);
-	    var likeButton;
-	    var currentUser = UserStore.getCurrentUser();
-	
-	    if (placeholder) {
-	      likeButton = React.createElement(
-	        'div',
-	        { className: 'like-button' },
-	        React.createElement(ImageLikeButton, { currentUser: currentUser,
-	          image: image,
-	          like: placeholder })
-	      );
-	    } else {
-	      likeButton = React.createElement(
-	        'div',
-	        { className: 'like-button' },
-	        React.createElement(ImageLikeButton, { currentUser: currentUser,
-	          image: image,
-	          like: placeholder })
-	      );
-	    }
-	
-	    return likeButton;
-	  },
-	
-	  render: function () {
-	    var that = this;
-	    if (this.state.images) {
-	      var images = this.state.images.map((function (image) {
-	        return React.createElement(
-	          'div',
-	          { key: image.id,
-	            className: 'image-body-image' },
-	          React.createElement('img', { onClick: this.openModal.bind(null, image),
-	            src: that.buildUrl(image.image_path) })
-	        );
-	      }).bind(this));
-	    } else {
-	      var images = React.createElement(
-	        'div',
-	        null,
-	        ' no images'
-	      );
-	    }
-	    return React.createElement(
-	      'div',
-	      { className: 'profile-images-body' },
-	      images,
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'div',
-	          { className: 'image-modal-outside' },
-	          React.createElement(
-	            Modal,
-	            {
-	              isOpen: this.state.modalIsOpen,
-	              onRequestClose: this.closeModal,
-	              style: customStyles,
-	              className: 'image-modal' },
-	            React.createElement(
-	              'h2',
-	              null,
-	              'Picture'
-	            ),
-	            React.createElement(
-	              'button',
-	              { onClick: this.closeModal },
-	              'close'
-	            ),
-	            React.createElement(ProfilePicChangeButton, { image: this.state.selectedImage }),
-	            that._buttonRenderFunction(this.state.selectedImage),
-	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage.image_path), className: 'image-modal-image' }),
-	            React.createElement(NewImageComment, { image: this.state.selectedImage, className: 'image-modal-new-comments' }),
-	            React.createElement(ImageComments, { image: this.state.selectedImage, className: 'image-modal-image-comments' })
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = ImagesBody;
-
-/***/ },
-/* 293 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// This page is intended to be the page you go to when you are looking at that exact
-	// single post.  May not make in into final production
-	
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var PostPage = React.createClass({
-	  displayName: 'PostPage',
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        null,
-	        'This is where the posts will go'
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = PostPage;
-
-/***/ },
-/* 294 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	var SearchBar = __webpack_require__(254);
-	var History = __webpack_require__(159).History;
-	var SignoutButton = __webpack_require__(256);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var HeaderBar = React.createClass({
-	  displayName: 'HeaderBar',
-	
-	  mixins: [History],
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  getInitialState: function () {
-	
-	    return { user: {} };
-	  },
-	  redirectToHome: function () {
-	    this.history.pushState(null, "/");
-	    window.scrollTo(0, 0);
-	  },
-	  handleAuthorClick: function (destinationId) {
-	    this.history.pushState(null, "user/" + this.state.user.id);
-	    window.scrollTo(0, 0);
-	  },
-	  componentDidMount: function () {
-	    this.userListener = UserStore.addListener(this._usersChanged);
-	  },
-	  _usersChanged: function () {
-	    this.setState({ user: UserStore.getCurrentUser() });
-	  },
-	  componentWillReceiveProps: function (newProps) {
-	    this.setState({ user: newProps.currentUser });
-	  },
-	  _buildUrl: function (image_path) {
-	    var publicID;
-	    if (!image_path) {
-	      publicID = "lifebook_default_pic.jpg";
-	    } else {
-	      publicID = image_path;
-	    }
-	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_30,w_30/v1450463928/" + publicID;
-	    return url;
-	  },
-	
-	  render: function () {
-	    var name, profile_image;
-	
-	    if (this.state.user.real_name) {
-	      name = this.state.user.real_name;
-	      profile_image = this.state.user.profile_image;
-	    } else {
-	      name = "Loading";
-	    }
-	
-	    return React.createElement(
-	      'nav',
-	      { className: 'header-bar' },
-	      React.createElement(
-	        'div',
-	        { className: 'header-bar-search-bar' },
-	        React.createElement(SearchBar, null)
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'header-bar-go-home' },
-	        React.createElement(
-	          'h1',
-	          { onClick: this.redirectToHome },
-	          'Lifebook'
-	        )
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'header-bar-profile-pic', onClick: this.handleAuthorClick },
-	        React.createElement('img', { src: this._buildUrl(profile_image) })
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'header-bar-real-name', onClick: this.handleAuthorClick },
-	        name
-	      ),
-	      React.createElement(SignoutButton, null)
-	    );
-	  }
-	});
-	
-	module.exports = HeaderBar;
-
-/***/ },
-/* 295 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	var FollowStore = __webpack_require__(261);
-	var LikeStore = __webpack_require__(296);
-	var classNames = __webpack_require__(255);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var PostLikeButton = React.createClass({
-	  displayName: 'PostLikeButton',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	  likeClass: function () {
-	    var likeClass = classNames({
-	      'like-button-liked': this.props.like,
-	      'like-button-unliked': this.props.like === false
-	    });
-	    return likeClass;
-	  },
-	  getAllLikers: function () {
-	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
-	    // MUST BE A POST LIKE
-	    // pass in 2 props, the post_id and the like_type=("post")
-	    var otherPeople = LikeStore.getTheUsers(this.props.like);
-	    return otherPeople;
-	  },
-	
-	  handleLikeSubmit: function (event) {
-	    event.preventDefault();
-	
-	    var like = { author_id: this.props.currentUser.id,
-	      like_type: "post",
-	      post_id: this.props.post.id };
-	
-	    if (this.props.like) {
-	      var targetLike = LikeStore.getByLikeParties(like);
-	      ApiUtil.deleteLike(targetLike);
-	    } else {
-	      ApiUtil.createLike(like);
-	    }
-	  },
-	  componentWillReceiveProps: function (newProps) {},
-	  buttonText: function () {
-	    var text;
-	
-	    if (this.props.like) {
-	      text = "Unlike";
-	    } else {
-	      text = "Like";
-	    }
-	    return text;
-	  },
-	
-	  // <img src="app/assets/images/thumb.png" ></img>
-	  render: function () {
-	    var people = this.getAllLikers();
-	
-	    if (!people) {
-	      fellowLikers = React.createElement(
-	        'div',
-	        null,
-	        'Loading'
-	      );
-	    } else {
-	      fellowLikers = people.map(function (person, i) {
-	        return React.createElement(
-	          'div',
-	          { key: i },
-	          person.real_name
-	        );
-	      });
-	    }
-	
-	    var properButton;
-	    properButton = React.createElement(
-	      'button',
-	      { className: this.likeClass(), onClick: this.handleLikeSubmit },
-	      this.buttonText()
-	    );
-	
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit })
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        fellowLikers
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = PostLikeButton;
-
-/***/ },
-/* 296 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(212).Store;
-	var LikeConstants = __webpack_require__(239);
-	var AppDispatcher = __webpack_require__(230);
-	var UserStore = __webpack_require__(233);
-	
-	var LikeStore = new Store(AppDispatcher);
-	
-	var _likes = [];
-	
-	var resetLikes = function (likes) {
-	  _likes = likes.slice(0);
-	};
-	
-	var addNewLike = function (newLike) {
-	  _likes.push(newLike);
-	};
-	
-	LikeStore.all = function () {
-	  return _likes.slice(0);
-	};
-	
-	LikeStore.getByLikeParties = function (like) {
-	  var author_id = parseInt(like.author_id);
-	  var post_id = parseInt(like.post_id);
-	  var like_type = like.like_type;
-	  var likes = LikeStore.all();
-	  var relevantLike = {};
-	
-	  likes.forEach(function (like) {
-	
-	    if (like.author_id === author_id && like.post_id === post_id && like.like_type === like_type) {
-	      relevantLike = like;
-	    }
-	  });
-	
-	  return relevantLike;
-	};
-	
-	LikeStore.getAllOtherLikers = function (like) {
-	  var users = UserStore.all();
-	  var likes = LikeStore.all();
-	  var author_id = parseInt(like.author_id);
-	  var post_id = parseInt(like.post_id);
-	  var like_type = like.like_type;
-	
-	  var relevantLikes = [];
-	  likes.forEach(function (like) {
-	    if (like.post_id === post_id && like.like_type === like_type) {
-	      relevantLikes.push(like);
-	    }
-	  });
-	
-	  return relevantLikes;
-	};
-	
-	LikeStore.getTheUsers = function (like) {
-	  var relevantLikes = LikeStore.getAllOtherLikers(like);
-	  var relevantUsers = [];
-	  relevantLikes.forEach(function (like) {
-	    relevantUsers.push(UserStore.findUser(like.author_id));
-	  });
-	  return relevantUsers;
-	};
-	
-	LikeStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case LikeConstants.NEW_LIKE_RECEIVED:
-	      // var result = addNewLike(payload.newLike);
-	      var result = addNewLike(payload.newLike);
-	      LikeStore.__emitChange();
-	      break;
-	    case LikeConstants.LIKES_RECEIVED:
-	      var result = resetLikes(payload.likes);
-	      LikeStore.__emitChange();
-	      break;
-	    case LikeConstants.LIKE_REMOVED:
-	      var result = resetLikes(payload.likes);
-	      LikeStore.__emitChange();
-	  }
-	};
-	
-	module.exports = LikeStore;
-
-/***/ },
-/* 297 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	var FollowStore = __webpack_require__(261);
-	var LikeStore = __webpack_require__(296);
-	var classNames = __webpack_require__(255);
-	var ApiUtil = __webpack_require__(235);
-	
-	var CommentLikeButton = React.createClass({
-	  displayName: 'CommentLikeButton',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	
-	  handleLikeSubmit: function (event) {
-	    event.preventDefault();
-	
-	    var like = { author_id: this.props.currentUser.id,
-	      like_type: "comment",
-	      post_id: this.props.comment.id };
-	
-	    if (this.props.like) {
-	      var targetLike = LikeStore.getByLikeParties(like);
-	      ApiUtil.deleteLike(targetLike);
-	    } else {
-	      ApiUtil.createLike(like);
-	    }
-	  },
-	  componentWillReceiveProps: function (newProps) {},
-	  buttonText: function () {
-	    var text;
-	
-	    if (this.props.like) {
-	      text = "Unlike";
-	    } else {
-	      text = "Like";
-	    }
-	    return text;
-	  },
-	  getAllLikers: function () {
-	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
-	    // MUST BE A POST LIKE
-	    // pass in 2 props, the post_id and the like_type=("post")
-	    var otherPeople = LikeStore.getTheUsers(this.props.like);
-	    return otherPeople;
-	  },
-	  likeClass: function () {
-	    var likeClass = classNames({
-	      "like-button": true,
-	      'like-button-liked': this.props.like,
-	      'like-button-unliked': this.props.like === false
-	    });
-	    return likeClass;
-	  },
-	  render: function () {
-	    var people = this.getAllLikers();
-	
-	    if (!people) {
-	      fellowLikers = React.createElement(
-	        'div',
-	        null,
-	        'Loading'
-	      );
-	    } else {
-	      fellowLikers = people.map(function (person, i) {
-	        return React.createElement(
-	          'div',
-	          { className: 'liker-name',
-	            key: i },
-	          person.real_name
-	        );
-	      });
-	    }
-	
-	    var properButton;
-	    properButton = React.createElement(
-	      'button',
-	      { className: this.likeClass(),
-	        onClick: this.handleLikeSubmit },
-	      this.buttonText()
-	    );
-	
-	    return React.createElement(
-	      'div',
-	      { className: 'like-area' },
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement('img', { src: '/assets/thumb.png',
-	          height: '20', width: '20',
-	          className: this.likeClass(),
-	          onClick: this.handleLikeSubmit })
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'liker-names' },
-	        fellowLikers
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = CommentLikeButton;
-
-/***/ },
-/* 298 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	var FollowStore = __webpack_require__(261);
-	var LikeStore = __webpack_require__(296);
-	var classNames = __webpack_require__(255);
-	var ApiUtil = __webpack_require__(235);
-	
-	var ImageLikeButton = React.createClass({
-	  displayName: 'ImageLikeButton',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	
-	  handleLikeSubmit: function (event) {
-	    event.preventDefault();
-	
-	    var like = { author_id: this.props.currentUser.id,
-	      like_type: "image",
-	      post_id: this.props.image.id };
-	
-	    if (this.props.like) {
-	      var targetLike = LikeStore.getByLikeParties(like);
-	      ApiUtil.deleteLike(targetLike);
-	    } else {
-	      ApiUtil.createLike(like);
-	    }
-	  },
-	  componentWillReceiveProps: function (newProps) {},
-	  buttonText: function () {
-	    var text;
-	
-	    if (this.props.like) {
-	      text = "Unlike";
-	    } else {
-	      text = "Like";
-	    }
-	    return text;
-	  },
-	  likeClass: function () {
-	    var likeClass = classNames({
-	      'like-button-liked': this.props.like,
-	      'like-button-unliked': this.props.like === false
-	    });
-	    return likeClass;
-	  },
-	  getAllLikers: function () {
-	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
-	    // MUST BE A POST LIKE
-	    // pass in 2 props, the post_id and the like_type=("post")
-	    var otherPeople = LikeStore.getTheUsers(this.props.like);
-	    return otherPeople;
-	  },
-	  render: function () {
-	    var people = this.getAllLikers();
-	
-	    if (!people) {
-	      fellowLikers = React.createElement(
-	        'div',
-	        null,
-	        'Loading'
-	      );
-	    } else {
-	      fellowLikers = people.map(function (person, i) {
-	        return React.createElement(
-	          'div',
-	          { key: i },
-	          person.real_name
-	        );
-	      });
-	    }
-	
-	    var properButton;
-	    properButton = React.createElement(
-	      'button',
-	      { className: this.likeClass, onClick: this.handleLikeSubmit },
-	      this.buttonText()
-	    );
-	
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit })
-	    );
-	  }
-	});
-	
-	module.exports = ImageLikeButton;
-
-/***/ },
-/* 299 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	var FollowStore = __webpack_require__(261);
-	var LikeStore = __webpack_require__(296);
-	var classNames = __webpack_require__(255);
-	var ApiUtil = __webpack_require__(235);
-	
-	var ImageCommentLikeButton = React.createClass({
-	  displayName: 'ImageCommentLikeButton',
-	
-	  contextTypes: {
-	    router: React.PropTypes.func
-	  },
-	
-	  handleLikeSubmit: function (event) {
-	    event.preventDefault();
-	    var like = { author_id: this.props.currentUser.id,
-	      like_type: "comment",
-	      post_id: this.props.comment.id };
-	
-	    if (this.props.like) {
-	      var targetLike = LikeStore.getByLikeParties(like);
-	      ApiUtil.deleteLike(targetLike);
-	    } else {
-	      ApiUtil.createLike(like);
-	    }
-	  },
-	  componentWillReceiveProps: function (newProps) {},
-	  buttonText: function () {
-	    var text;
-	
-	    if (this.props.like) {
-	      text = "Unlike";
-	    } else {
-	      text = "Like";
-	    }
-	    return text;
-	  },
-	  likeClass: function () {
-	    var likeClass = classNames({
-	      'like-button-liked': this.props.like,
-	      'like-button-unliked': this.props.like === false
-	    });
-	    return likeClass;
-	  },
-	  getAllLikers: function () {
-	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
-	    // MUST BE A POST LIKE
-	    // pass in 2 props, the post_id and the like_type=("post")
-	    var otherPeople = LikeStore.getTheUsers(this.props.like);
-	    return otherPeople;
-	  },
-	  render: function () {
-	    var people = this.getAllLikers();
-	
-	    if (!people) {
-	      fellowLikers = React.createElement(
-	        'div',
-	        null,
-	        'Loading'
-	      );
-	    } else {
-	      fellowLikers = people.map(function (person, i) {
-	        return React.createElement(
-	          'div',
-	          { key: i },
-	          person.real_name
-	        );
-	      });
-	    }
-	
-	    var properButton;
-	    properButton = React.createElement(
-	      'button',
-	      { className: this.likeClass, onClick: this.handleLikeSubmit },
-	      this.buttonText()
-	    );
-	
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit }),
-	      fellowLikers
-	    );
-	  }
-	});
-	
-	module.exports = ImageCommentLikeButton;
-
-/***/ },
-/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {//! moment.js
@@ -37426,7 +32157,7 @@
 	                module && module.exports) {
 	            try {
 	                oldLocale = globalLocale._abbr;
-	                __webpack_require__(302)("./" + name);
+	                __webpack_require__(243)("./" + name);
 	                // because defineLocale currently also sets the global locale, we
 	                // want to undo that for lazy loaded locales
 	                locale_locales__getSetGlobalLocale(oldLocale);
@@ -40353,10 +35084,10 @@
 	    return _moment;
 	
 	}));
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(301)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(242)(module)))
 
 /***/ },
-/* 301 */
+/* 242 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -40372,180 +35103,180 @@
 
 
 /***/ },
-/* 302 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./af": 303,
-		"./af.js": 303,
-		"./ar": 304,
-		"./ar-ma": 305,
-		"./ar-ma.js": 305,
-		"./ar-sa": 306,
-		"./ar-sa.js": 306,
-		"./ar-tn": 307,
-		"./ar-tn.js": 307,
-		"./ar.js": 304,
-		"./az": 308,
-		"./az.js": 308,
-		"./be": 309,
-		"./be.js": 309,
-		"./bg": 310,
-		"./bg.js": 310,
-		"./bn": 311,
-		"./bn.js": 311,
-		"./bo": 312,
-		"./bo.js": 312,
-		"./br": 313,
-		"./br.js": 313,
-		"./bs": 314,
-		"./bs.js": 314,
-		"./ca": 315,
-		"./ca.js": 315,
-		"./cs": 316,
-		"./cs.js": 316,
-		"./cv": 317,
-		"./cv.js": 317,
-		"./cy": 318,
-		"./cy.js": 318,
-		"./da": 319,
-		"./da.js": 319,
-		"./de": 320,
-		"./de-at": 321,
-		"./de-at.js": 321,
-		"./de.js": 320,
-		"./el": 322,
-		"./el.js": 322,
-		"./en-au": 323,
-		"./en-au.js": 323,
-		"./en-ca": 324,
-		"./en-ca.js": 324,
-		"./en-gb": 325,
-		"./en-gb.js": 325,
-		"./eo": 326,
-		"./eo.js": 326,
-		"./es": 327,
-		"./es.js": 327,
-		"./et": 328,
-		"./et.js": 328,
-		"./eu": 329,
-		"./eu.js": 329,
-		"./fa": 330,
-		"./fa.js": 330,
-		"./fi": 331,
-		"./fi.js": 331,
-		"./fo": 332,
-		"./fo.js": 332,
-		"./fr": 333,
-		"./fr-ca": 334,
-		"./fr-ca.js": 334,
-		"./fr.js": 333,
-		"./fy": 335,
-		"./fy.js": 335,
-		"./gl": 336,
-		"./gl.js": 336,
-		"./he": 337,
-		"./he.js": 337,
-		"./hi": 338,
-		"./hi.js": 338,
-		"./hr": 339,
-		"./hr.js": 339,
-		"./hu": 340,
-		"./hu.js": 340,
-		"./hy-am": 341,
-		"./hy-am.js": 341,
-		"./id": 342,
-		"./id.js": 342,
-		"./is": 343,
-		"./is.js": 343,
-		"./it": 344,
-		"./it.js": 344,
-		"./ja": 345,
-		"./ja.js": 345,
-		"./jv": 346,
-		"./jv.js": 346,
-		"./ka": 347,
-		"./ka.js": 347,
-		"./km": 348,
-		"./km.js": 348,
-		"./ko": 349,
-		"./ko.js": 349,
-		"./lb": 350,
-		"./lb.js": 350,
-		"./lt": 351,
-		"./lt.js": 351,
-		"./lv": 352,
-		"./lv.js": 352,
-		"./me": 353,
-		"./me.js": 353,
-		"./mk": 354,
-		"./mk.js": 354,
-		"./ml": 355,
-		"./ml.js": 355,
-		"./mr": 356,
-		"./mr.js": 356,
-		"./ms": 357,
-		"./ms-my": 358,
-		"./ms-my.js": 358,
-		"./ms.js": 357,
-		"./my": 359,
-		"./my.js": 359,
-		"./nb": 360,
-		"./nb.js": 360,
-		"./ne": 361,
-		"./ne.js": 361,
-		"./nl": 362,
-		"./nl.js": 362,
-		"./nn": 363,
-		"./nn.js": 363,
-		"./pl": 364,
-		"./pl.js": 364,
-		"./pt": 365,
-		"./pt-br": 366,
-		"./pt-br.js": 366,
-		"./pt.js": 365,
-		"./ro": 367,
-		"./ro.js": 367,
-		"./ru": 368,
-		"./ru.js": 368,
-		"./si": 369,
-		"./si.js": 369,
-		"./sk": 370,
-		"./sk.js": 370,
-		"./sl": 371,
-		"./sl.js": 371,
-		"./sq": 372,
-		"./sq.js": 372,
-		"./sr": 373,
-		"./sr-cyrl": 374,
-		"./sr-cyrl.js": 374,
-		"./sr.js": 373,
-		"./sv": 375,
-		"./sv.js": 375,
-		"./ta": 376,
-		"./ta.js": 376,
-		"./th": 377,
-		"./th.js": 377,
-		"./tl-ph": 378,
-		"./tl-ph.js": 378,
-		"./tr": 379,
-		"./tr.js": 379,
-		"./tzl": 380,
-		"./tzl.js": 380,
-		"./tzm": 381,
-		"./tzm-latn": 382,
-		"./tzm-latn.js": 382,
-		"./tzm.js": 381,
-		"./uk": 383,
-		"./uk.js": 383,
-		"./uz": 384,
-		"./uz.js": 384,
-		"./vi": 385,
-		"./vi.js": 385,
-		"./zh-cn": 386,
-		"./zh-cn.js": 386,
-		"./zh-tw": 387,
-		"./zh-tw.js": 387
+		"./af": 244,
+		"./af.js": 244,
+		"./ar": 245,
+		"./ar-ma": 246,
+		"./ar-ma.js": 246,
+		"./ar-sa": 247,
+		"./ar-sa.js": 247,
+		"./ar-tn": 248,
+		"./ar-tn.js": 248,
+		"./ar.js": 245,
+		"./az": 249,
+		"./az.js": 249,
+		"./be": 250,
+		"./be.js": 250,
+		"./bg": 251,
+		"./bg.js": 251,
+		"./bn": 252,
+		"./bn.js": 252,
+		"./bo": 253,
+		"./bo.js": 253,
+		"./br": 254,
+		"./br.js": 254,
+		"./bs": 255,
+		"./bs.js": 255,
+		"./ca": 256,
+		"./ca.js": 256,
+		"./cs": 257,
+		"./cs.js": 257,
+		"./cv": 258,
+		"./cv.js": 258,
+		"./cy": 259,
+		"./cy.js": 259,
+		"./da": 260,
+		"./da.js": 260,
+		"./de": 261,
+		"./de-at": 262,
+		"./de-at.js": 262,
+		"./de.js": 261,
+		"./el": 263,
+		"./el.js": 263,
+		"./en-au": 264,
+		"./en-au.js": 264,
+		"./en-ca": 265,
+		"./en-ca.js": 265,
+		"./en-gb": 266,
+		"./en-gb.js": 266,
+		"./eo": 267,
+		"./eo.js": 267,
+		"./es": 268,
+		"./es.js": 268,
+		"./et": 269,
+		"./et.js": 269,
+		"./eu": 270,
+		"./eu.js": 270,
+		"./fa": 271,
+		"./fa.js": 271,
+		"./fi": 272,
+		"./fi.js": 272,
+		"./fo": 273,
+		"./fo.js": 273,
+		"./fr": 274,
+		"./fr-ca": 275,
+		"./fr-ca.js": 275,
+		"./fr.js": 274,
+		"./fy": 276,
+		"./fy.js": 276,
+		"./gl": 277,
+		"./gl.js": 277,
+		"./he": 278,
+		"./he.js": 278,
+		"./hi": 279,
+		"./hi.js": 279,
+		"./hr": 280,
+		"./hr.js": 280,
+		"./hu": 281,
+		"./hu.js": 281,
+		"./hy-am": 282,
+		"./hy-am.js": 282,
+		"./id": 283,
+		"./id.js": 283,
+		"./is": 284,
+		"./is.js": 284,
+		"./it": 285,
+		"./it.js": 285,
+		"./ja": 286,
+		"./ja.js": 286,
+		"./jv": 287,
+		"./jv.js": 287,
+		"./ka": 288,
+		"./ka.js": 288,
+		"./km": 289,
+		"./km.js": 289,
+		"./ko": 290,
+		"./ko.js": 290,
+		"./lb": 291,
+		"./lb.js": 291,
+		"./lt": 292,
+		"./lt.js": 292,
+		"./lv": 293,
+		"./lv.js": 293,
+		"./me": 294,
+		"./me.js": 294,
+		"./mk": 295,
+		"./mk.js": 295,
+		"./ml": 296,
+		"./ml.js": 296,
+		"./mr": 297,
+		"./mr.js": 297,
+		"./ms": 298,
+		"./ms-my": 299,
+		"./ms-my.js": 299,
+		"./ms.js": 298,
+		"./my": 300,
+		"./my.js": 300,
+		"./nb": 301,
+		"./nb.js": 301,
+		"./ne": 302,
+		"./ne.js": 302,
+		"./nl": 303,
+		"./nl.js": 303,
+		"./nn": 304,
+		"./nn.js": 304,
+		"./pl": 305,
+		"./pl.js": 305,
+		"./pt": 306,
+		"./pt-br": 307,
+		"./pt-br.js": 307,
+		"./pt.js": 306,
+		"./ro": 308,
+		"./ro.js": 308,
+		"./ru": 309,
+		"./ru.js": 309,
+		"./si": 310,
+		"./si.js": 310,
+		"./sk": 311,
+		"./sk.js": 311,
+		"./sl": 312,
+		"./sl.js": 312,
+		"./sq": 313,
+		"./sq.js": 313,
+		"./sr": 314,
+		"./sr-cyrl": 315,
+		"./sr-cyrl.js": 315,
+		"./sr.js": 314,
+		"./sv": 316,
+		"./sv.js": 316,
+		"./ta": 317,
+		"./ta.js": 317,
+		"./th": 318,
+		"./th.js": 318,
+		"./tl-ph": 319,
+		"./tl-ph.js": 319,
+		"./tr": 320,
+		"./tr.js": 320,
+		"./tzl": 321,
+		"./tzl.js": 321,
+		"./tzm": 322,
+		"./tzm-latn": 323,
+		"./tzm-latn.js": 323,
+		"./tzm.js": 322,
+		"./uk": 324,
+		"./uk.js": 324,
+		"./uz": 325,
+		"./uz.js": 325,
+		"./vi": 326,
+		"./vi.js": 326,
+		"./zh-cn": 327,
+		"./zh-cn.js": 327,
+		"./zh-tw": 328,
+		"./zh-tw.js": 328
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -40558,11 +35289,11 @@
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 302;
+	webpackContext.id = 243;
 
 
 /***/ },
-/* 303 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -40570,7 +35301,7 @@
 	//! author : Werner Mollentze : https://github.com/wernerm
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -40639,7 +35370,7 @@
 	}));
 
 /***/ },
-/* 304 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -40649,7 +35380,7 @@
 	//! Native plural forms: forabi https://github.com/forabi
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -40779,7 +35510,7 @@
 	}));
 
 /***/ },
-/* 305 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -40788,7 +35519,7 @@
 	//! author : Abdel Said : https://github.com/abdelsaid
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -40842,7 +35573,7 @@
 	}));
 
 /***/ },
-/* 306 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -40850,7 +35581,7 @@
 	//! author : Suhail Alkowaileet : https://github.com/xsoh
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -40949,14 +35680,14 @@
 	}));
 
 /***/ },
-/* 307 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale  : Tunisian Arabic (ar-tn)
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41010,7 +35741,7 @@
 	}));
 
 /***/ },
-/* 308 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -41018,7 +35749,7 @@
 	//! author : topchiyev : https://github.com/topchiyev
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41118,7 +35849,7 @@
 	}));
 
 /***/ },
-/* 309 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -41128,7 +35859,7 @@
 	//! Author : Menelion Elensúle : https://github.com/Oire
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41269,7 +36000,7 @@
 	}));
 
 /***/ },
-/* 310 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -41277,7 +36008,7 @@
 	//! author : Krasen Borisov : https://github.com/kraz
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41363,7 +36094,7 @@
 	}));
 
 /***/ },
-/* 311 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -41371,7 +36102,7 @@
 	//! author : Kaushik Gandhi : https://github.com/kaushikgandhi
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41480,7 +36211,7 @@
 	}));
 
 /***/ },
-/* 312 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -41488,7 +36219,7 @@
 	//! author : Thupten N. Chakrishar : https://github.com/vajradog
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41594,7 +36325,7 @@
 	}));
 
 /***/ },
-/* 313 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -41602,7 +36333,7 @@
 	//! author : Jean-Baptiste Le Duigou : https://github.com/jbleduigou
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41705,7 +36436,7 @@
 	}));
 
 /***/ },
-/* 314 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -41714,7 +36445,7 @@
 	//! based on (hr) translation by Bojan Marković
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41850,7 +36581,7 @@
 	}));
 
 /***/ },
-/* 315 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -41858,7 +36589,7 @@
 	//! author : Juan G. Hurtado : https://github.com/juanghurtado
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -41933,7 +36664,7 @@
 	}));
 
 /***/ },
-/* 316 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -41941,7 +36672,7 @@
 	//! author : petrbela : https://github.com/petrbela
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42094,7 +36825,7 @@
 	}));
 
 /***/ },
-/* 317 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -42102,7 +36833,7 @@
 	//! author : Anatoly Mironov : https://github.com/mirontoli
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42161,7 +36892,7 @@
 	}));
 
 /***/ },
-/* 318 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -42169,7 +36900,7 @@
 	//! author : Robert Allen
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42244,7 +36975,7 @@
 	}));
 
 /***/ },
-/* 319 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -42252,7 +36983,7 @@
 	//! author : Ulrik Nielsen : https://github.com/mrbase
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42308,7 +37039,7 @@
 	}));
 
 /***/ },
-/* 320 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -42317,7 +37048,7 @@
 	//! author: Menelion Elensúle: https://github.com/Oire
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42387,7 +37118,7 @@
 	}));
 
 /***/ },
-/* 321 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -42397,7 +37128,7 @@
 	//! author : Martin Groller : https://github.com/MadMG
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42467,7 +37198,7 @@
 	}));
 
 /***/ },
-/* 322 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -42475,7 +37206,7 @@
 	//! author : Aggelos Karalias : https://github.com/mehiel
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42565,14 +37296,14 @@
 	}));
 
 /***/ },
-/* 323 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : australian english (en-au)
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42635,7 +37366,7 @@
 	}));
 
 /***/ },
-/* 324 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -42643,7 +37374,7 @@
 	//! author : Jonathan Abourbih : https://github.com/jonbca
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42702,7 +37433,7 @@
 	}));
 
 /***/ },
-/* 325 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -42710,7 +37441,7 @@
 	//! author : Chris Gedrim : https://github.com/chrisgedrim
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42773,7 +37504,7 @@
 	}));
 
 /***/ },
-/* 326 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -42783,7 +37514,7 @@
 	//!          Se ne, bonvolu korekti kaj avizi min por ke mi povas lerni!
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42850,7 +37581,7 @@
 	}));
 
 /***/ },
-/* 327 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -42858,7 +37589,7 @@
 	//! author : Julio Napurí : https://github.com/julionc
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -42933,7 +37664,7 @@
 	}));
 
 /***/ },
-/* 328 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -42942,7 +37673,7 @@
 	//! improvements : Illimar Tambek : https://github.com/ragulka
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43017,7 +37748,7 @@
 	}));
 
 /***/ },
-/* 329 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -43025,7 +37756,7 @@
 	//! author : Eneko Illarramendi : https://github.com/eillarra
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43085,7 +37816,7 @@
 	}));
 
 /***/ },
-/* 330 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -43093,7 +37824,7 @@
 	//! author : Ebrahim Byagowi : https://github.com/ebraminio
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43194,7 +37925,7 @@
 	}));
 
 /***/ },
-/* 331 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -43202,7 +37933,7 @@
 	//! author : Tarmo Aidantausta : https://github.com/bleadof
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43305,7 +38036,7 @@
 	}));
 
 /***/ },
-/* 332 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -43313,7 +38044,7 @@
 	//! author : Ragnar Johannesen : https://github.com/ragnar123
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43369,7 +38100,7 @@
 	}));
 
 /***/ },
-/* 333 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -43377,7 +38108,7 @@
 	//! author : John Fischer : https://github.com/jfroffice
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43435,7 +38166,7 @@
 	}));
 
 /***/ },
-/* 334 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -43443,7 +38174,7 @@
 	//! author : Jonathan Abourbih : https://github.com/jonbca
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43497,7 +38228,7 @@
 	}));
 
 /***/ },
-/* 335 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -43505,7 +38236,7 @@
 	//! author : Robin van der Vliet : https://github.com/robin0van0der0v
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43572,7 +38303,7 @@
 	}));
 
 /***/ },
-/* 336 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -43580,7 +38311,7 @@
 	//! author : Juan G. Hurtado : https://github.com/juanghurtado
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43651,7 +38382,7 @@
 	}));
 
 /***/ },
-/* 337 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -43661,7 +38392,7 @@
 	//! author : Tal Ater : https://github.com/TalAter
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43737,7 +38468,7 @@
 	}));
 
 /***/ },
-/* 338 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -43745,7 +38476,7 @@
 	//! author : Mayank Singhal : https://github.com/mayanksinghal
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -43864,7 +38595,7 @@
 	}));
 
 /***/ },
-/* 339 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -43872,7 +38603,7 @@
 	//! author : Bojan Marković : https://github.com/bmarkovic
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44008,7 +38739,7 @@
 	}));
 
 /***/ },
-/* 340 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -44016,7 +38747,7 @@
 	//! author : Adam Brunner : https://github.com/adambrunner
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44121,7 +38852,7 @@
 	}));
 
 /***/ },
-/* 341 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -44129,7 +38860,7 @@
 	//! author : Armendarabyan : https://github.com/armendarabyan
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44236,7 +38967,7 @@
 	}));
 
 /***/ },
-/* 342 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -44245,7 +38976,7 @@
 	//! reference: http://id.wikisource.org/wiki/Pedoman_Umum_Ejaan_Bahasa_Indonesia_yang_Disempurnakan
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44323,7 +39054,7 @@
 	}));
 
 /***/ },
-/* 343 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -44331,7 +39062,7 @@
 	//! author : Hinrik Örn Sigurðsson : https://github.com/hinrik
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44454,7 +39185,7 @@
 	}));
 
 /***/ },
-/* 344 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -44463,7 +39194,7 @@
 	//! author: Mattia Larentis: https://github.com/nostalgiaz
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44528,7 +39259,7 @@
 	}));
 
 /***/ },
-/* 345 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -44536,7 +39267,7 @@
 	//! author : LI Long : https://github.com/baryon
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44597,7 +39328,7 @@
 	}));
 
 /***/ },
-/* 346 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -44606,7 +39337,7 @@
 	//! reference: http://jv.wikipedia.org/wiki/Basa_Jawa
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44684,7 +39415,7 @@
 	}));
 
 /***/ },
-/* 347 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -44692,7 +39423,7 @@
 	//! author : Irakli Janiashvili : https://github.com/irakli-janiashvili
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44791,7 +39522,7 @@
 	}));
 
 /***/ },
-/* 348 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -44799,7 +39530,7 @@
 	//! author : Kruy Vanna : https://github.com/kruyvanna
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44853,7 +39584,7 @@
 	}));
 
 /***/ },
-/* 349 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -44865,7 +39596,7 @@
 	//! - Jeeeyul Lee <jeeeyul@gmail.com>
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -44925,7 +39656,7 @@
 	}));
 
 /***/ },
-/* 350 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -44933,7 +39664,7 @@
 	//! author : mweimerskirch : https://github.com/mweimerskirch, David Raison : https://github.com/kwisatz
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45063,7 +39794,7 @@
 	}));
 
 /***/ },
-/* 351 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -45071,7 +39802,7 @@
 	//! author : Mindaugas Mozūras : https://github.com/mmozuras
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45192,7 +39923,7 @@
 	}));
 
 /***/ },
-/* 352 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -45201,7 +39932,7 @@
 	//! author : Jānis Elmeris : https://github.com/JanisE
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45292,7 +40023,7 @@
 	}));
 
 /***/ },
-/* 353 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -45300,7 +40031,7 @@
 	//! author : Miodrag Nikač <miodrag@restartit.me> : https://github.com/miodragnikac
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45405,7 +40136,7 @@
 	}));
 
 /***/ },
-/* 354 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -45413,7 +40144,7 @@
 	//! author : Borislav Mickov : https://github.com/B0k0
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45499,7 +40230,7 @@
 	}));
 
 /***/ },
-/* 355 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -45507,7 +40238,7 @@
 	//! author : Floyd Pink : https://github.com/floydpink
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45574,7 +40305,7 @@
 	}));
 
 /***/ },
-/* 356 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -45582,7 +40313,7 @@
 	//! author : Harshad Kale : https://github.com/kalehv
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45699,7 +40430,7 @@
 	}));
 
 /***/ },
-/* 357 */
+/* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -45707,7 +40438,7 @@
 	//! author : Weldan Jamili : https://github.com/weldan
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45785,7 +40516,7 @@
 	}));
 
 /***/ },
-/* 358 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -45793,7 +40524,7 @@
 	//! author : Weldan Jamili : https://github.com/weldan
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45871,7 +40602,7 @@
 	}));
 
 /***/ },
-/* 359 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -45879,7 +40610,7 @@
 	//! author : Squar team, mysquar.com
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -45968,7 +40699,7 @@
 	}));
 
 /***/ },
-/* 360 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -45977,7 +40708,7 @@
 	//!           Sigurd Gartmann : https://github.com/sigurdga
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46033,7 +40764,7 @@
 	}));
 
 /***/ },
-/* 361 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -46041,7 +40772,7 @@
 	//! author : suvash : https://github.com/suvash
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46160,7 +40891,7 @@
 	}));
 
 /***/ },
-/* 362 */
+/* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -46168,7 +40899,7 @@
 	//! author : Joris Röling : https://github.com/jjupiter
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46235,7 +40966,7 @@
 	}));
 
 /***/ },
-/* 363 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -46243,7 +40974,7 @@
 	//! author : https://github.com/mechuwind
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46299,7 +41030,7 @@
 	}));
 
 /***/ },
-/* 364 */
+/* 305 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -46307,7 +41038,7 @@
 	//! author : Rafal Hirsz : https://github.com/evoL
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46408,7 +41139,7 @@
 	}));
 
 /***/ },
-/* 365 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -46416,7 +41147,7 @@
 	//! author : Jefferson : https://github.com/jalex79
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46476,7 +41207,7 @@
 	}));
 
 /***/ },
-/* 366 */
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -46484,7 +41215,7 @@
 	//! author : Caio Ribeiro Pereira : https://github.com/caio-ribeiro-pereira
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46540,7 +41271,7 @@
 	}));
 
 /***/ },
-/* 367 */
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -46549,7 +41280,7 @@
 	//! author : Valentin Agachi : https://github.com/avaly
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46618,7 +41349,7 @@
 	}));
 
 /***/ },
-/* 368 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -46627,7 +41358,7 @@
 	//! Author : Menelion Elensúle : https://github.com/Oire
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46786,7 +41517,7 @@
 	}));
 
 /***/ },
-/* 369 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -46794,7 +41525,7 @@
 	//! author : Sampath Sitinamaluwa : https://github.com/sampathsris
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -46855,7 +41586,7 @@
 	}));
 
 /***/ },
-/* 370 */
+/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -46864,7 +41595,7 @@
 	//! based on work of petrbela : https://github.com/petrbela
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47017,7 +41748,7 @@
 	}));
 
 /***/ },
-/* 371 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -47025,7 +41756,7 @@
 	//! author : Robert Sedovšek : https://github.com/sedovsek
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47181,7 +41912,7 @@
 	}));
 
 /***/ },
-/* 372 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -47191,7 +41922,7 @@
 	//! author : Oerd Cukalla : https://github.com/oerd (fixes)
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47254,7 +41985,7 @@
 	}));
 
 /***/ },
-/* 373 */
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -47262,7 +41993,7 @@
 	//! author : Milan Janačković<milanjanackovic@gmail.com> : https://github.com/milan-j
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47366,7 +42097,7 @@
 	}));
 
 /***/ },
-/* 374 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -47374,7 +42105,7 @@
 	//! author : Milan Janačković<milanjanackovic@gmail.com> : https://github.com/milan-j
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47478,7 +42209,7 @@
 	}));
 
 /***/ },
-/* 375 */
+/* 316 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -47486,7 +42217,7 @@
 	//! author : Jens Alm : https://github.com/ulmus
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47549,7 +42280,7 @@
 	}));
 
 /***/ },
-/* 376 */
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -47557,7 +42288,7 @@
 	//! author : Arjunkumar Krishnamoorthy : https://github.com/tk120404
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47648,7 +42379,7 @@
 	}));
 
 /***/ },
-/* 377 */
+/* 318 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -47656,7 +42387,7 @@
 	//! author : Kridsada Thanabulpong : https://github.com/sirn
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47717,7 +42448,7 @@
 	}));
 
 /***/ },
-/* 378 */
+/* 319 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -47725,7 +42456,7 @@
 	//! author : Dan Hagman
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47783,7 +42514,7 @@
 	}));
 
 /***/ },
-/* 379 */
+/* 320 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -47792,7 +42523,7 @@
 	//!           Burak Yiğit Kaya: https://github.com/BYK
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47877,7 +42608,7 @@
 	}));
 
 /***/ },
-/* 380 */
+/* 321 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -47885,7 +42616,7 @@
 	//! author : Robin van der Vliet : https://github.com/robin0van0der0v with the help of Iustì Canun
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -47966,7 +42697,7 @@
 	}));
 
 /***/ },
-/* 381 */
+/* 322 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -47974,7 +42705,7 @@
 	//! author : Abdel Said : https://github.com/abdelsaid
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -48028,7 +42759,7 @@
 	}));
 
 /***/ },
-/* 382 */
+/* 323 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -48036,7 +42767,7 @@
 	//! author : Abdel Said : https://github.com/abdelsaid
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -48090,7 +42821,7 @@
 	}));
 
 /***/ },
-/* 383 */
+/* 324 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -48099,7 +42830,7 @@
 	//! Author : Menelion Elensúle : https://github.com/Oire
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -48247,7 +42978,7 @@
 	}));
 
 /***/ },
-/* 384 */
+/* 325 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -48255,7 +42986,7 @@
 	//! author : Sardor Muminov : https://github.com/muminoff
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -48309,7 +43040,7 @@
 	}));
 
 /***/ },
-/* 385 */
+/* 326 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -48317,7 +43048,7 @@
 	//! author : Bang Nguyen : https://github.com/bangnk
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -48379,7 +43110,7 @@
 	}));
 
 /***/ },
-/* 386 */
+/* 327 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -48388,7 +43119,7 @@
 	//! author : Zeno Zeng : https://github.com/zenozeng
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -48510,7 +43241,7 @@
 	}));
 
 /***/ },
-/* 387 */
+/* 328 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -48518,7 +43249,7 @@
 	//! author : Ben : https://github.com/ben-lin
 	
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(300)) :
+	    true ? factory(__webpack_require__(241)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -48613,6 +43344,5284 @@
 	    return zh_tw;
 	
 	}));
+
+/***/ },
+/* 329 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var NewComment = React.createClass({
+	  displayName: 'NewComment',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  componentWillMount: function () {
+	    this.setState({ currentUser: UserStore.getCurrentUser() });
+	  },
+	  handleSubmit: function (event) {
+	    event.preventDefault();
+	    var post = { body: event.currentTarget[0].value, post_id: this.props.parentCommentId };
+	    ApiUtil.createComment(post);
+	    event.currentTarget[0].value = null;
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'form',
+	          { onSubmit: this.handleSubmit },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'comment_body' },
+	            'Leave a new comment'
+	          ),
+	          React.createElement('br', null),
+	          React.createElement('textarea', {
+	            name: 'comment[body]',
+	            id: 'comment_body', rows: '4', cols: '50' }),
+	          React.createElement('br', null),
+	          React.createElement('input', { type: 'submit', value: 'Comment' })
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = NewComment;
+
+/***/ },
+/* 330 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var CommentStore = __webpack_require__(331);
+	var CommentLikeButton = __webpack_require__(333);
+	var LikeStore = __webpack_require__(335);
+	
+	var ApiUtil = __webpack_require__(235);
+	var History = __webpack_require__(159).History;
+	
+	var Comment = React.createClass({
+	  displayName: 'Comment',
+	
+	  mixins: [History],
+	
+	  _commentsChanged: function () {
+	    this.setState({ comments: CommentStore.getByPostId(this.props.postId) });
+	  },
+	
+	  getInitialState: function () {
+	    return {
+	      comments: CommentStore.getByPostId(this.props.postId)
+	    };
+	  },
+	
+	  componentDidMount: function () {
+	    this.commentListener = CommentStore.addListener(this._commentsChanged);
+	    ApiUtil.fetchComments();
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.commentListener.remove();
+	  },
+	  handleAuthorClick: function (authorId) {
+	    this.history.pushState(null, "user/" + authorId);
+	    window.scrollTo(0, 0);
+	  },
+	  likeButtonLogic: function (comment) {
+	    var likes = LikeStore.all();
+	    var current_comment = comment;
+	    var current_user = UserStore.getCurrentUser();
+	
+	    if (!current_comment.id) {
+	      return false;
+	    }
+	    var liking = false;
+	    var that = this;
+	
+	    likes.forEach(function (like) {
+	      if (like.post_id === current_comment.id && like.author_id === current_user.id && like.like_type === "comment") {
+	        liking = like;
+	      }
+	    });
+	
+	    return liking;
+	  },
+	  _buttonRenderFunction: function (comment) {
+	    var placeholder = this.likeButtonLogic(comment);
+	    var likeButton;
+	    var currentUser = UserStore.getCurrentUser();
+	
+	    if (placeholder) {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(CommentLikeButton, { currentUser: currentUser,
+	          comment: comment,
+	          like: placeholder })
+	      );
+	    } else {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(CommentLikeButton, { currentUser: currentUser,
+	          comment: comment,
+	          like: placeholder })
+	      );
+	    }
+	
+	    return likeButton;
+	  },
+	
+	  render: function () {
+	    var that = this;
+	
+	    var Comments = this.state.comments.map(function (comment, i) {
+	      return React.createElement(
+	        'div',
+	        { key: comment.id, className: 'post-comment' },
+	        React.createElement(
+	          'div',
+	          { onClick: that.handleAuthorClick.bind(null, comment.author.id) },
+	          comment.author.real_name
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'comment-only-the-body' },
+	          comment.body
+	        ),
+	        that._buttonRenderFunction(comment)
+	      );
+	    });
+	    return React.createElement(
+	      'div',
+	      null,
+	      Comments
+	    );
+	  }
+	});
+	
+	// render the top level comment, then render its kids
+	
+	module.exports = Comment;
+
+/***/ },
+/* 331 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var CommentConstants = __webpack_require__(332);
+	var AppDispatcher = __webpack_require__(230);
+	
+	var CommentStore = new Store(AppDispatcher);
+	
+	var _comments = [];
+	
+	var resetComments = function (comments) {
+	  _comments = comments.slice(0);
+	};
+	
+	var addNewComment = function (newComment) {
+	  _comments.push(newComment);
+	};
+	
+	CommentStore.all = function () {
+	  return _comments.slice(0);
+	};
+	
+	CommentStore.getByPostId = function (postIdString) {
+	  var postId = parseInt(postIdString);
+	  var comments = CommentStore.all();
+	  var relevantComments = [];
+	
+	  comments.forEach(function (comment) {
+	
+	    if (comment.post_id === postId) {
+	      relevantComments.push(comment);
+	    }
+	  });
+	
+	  return relevantComments;
+	};
+	
+	CommentStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case CommentConstants.COMMENTS_RECEIVED:
+	      var result = resetComments(payload.comments);
+	      CommentStore.__emitChange();
+	      break;
+	    case CommentConstants.NEW_COMMENT_RECEIVED:
+	      var result = addNewComment(payload.newComment);
+	      CommentStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = CommentStore;
+
+/***/ },
+/* 332 */
+/***/ function(module, exports) {
+
+	CommentConstants = {
+	  COMMENTS_RECEIVED: "COMMENTS_RECEIVED",
+	  NEW_COMMENT_RECEIVED: "NEW_COMMENT_RECEIVED"
+	};
+	
+	module.exports = CommentConstants;
+
+/***/ },
+/* 333 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var FollowStore = __webpack_require__(334);
+	var LikeStore = __webpack_require__(335);
+	var classNames = __webpack_require__(336);
+	var ApiUtil = __webpack_require__(235);
+	
+	var CommentLikeButton = React.createClass({
+	  displayName: 'CommentLikeButton',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	
+	  handleLikeSubmit: function (event) {
+	    event.preventDefault();
+	
+	    var like = { author_id: this.props.currentUser.id,
+	      like_type: "comment",
+	      post_id: this.props.comment.id };
+	
+	    if (this.props.like) {
+	      var targetLike = LikeStore.getByLikeParties(like);
+	      ApiUtil.deleteLike(targetLike);
+	    } else {
+	      ApiUtil.createLike(like);
+	    }
+	  },
+	  componentWillReceiveProps: function (newProps) {},
+	  buttonText: function () {
+	    var text;
+	
+	    if (this.props.like) {
+	      text = "Unlike";
+	    } else {
+	      text = "Like";
+	    }
+	    return text;
+	  },
+	  getAllLikers: function () {
+	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
+	    // MUST BE A POST LIKE
+	    // pass in 2 props, the post_id and the like_type=("post")
+	    var otherPeople = LikeStore.getTheUsers(this.props.like);
+	    return otherPeople;
+	  },
+	  likeClass: function () {
+	    var likeClass = classNames({
+	      "like-button": true,
+	      'like-button-liked': this.props.like,
+	      'like-button-unliked': this.props.like === false
+	    });
+	    return likeClass;
+	  },
+	  render: function () {
+	    var people = this.getAllLikers();
+	
+	    if (!people) {
+	      fellowLikers = React.createElement(
+	        'div',
+	        null,
+	        'Loading'
+	      );
+	    } else {
+	      fellowLikers = people.map(function (person, i) {
+	        return React.createElement(
+	          'div',
+	          { className: 'liker-name',
+	            key: i },
+	          person.real_name
+	        );
+	      });
+	    }
+	
+	    var properButton;
+	    properButton = React.createElement(
+	      'button',
+	      { className: this.likeClass(),
+	        onClick: this.handleLikeSubmit },
+	      this.buttonText()
+	    );
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'like-area' },
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement('img', { src: '/assets/thumb.png',
+	          height: '20', width: '20',
+	          className: this.likeClass(),
+	          onClick: this.handleLikeSubmit })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'liker-names' },
+	        fellowLikers
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = CommentLikeButton;
+
+/***/ },
+/* 334 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var FollowConstants = __webpack_require__(237);
+	var AppDispatcher = __webpack_require__(230);
+	
+	var FollowStore = new Store(AppDispatcher);
+	
+	var _follows = [];
+	
+	var resetFollows = function (follows) {
+	  _follows = follows.slice(0);
+	};
+	
+	var addNewFollow = function (newFollow) {
+	  _follows.push(newFollow);
+	};
+	
+	FollowStore.all = function () {
+	  return _follows.slice(0);
+	};
+	
+	FollowStore.getByFollowParties = function (followParties) {
+	  var author_id = parseInt(followParties.author_id);
+	  var followed_user_id = parseInt(followParties.followed_user_id);
+	  var follows = FollowStore.all();
+	  var relevantFollow = {};
+	
+	  follows.forEach(function (follow) {
+	
+	    if (follow.author_id === author_id && follow.followed_user_id === followed_user_id) {
+	      relevantFollow = follow;
+	    }
+	  });
+	
+	  return relevantFollow;
+	};
+	
+	FollowStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case UserConstants.FOLLOW_RECEIVED:
+	      // var result = addNewFollow(payload.newFollow);
+	      var result = resetFollows(payload.follow);
+	      FollowStore.__emitChange();
+	      break;
+	    case FollowConstants.FOLLOWS_RECEIVED:
+	      var result = resetFollows(payload.follows);
+	      FollowStore.__emitChange();
+	      break;
+	    case FollowConstants.FOLLOW_REMOVED:
+	      var result = resetFollows(payload.follows);
+	      FollowStore.__emitChange();
+	  }
+	};
+	
+	module.exports = FollowStore;
+
+/***/ },
+/* 335 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var LikeConstants = __webpack_require__(239);
+	var AppDispatcher = __webpack_require__(230);
+	var UserStore = __webpack_require__(233);
+	
+	var LikeStore = new Store(AppDispatcher);
+	
+	var _likes = [];
+	
+	var resetLikes = function (likes) {
+	  _likes = likes.slice(0);
+	};
+	
+	var addNewLike = function (newLike) {
+	  _likes.push(newLike);
+	};
+	
+	LikeStore.all = function () {
+	  return _likes.slice(0);
+	};
+	
+	LikeStore.getByLikeParties = function (like) {
+	  var author_id = parseInt(like.author_id);
+	  var post_id = parseInt(like.post_id);
+	  var like_type = like.like_type;
+	  var likes = LikeStore.all();
+	  var relevantLike = {};
+	
+	  likes.forEach(function (like) {
+	
+	    if (like.author_id === author_id && like.post_id === post_id && like.like_type === like_type) {
+	      relevantLike = like;
+	    }
+	  });
+	
+	  return relevantLike;
+	};
+	
+	LikeStore.getAllOtherLikers = function (like) {
+	  var users = UserStore.all();
+	  var likes = LikeStore.all();
+	  var author_id = parseInt(like.author_id);
+	  var post_id = parseInt(like.post_id);
+	  var like_type = like.like_type;
+	
+	  var relevantLikes = [];
+	  likes.forEach(function (like) {
+	    if (like.post_id === post_id && like.like_type === like_type) {
+	      relevantLikes.push(like);
+	    }
+	  });
+	
+	  return relevantLikes;
+	};
+	
+	LikeStore.getTheUsers = function (like) {
+	  var relevantLikes = LikeStore.getAllOtherLikers(like);
+	  var relevantUsers = [];
+	  relevantLikes.forEach(function (like) {
+	    relevantUsers.push(UserStore.findUser(like.author_id));
+	  });
+	  return relevantUsers;
+	};
+	
+	LikeStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case LikeConstants.NEW_LIKE_RECEIVED:
+	      // var result = addNewLike(payload.newLike);
+	      var result = addNewLike(payload.newLike);
+	      LikeStore.__emitChange();
+	      break;
+	    case LikeConstants.LIKES_RECEIVED:
+	      var result = resetLikes(payload.likes);
+	      LikeStore.__emitChange();
+	      break;
+	    case LikeConstants.LIKE_REMOVED:
+	      var result = resetLikes(payload.likes);
+	      LikeStore.__emitChange();
+	  }
+	};
+	
+	module.exports = LikeStore;
+
+/***/ },
+/* 336 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2015 Jed Watson.
+	  Licensed under the MIT License (MIT), see
+	  http://jedwatson.github.io/classnames
+	*/
+	/* global define */
+	
+	(function () {
+		'use strict';
+	
+		var hasOwn = {}.hasOwnProperty;
+	
+		function classNames () {
+			var classes = '';
+	
+			for (var i = 0; i < arguments.length; i++) {
+				var arg = arguments[i];
+				if (!arg) continue;
+	
+				var argType = typeof arg;
+	
+				if (argType === 'string' || argType === 'number') {
+					classes += ' ' + arg;
+				} else if (Array.isArray(arg)) {
+					classes += ' ' + classNames.apply(null, arg);
+				} else if (argType === 'object') {
+					for (var key in arg) {
+						if (hasOwn.call(arg, key) && arg[key]) {
+							classes += ' ' + key;
+						}
+					}
+				}
+			}
+	
+			return classes.substr(1);
+		}
+	
+		if (typeof module !== 'undefined' && module.exports) {
+			module.exports = classNames;
+		} else if (true) {
+			// register as 'classnames', consistent with npm package name
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+				return classNames;
+			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		} else {
+			window.classNames = classNames;
+		}
+	}());
+
+
+/***/ },
+/* 337 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var FollowStore = __webpack_require__(334);
+	var LikeStore = __webpack_require__(335);
+	var classNames = __webpack_require__(336);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var PostLikeButton = React.createClass({
+	  displayName: 'PostLikeButton',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  likeClass: function () {
+	    var likeClass = classNames({
+	      'like-button-liked': this.props.like,
+	      'like-button-unliked': this.props.like === false
+	    });
+	    return likeClass;
+	  },
+	  getAllLikers: function () {
+	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
+	    // MUST BE A POST LIKE
+	    // pass in 2 props, the post_id and the like_type=("post")
+	    var otherPeople = LikeStore.getTheUsers(this.props.like);
+	    return otherPeople;
+	  },
+	
+	  handleLikeSubmit: function (event) {
+	    event.preventDefault();
+	
+	    var like = { author_id: this.props.currentUser.id,
+	      like_type: "post",
+	      post_id: this.props.post.id };
+	
+	    if (this.props.like) {
+	      var targetLike = LikeStore.getByLikeParties(like);
+	      ApiUtil.deleteLike(targetLike);
+	    } else {
+	      ApiUtil.createLike(like);
+	    }
+	  },
+	  componentWillReceiveProps: function (newProps) {},
+	  buttonText: function () {
+	    var text;
+	
+	    if (this.props.like) {
+	      text = "Unlike";
+	    } else {
+	      text = "Like";
+	    }
+	    return text;
+	  },
+	
+	  // <img src="app/assets/images/thumb.png" ></img>
+	  render: function () {
+	    var people = this.getAllLikers();
+	
+	    if (!people) {
+	      fellowLikers = React.createElement(
+	        'div',
+	        null,
+	        'Loading'
+	      );
+	    } else {
+	      fellowLikers = people.map(function (person, i) {
+	        return React.createElement(
+	          'div',
+	          { key: i },
+	          person.real_name
+	        );
+	      });
+	    }
+	
+	    var properButton;
+	    properButton = React.createElement(
+	      'button',
+	      { className: this.likeClass(), onClick: this.handleLikeSubmit },
+	      this.buttonText()
+	    );
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        fellowLikers
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = PostLikeButton;
+
+/***/ },
+/* 338 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(339);
+
+/***/ },
+/* 339 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @typechecks
+	 * @providesModule ReactCSSTransitionGroup
+	 */
+	
+	'use strict';
+	
+	var React = __webpack_require__(2);
+	
+	var assign = __webpack_require__(39);
+	
+	var ReactTransitionGroup = __webpack_require__(340);
+	var ReactCSSTransitionGroupChild = __webpack_require__(342);
+	
+	function createTransitionTimeoutPropValidator(transitionType) {
+	  var timeoutPropName = 'transition' + transitionType + 'Timeout';
+	  var enabledPropName = 'transition' + transitionType;
+	
+	  return function (props) {
+	    // If the transition is enabled
+	    if (props[enabledPropName]) {
+	      // If no timeout duration is provided
+	      if (props[timeoutPropName] == null) {
+	        return new Error(timeoutPropName + ' wasn\'t supplied to ReactCSSTransitionGroup: ' + 'this can cause unreliable animations and won\'t be supported in ' + 'a future version of React. See ' + 'https://fb.me/react-animation-transition-group-timeout for more ' + 'information.');
+	
+	        // If the duration isn't a number
+	      } else if (typeof props[timeoutPropName] !== 'number') {
+	          return new Error(timeoutPropName + ' must be a number (in milliseconds)');
+	        }
+	    }
+	  };
+	}
+	
+	var ReactCSSTransitionGroup = React.createClass({
+	  displayName: 'ReactCSSTransitionGroup',
+	
+	  propTypes: {
+	    transitionName: ReactCSSTransitionGroupChild.propTypes.name,
+	
+	    transitionAppear: React.PropTypes.bool,
+	    transitionEnter: React.PropTypes.bool,
+	    transitionLeave: React.PropTypes.bool,
+	    transitionAppearTimeout: createTransitionTimeoutPropValidator('Appear'),
+	    transitionEnterTimeout: createTransitionTimeoutPropValidator('Enter'),
+	    transitionLeaveTimeout: createTransitionTimeoutPropValidator('Leave')
+	  },
+	
+	  getDefaultProps: function () {
+	    return {
+	      transitionAppear: false,
+	      transitionEnter: true,
+	      transitionLeave: true
+	    };
+	  },
+	
+	  _wrapChild: function (child) {
+	    // We need to provide this childFactory so that
+	    // ReactCSSTransitionGroupChild can receive updates to name, enter, and
+	    // leave while it is leaving.
+	    return React.createElement(ReactCSSTransitionGroupChild, {
+	      name: this.props.transitionName,
+	      appear: this.props.transitionAppear,
+	      enter: this.props.transitionEnter,
+	      leave: this.props.transitionLeave,
+	      appearTimeout: this.props.transitionAppearTimeout,
+	      enterTimeout: this.props.transitionEnterTimeout,
+	      leaveTimeout: this.props.transitionLeaveTimeout
+	    }, child);
+	  },
+	
+	  render: function () {
+	    return React.createElement(ReactTransitionGroup, assign({}, this.props, { childFactory: this._wrapChild }));
+	  }
+	});
+	
+	module.exports = ReactCSSTransitionGroup;
+
+/***/ },
+/* 340 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactTransitionGroup
+	 */
+	
+	'use strict';
+	
+	var React = __webpack_require__(2);
+	var ReactTransitionChildMapping = __webpack_require__(341);
+	
+	var assign = __webpack_require__(39);
+	var emptyFunction = __webpack_require__(15);
+	
+	var ReactTransitionGroup = React.createClass({
+	  displayName: 'ReactTransitionGroup',
+	
+	  propTypes: {
+	    component: React.PropTypes.any,
+	    childFactory: React.PropTypes.func
+	  },
+	
+	  getDefaultProps: function () {
+	    return {
+	      component: 'span',
+	      childFactory: emptyFunction.thatReturnsArgument
+	    };
+	  },
+	
+	  getInitialState: function () {
+	    return {
+	      children: ReactTransitionChildMapping.getChildMapping(this.props.children)
+	    };
+	  },
+	
+	  componentWillMount: function () {
+	    this.currentlyTransitioningKeys = {};
+	    this.keysToEnter = [];
+	    this.keysToLeave = [];
+	  },
+	
+	  componentDidMount: function () {
+	    var initialChildMapping = this.state.children;
+	    for (var key in initialChildMapping) {
+	      if (initialChildMapping[key]) {
+	        this.performAppear(key);
+	      }
+	    }
+	  },
+	
+	  componentWillReceiveProps: function (nextProps) {
+	    var nextChildMapping = ReactTransitionChildMapping.getChildMapping(nextProps.children);
+	    var prevChildMapping = this.state.children;
+	
+	    this.setState({
+	      children: ReactTransitionChildMapping.mergeChildMappings(prevChildMapping, nextChildMapping)
+	    });
+	
+	    var key;
+	
+	    for (key in nextChildMapping) {
+	      var hasPrev = prevChildMapping && prevChildMapping.hasOwnProperty(key);
+	      if (nextChildMapping[key] && !hasPrev && !this.currentlyTransitioningKeys[key]) {
+	        this.keysToEnter.push(key);
+	      }
+	    }
+	
+	    for (key in prevChildMapping) {
+	      var hasNext = nextChildMapping && nextChildMapping.hasOwnProperty(key);
+	      if (prevChildMapping[key] && !hasNext && !this.currentlyTransitioningKeys[key]) {
+	        this.keysToLeave.push(key);
+	      }
+	    }
+	
+	    // If we want to someday check for reordering, we could do it here.
+	  },
+	
+	  componentDidUpdate: function () {
+	    var keysToEnter = this.keysToEnter;
+	    this.keysToEnter = [];
+	    keysToEnter.forEach(this.performEnter);
+	
+	    var keysToLeave = this.keysToLeave;
+	    this.keysToLeave = [];
+	    keysToLeave.forEach(this.performLeave);
+	  },
+	
+	  performAppear: function (key) {
+	    this.currentlyTransitioningKeys[key] = true;
+	
+	    var component = this.refs[key];
+	
+	    if (component.componentWillAppear) {
+	      component.componentWillAppear(this._handleDoneAppearing.bind(this, key));
+	    } else {
+	      this._handleDoneAppearing(key);
+	    }
+	  },
+	
+	  _handleDoneAppearing: function (key) {
+	    var component = this.refs[key];
+	    if (component.componentDidAppear) {
+	      component.componentDidAppear();
+	    }
+	
+	    delete this.currentlyTransitioningKeys[key];
+	
+	    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
+	
+	    if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key)) {
+	      // This was removed before it had fully appeared. Remove it.
+	      this.performLeave(key);
+	    }
+	  },
+	
+	  performEnter: function (key) {
+	    this.currentlyTransitioningKeys[key] = true;
+	
+	    var component = this.refs[key];
+	
+	    if (component.componentWillEnter) {
+	      component.componentWillEnter(this._handleDoneEntering.bind(this, key));
+	    } else {
+	      this._handleDoneEntering(key);
+	    }
+	  },
+	
+	  _handleDoneEntering: function (key) {
+	    var component = this.refs[key];
+	    if (component.componentDidEnter) {
+	      component.componentDidEnter();
+	    }
+	
+	    delete this.currentlyTransitioningKeys[key];
+	
+	    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
+	
+	    if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key)) {
+	      // This was removed before it had fully entered. Remove it.
+	      this.performLeave(key);
+	    }
+	  },
+	
+	  performLeave: function (key) {
+	    this.currentlyTransitioningKeys[key] = true;
+	
+	    var component = this.refs[key];
+	    if (component.componentWillLeave) {
+	      component.componentWillLeave(this._handleDoneLeaving.bind(this, key));
+	    } else {
+	      // Note that this is somewhat dangerous b/c it calls setState()
+	      // again, effectively mutating the component before all the work
+	      // is done.
+	      this._handleDoneLeaving(key);
+	    }
+	  },
+	
+	  _handleDoneLeaving: function (key) {
+	    var component = this.refs[key];
+	
+	    if (component.componentDidLeave) {
+	      component.componentDidLeave();
+	    }
+	
+	    delete this.currentlyTransitioningKeys[key];
+	
+	    var currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
+	
+	    if (currentChildMapping && currentChildMapping.hasOwnProperty(key)) {
+	      // This entered again before it fully left. Add it again.
+	      this.performEnter(key);
+	    } else {
+	      this.setState(function (state) {
+	        var newChildren = assign({}, state.children);
+	        delete newChildren[key];
+	        return { children: newChildren };
+	      });
+	    }
+	  },
+	
+	  render: function () {
+	    // TODO: we could get rid of the need for the wrapper node
+	    // by cloning a single child
+	    var childrenToRender = [];
+	    for (var key in this.state.children) {
+	      var child = this.state.children[key];
+	      if (child) {
+	        // You may need to apply reactive updates to a child as it is leaving.
+	        // The normal React way to do it won't work since the child will have
+	        // already been removed. In case you need this behavior you can provide
+	        // a childFactory function to wrap every child, even the ones that are
+	        // leaving.
+	        childrenToRender.push(React.cloneElement(this.props.childFactory(child), { ref: key, key: key }));
+	      }
+	    }
+	    return React.createElement(this.props.component, this.props, childrenToRender);
+	  }
+	});
+	
+	module.exports = ReactTransitionGroup;
+
+/***/ },
+/* 341 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @typechecks static-only
+	 * @providesModule ReactTransitionChildMapping
+	 */
+	
+	'use strict';
+	
+	var flattenChildren = __webpack_require__(116);
+	
+	var ReactTransitionChildMapping = {
+	  /**
+	   * Given `this.props.children`, return an object mapping key to child. Just
+	   * simple syntactic sugar around flattenChildren().
+	   *
+	   * @param {*} children `this.props.children`
+	   * @return {object} Mapping of key to child
+	   */
+	  getChildMapping: function (children) {
+	    if (!children) {
+	      return children;
+	    }
+	    return flattenChildren(children);
+	  },
+	
+	  /**
+	   * When you're adding or removing children some may be added or removed in the
+	   * same render pass. We want to show *both* since we want to simultaneously
+	   * animate elements in and out. This function takes a previous set of keys
+	   * and a new set of keys and merges them with its best guess of the correct
+	   * ordering. In the future we may expose some of the utilities in
+	   * ReactMultiChild to make this easy, but for now React itself does not
+	   * directly have this concept of the union of prevChildren and nextChildren
+	   * so we implement it here.
+	   *
+	   * @param {object} prev prev children as returned from
+	   * `ReactTransitionChildMapping.getChildMapping()`.
+	   * @param {object} next next children as returned from
+	   * `ReactTransitionChildMapping.getChildMapping()`.
+	   * @return {object} a key set that contains all keys in `prev` and all keys
+	   * in `next` in a reasonable order.
+	   */
+	  mergeChildMappings: function (prev, next) {
+	    prev = prev || {};
+	    next = next || {};
+	
+	    function getValueForKey(key) {
+	      if (next.hasOwnProperty(key)) {
+	        return next[key];
+	      } else {
+	        return prev[key];
+	      }
+	    }
+	
+	    // For each key of `next`, the list of keys to insert before that key in
+	    // the combined list
+	    var nextKeysPending = {};
+	
+	    var pendingKeys = [];
+	    for (var prevKey in prev) {
+	      if (next.hasOwnProperty(prevKey)) {
+	        if (pendingKeys.length) {
+	          nextKeysPending[prevKey] = pendingKeys;
+	          pendingKeys = [];
+	        }
+	      } else {
+	        pendingKeys.push(prevKey);
+	      }
+	    }
+	
+	    var i;
+	    var childMapping = {};
+	    for (var nextKey in next) {
+	      if (nextKeysPending.hasOwnProperty(nextKey)) {
+	        for (i = 0; i < nextKeysPending[nextKey].length; i++) {
+	          var pendingNextKey = nextKeysPending[nextKey][i];
+	          childMapping[nextKeysPending[nextKey][i]] = getValueForKey(pendingNextKey);
+	        }
+	      }
+	      childMapping[nextKey] = getValueForKey(nextKey);
+	    }
+	
+	    // Finally, add the keys which didn't appear before any key in `next`
+	    for (i = 0; i < pendingKeys.length; i++) {
+	      childMapping[pendingKeys[i]] = getValueForKey(pendingKeys[i]);
+	    }
+	
+	    return childMapping;
+	  }
+	};
+	
+	module.exports = ReactTransitionChildMapping;
+
+/***/ },
+/* 342 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @typechecks
+	 * @providesModule ReactCSSTransitionGroupChild
+	 */
+	
+	'use strict';
+	
+	var React = __webpack_require__(2);
+	var ReactDOM = __webpack_require__(3);
+	
+	var CSSCore = __webpack_require__(343);
+	var ReactTransitionEvents = __webpack_require__(344);
+	
+	var onlyChild = __webpack_require__(156);
+	
+	// We don't remove the element from the DOM until we receive an animationend or
+	// transitionend event. If the user screws up and forgets to add an animation
+	// their node will be stuck in the DOM forever, so we detect if an animation
+	// does not start and if it doesn't, we just call the end listener immediately.
+	var TICK = 17;
+	
+	var ReactCSSTransitionGroupChild = React.createClass({
+	  displayName: 'ReactCSSTransitionGroupChild',
+	
+	  propTypes: {
+	    name: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.shape({
+	      enter: React.PropTypes.string,
+	      leave: React.PropTypes.string,
+	      active: React.PropTypes.string
+	    }), React.PropTypes.shape({
+	      enter: React.PropTypes.string,
+	      enterActive: React.PropTypes.string,
+	      leave: React.PropTypes.string,
+	      leaveActive: React.PropTypes.string,
+	      appear: React.PropTypes.string,
+	      appearActive: React.PropTypes.string
+	    })]).isRequired,
+	
+	    // Once we require timeouts to be specified, we can remove the
+	    // boolean flags (appear etc.) and just accept a number
+	    // or a bool for the timeout flags (appearTimeout etc.)
+	    appear: React.PropTypes.bool,
+	    enter: React.PropTypes.bool,
+	    leave: React.PropTypes.bool,
+	    appearTimeout: React.PropTypes.number,
+	    enterTimeout: React.PropTypes.number,
+	    leaveTimeout: React.PropTypes.number
+	  },
+	
+	  transition: function (animationType, finishCallback, userSpecifiedDelay) {
+	    var node = ReactDOM.findDOMNode(this);
+	
+	    if (!node) {
+	      if (finishCallback) {
+	        finishCallback();
+	      }
+	      return;
+	    }
+	
+	    var className = this.props.name[animationType] || this.props.name + '-' + animationType;
+	    var activeClassName = this.props.name[animationType + 'Active'] || className + '-active';
+	    var timeout = null;
+	
+	    var endListener = function (e) {
+	      if (e && e.target !== node) {
+	        return;
+	      }
+	
+	      clearTimeout(timeout);
+	
+	      CSSCore.removeClass(node, className);
+	      CSSCore.removeClass(node, activeClassName);
+	
+	      ReactTransitionEvents.removeEndEventListener(node, endListener);
+	
+	      // Usually this optional callback is used for informing an owner of
+	      // a leave animation and telling it to remove the child.
+	      if (finishCallback) {
+	        finishCallback();
+	      }
+	    };
+	
+	    CSSCore.addClass(node, className);
+	
+	    // Need to do this to actually trigger a transition.
+	    this.queueClass(activeClassName);
+	
+	    // If the user specified a timeout delay.
+	    if (userSpecifiedDelay) {
+	      // Clean-up the animation after the specified delay
+	      timeout = setTimeout(endListener, userSpecifiedDelay);
+	      this.transitionTimeouts.push(timeout);
+	    } else {
+	      // DEPRECATED: this listener will be removed in a future version of react
+	      ReactTransitionEvents.addEndEventListener(node, endListener);
+	    }
+	  },
+	
+	  queueClass: function (className) {
+	    this.classNameQueue.push(className);
+	
+	    if (!this.timeout) {
+	      this.timeout = setTimeout(this.flushClassNameQueue, TICK);
+	    }
+	  },
+	
+	  flushClassNameQueue: function () {
+	    if (this.isMounted()) {
+	      this.classNameQueue.forEach(CSSCore.addClass.bind(CSSCore, ReactDOM.findDOMNode(this)));
+	    }
+	    this.classNameQueue.length = 0;
+	    this.timeout = null;
+	  },
+	
+	  componentWillMount: function () {
+	    this.classNameQueue = [];
+	    this.transitionTimeouts = [];
+	  },
+	
+	  componentWillUnmount: function () {
+	    if (this.timeout) {
+	      clearTimeout(this.timeout);
+	    }
+	    this.transitionTimeouts.forEach(function (timeout) {
+	      clearTimeout(timeout);
+	    });
+	  },
+	
+	  componentWillAppear: function (done) {
+	    if (this.props.appear) {
+	      this.transition('appear', done, this.props.appearTimeout);
+	    } else {
+	      done();
+	    }
+	  },
+	
+	  componentWillEnter: function (done) {
+	    if (this.props.enter) {
+	      this.transition('enter', done, this.props.enterTimeout);
+	    } else {
+	      done();
+	    }
+	  },
+	
+	  componentWillLeave: function (done) {
+	    if (this.props.leave) {
+	      this.transition('leave', done, this.props.leaveTimeout);
+	    } else {
+	      done();
+	    }
+	  },
+	
+	  render: function () {
+	    return onlyChild(this.props.children);
+	  }
+	});
+	
+	module.exports = ReactCSSTransitionGroupChild;
+
+/***/ },
+/* 343 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule CSSCore
+	 * @typechecks
+	 */
+	
+	'use strict';
+	
+	var invariant = __webpack_require__(13);
+	
+	/**
+	 * The CSSCore module specifies the API (and implements most of the methods)
+	 * that should be used when dealing with the display of elements (via their
+	 * CSS classes and visibility on screen. It is an API focused on mutating the
+	 * display and not reading it as no logical state should be encoded in the
+	 * display of elements.
+	 */
+	
+	var CSSCore = {
+	
+	  /**
+	   * Adds the class passed in to the element if it doesn't already have it.
+	   *
+	   * @param {DOMElement} element the element to set the class on
+	   * @param {string} className the CSS className
+	   * @return {DOMElement} the element passed in
+	   */
+	  addClass: function (element, className) {
+	    !!/\s/.test(className) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'CSSCore.addClass takes only a single class name. "%s" contains ' + 'multiple classes.', className) : invariant(false) : undefined;
+	
+	    if (className) {
+	      if (element.classList) {
+	        element.classList.add(className);
+	      } else if (!CSSCore.hasClass(element, className)) {
+	        element.className = element.className + ' ' + className;
+	      }
+	    }
+	    return element;
+	  },
+	
+	  /**
+	   * Removes the class passed in from the element
+	   *
+	   * @param {DOMElement} element the element to set the class on
+	   * @param {string} className the CSS className
+	   * @return {DOMElement} the element passed in
+	   */
+	  removeClass: function (element, className) {
+	    !!/\s/.test(className) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'CSSCore.removeClass takes only a single class name. "%s" contains ' + 'multiple classes.', className) : invariant(false) : undefined;
+	
+	    if (className) {
+	      if (element.classList) {
+	        element.classList.remove(className);
+	      } else if (CSSCore.hasClass(element, className)) {
+	        element.className = element.className.replace(new RegExp('(^|\\s)' + className + '(?:\\s|$)', 'g'), '$1').replace(/\s+/g, ' ') // multiple spaces to one
+	        .replace(/^\s*|\s*$/g, ''); // trim the ends
+	      }
+	    }
+	    return element;
+	  },
+	
+	  /**
+	   * Helper to add or remove a class from an element based on a condition.
+	   *
+	   * @param {DOMElement} element the element to set the class on
+	   * @param {string} className the CSS className
+	   * @param {*} bool condition to whether to add or remove the class
+	   * @return {DOMElement} the element passed in
+	   */
+	  conditionClass: function (element, className, bool) {
+	    return (bool ? CSSCore.addClass : CSSCore.removeClass)(element, className);
+	  },
+	
+	  /**
+	   * Tests whether the element has the class specified.
+	   *
+	   * @param {DOMNode|DOMWindow} element the element to set the class on
+	   * @param {string} className the CSS className
+	   * @return {boolean} true if the element has the class, false if not
+	   */
+	  hasClass: function (element, className) {
+	    !!/\s/.test(className) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'CSS.hasClass takes only a single class name.') : invariant(false) : undefined;
+	    if (element.classList) {
+	      return !!className && element.classList.contains(className);
+	    }
+	    return (' ' + element.className + ' ').indexOf(' ' + className + ' ') > -1;
+	  }
+	
+	};
+	
+	module.exports = CSSCore;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ },
+/* 344 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactTransitionEvents
+	 */
+	
+	'use strict';
+	
+	var ExecutionEnvironment = __webpack_require__(9);
+	
+	/**
+	 * EVENT_NAME_MAP is used to determine which event fired when a
+	 * transition/animation ends, based on the style property used to
+	 * define that event.
+	 */
+	var EVENT_NAME_MAP = {
+	  transitionend: {
+	    'transition': 'transitionend',
+	    'WebkitTransition': 'webkitTransitionEnd',
+	    'MozTransition': 'mozTransitionEnd',
+	    'OTransition': 'oTransitionEnd',
+	    'msTransition': 'MSTransitionEnd'
+	  },
+	
+	  animationend: {
+	    'animation': 'animationend',
+	    'WebkitAnimation': 'webkitAnimationEnd',
+	    'MozAnimation': 'mozAnimationEnd',
+	    'OAnimation': 'oAnimationEnd',
+	    'msAnimation': 'MSAnimationEnd'
+	  }
+	};
+	
+	var endEvents = [];
+	
+	function detectEvents() {
+	  var testEl = document.createElement('div');
+	  var style = testEl.style;
+	
+	  // On some platforms, in particular some releases of Android 4.x,
+	  // the un-prefixed "animation" and "transition" properties are defined on the
+	  // style object but the events that fire will still be prefixed, so we need
+	  // to check if the un-prefixed events are useable, and if not remove them
+	  // from the map
+	  if (!('AnimationEvent' in window)) {
+	    delete EVENT_NAME_MAP.animationend.animation;
+	  }
+	
+	  if (!('TransitionEvent' in window)) {
+	    delete EVENT_NAME_MAP.transitionend.transition;
+	  }
+	
+	  for (var baseEventName in EVENT_NAME_MAP) {
+	    var baseEvents = EVENT_NAME_MAP[baseEventName];
+	    for (var styleName in baseEvents) {
+	      if (styleName in style) {
+	        endEvents.push(baseEvents[styleName]);
+	        break;
+	      }
+	    }
+	  }
+	}
+	
+	if (ExecutionEnvironment.canUseDOM) {
+	  detectEvents();
+	}
+	
+	// We use the raw {add|remove}EventListener() call because EventListener
+	// does not know how to remove event listeners and we really should
+	// clean up. Also, these events are not triggered in older browsers
+	// so we should be A-OK here.
+	
+	function addEventListener(node, eventName, eventListener) {
+	  node.addEventListener(eventName, eventListener, false);
+	}
+	
+	function removeEventListener(node, eventName, eventListener) {
+	  node.removeEventListener(eventName, eventListener, false);
+	}
+	
+	var ReactTransitionEvents = {
+	  addEndEventListener: function (node, eventListener) {
+	    if (endEvents.length === 0) {
+	      // If CSS transitions are not supported, trigger an "end animation"
+	      // event immediately.
+	      window.setTimeout(eventListener, 0);
+	      return;
+	    }
+	    endEvents.forEach(function (endEvent) {
+	      addEventListener(node, endEvent, eventListener);
+	    });
+	  },
+	
+	  removeEndEventListener: function (node, eventListener) {
+	    if (endEvents.length === 0) {
+	      return;
+	    }
+	    endEvents.forEach(function (endEvent) {
+	      removeEventListener(node, endEvent, eventListener);
+	    });
+	  }
+	};
+	
+	module.exports = ReactTransitionEvents;
+
+/***/ },
+/* 345 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	
+	var ApiUtil = __webpack_require__(235);
+	var UserStore = __webpack_require__(233);
+	
+	var History = __webpack_require__(159).History;
+	
+	var NewPost = React.createClass({
+	  displayName: 'NewPost',
+	
+	  mixins: [History],
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	
+	  navigateToFeed: function () {
+	    this.props.history.pushState(null, "/");
+	  },
+	  componentWillMount: function () {
+	    this.setState({ currentUser: UserStore.getCurrentUser() });
+	  },
+	
+	  handleSubmit: function (event) {
+	    event.preventDefault();
+	
+	    var post = { body: event.currentTarget[0].value, target_id: this.props.targetUserId };
+	    ApiUtil.createPost(post);
+	    event.currentTarget[0].value = null;
+	  },
+	
+	  render: function () {
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'form',
+	        { onSubmit: this.handleSubmit },
+	        React.createElement(
+	          'label',
+	          { htmlFor: 'post_body' },
+	          'What\'s on your mind?'
+	        ),
+	        React.createElement('br', null),
+	        React.createElement('textarea', {
+	          name: 'post[body]',
+	          id: 'post_body', rows: '4', cols: '50' }),
+	        React.createElement('br', null),
+	        React.createElement('input', { type: 'submit', value: 'Post' })
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = NewPost;
+
+/***/ },
+/* 346 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var SearchBar = __webpack_require__(347);
+	var History = __webpack_require__(159).History;
+	var SignoutButton = __webpack_require__(348);
+	var ApiUtil = __webpack_require__(235);
+	
+	var Footer = React.createClass({
+	  displayName: 'Footer',
+	
+	  mixins: [History],
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	
+	  render: function () {
+	    var name, profile_image;
+	
+	    if (this.state.user.real_name) {
+	      name = this.state.user.real_name;
+	      profile_image = this.state.user.profile_image;
+	    } else {
+	      name = "Loading";
+	    }
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'footer-bar' },
+	      React.createElement(
+	        'div',
+	        null,
+	        'End of Page'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = Footer;
+
+/***/ },
+/* 347 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var UserStore = __webpack_require__(233);
+	var History = __webpack_require__(159).History;
+	var classNames = __webpack_require__(336);
+	
+	var SearchBar = React.createClass({
+	  displayName: 'SearchBar',
+	
+	  mixins: [History],
+	  getInitialState: function () {
+	    this.userListener = UserStore.addListener(this._usersChanged);
+	    return { inputVal: "",
+	      users: UserStore.all(),
+	      listVisible: false
+	    };
+	  },
+	  _usersChanged: function () {
+	    this.setState({ users: UserStore.all() });
+	  },
+	  handleSubjectClick: function (destinationId) {
+	    this.setState({ listVisible: false });
+	    this.history.pushState(null, "user/" + this.props.post.subject.id);
+	  },
+	
+	  handleInput: function (event) {
+	    this.setState({ inputVal: event.currentTarget.value });
+	    if (event.currentTarget.value.length !== 0) {
+	      this.setState({ listVisible: true });
+	    } else {
+	      this.setState({ listVisible: false });
+	    }
+	  },
+	
+	  matches: function () {
+	    var matches = [];
+	    if (this.state.inputVal.length === 0) {
+	      return this.state.users;
+	    }
+	
+	    this.state.users.forEach((function (user) {
+	
+	      var name = user.real_name;
+	      var sub = name.slice(0, this.state.inputVal.length);
+	      if (sub.toLowerCase() === this.state.inputVal.toLowerCase()) {
+	        matches.push(user);
+	      }
+	    }).bind(this));
+	
+	    if (matches.length === 0) {
+	      matches.push("No matches");
+	    }
+	    return matches;
+	  },
+	
+	  selectName: function (result) {
+	    // debugger
+	    // var name = event.currentTarget.innerText;
+	    this.setState({ listVisible: false, inputVal: "" });
+	    this.history.pushState(null, "user/" + result.id);
+	    window.scrollTo(0, 0);
+	  },
+	  _setContent: function (results) {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'label',
+	        null,
+	        'Search: '
+	      ),
+	      React.createElement('input', { onChange: this.handleInput, value: this.state.inputVal, size: '50' }),
+	      React.createElement(
+	        'ul',
+	        { className: this.listClass() },
+	        results.map((function (result, i) {
+	          return React.createElement(
+	            'li',
+	            { key: i, onClick: this.selectName.bind(null, result) },
+	            result.real_name
+	          );
+	        }).bind(this))
+	      )
+	    );
+	  },
+	  componentWillUnmount: function () {
+	    this.userListener.remove();
+	  },
+	  listClass: function () {
+	    var listClass = classNames({
+	      'search-list': true,
+	      'search-list-hidden': this.state.listVisible === false,
+	      'search-list-visible': this.state.listVisible
+	    });
+	    return listClass;
+	  },
+	
+	  render: function () {
+	    var results = this.matches();
+	
+	    if (this.state.users && results) {
+	      var content = this._setContent(results);
+	    } else {
+	      var content = React.createElement(
+	        'div',
+	        null,
+	        'Loading'
+	      );
+	    }
+	    return React.createElement(
+	      'div',
+	      null,
+	      content
+	    );
+	  }
+	});
+	
+	module.exports = SearchBar;
+
+/***/ },
+/* 348 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var History = __webpack_require__(159).History;
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var SignoutButton = React.createClass({
+	  displayName: 'SignoutButton',
+	
+	  mixins: [History],
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  logout: function () {},
+	  handleSignout: function () {
+	    var that = this;
+	    $.ajax({
+	      method: 'DELETE',
+	      url: 'session/',
+	      success: function (resp) {
+	        //  $("content").hide().show(0);
+	        window.location.replace(window.location.origin);
+	      },
+	      error: function (xhr, ajaxOptions, thrownError) {
+	        // debugger;
+	        // that.history.pushState(null, "/");
+	      }
+	    });
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'header-bar-signout-button' },
+	      React.createElement(
+	        'button',
+	        { onClick: this.handleSignout },
+	        'Sign Out'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = SignoutButton;
+
+/***/ },
+/* 349 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	
+	var ApiUtil = __webpack_require__(235);
+	var UserProfileUserInfo = __webpack_require__(350);
+	var NewPost = __webpack_require__(345);
+	var UserStore = __webpack_require__(233);
+	var FriendsPane = __webpack_require__(351);
+	var FollowButton = __webpack_require__(352);
+	var UnfollowButton = __webpack_require__(353);
+	var Images = __webpack_require__(354);
+	var ImagesBody = __webpack_require__(385);
+	var ReactCSSTransitionGroup = __webpack_require__(338);
+	var FollowStore = __webpack_require__(334);
+	
+	function _getRelevantPosts(userId) {
+	  return PostStore.getByUserId(userId);
+	}
+	
+	function _getApplicableUser(currentProfileUserId) {
+	  var user = UserStore.findUser(currentProfileUserId);
+	  return user;
+	}
+	
+	var UserProfile = React.createClass({
+	  displayName: 'UserProfile',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  getInitialState: function () {
+	    var user_id = this.props.routeParams.userId;
+	    return {
+	      user_id: user_id,
+	      posts: _getRelevantPosts(user_id),
+	      user: {},
+	      showing: "posts",
+	      nothing: {}
+	    };
+	  },
+	  componentDidMount: function () {
+	    //ApiUtil to fetch users
+	
+	    ApiUtil.fetchPosts();
+	    ApiUtil.fetchUsers();
+	    ApiUtil.fetchImages();
+	    ApiUtil.fetchFollows();
+	    ApiUtil.fetchImageComments();
+	    //Add listener to update state
+	    this.postListener = PostStore.addListener(this._postsChanged);
+	    this.userListener = UserStore.addListener(this._usersChanged);
+	    this.followListener = FollowStore.addListener(this._followsChanged);
+	  },
+	  componentWillUnmount: function () {
+	    this.postListener.remove();
+	    this.userListener.remove();
+	    this.followListener.remove();
+	  },
+	  //Fixes navigating to new user id
+	  componentWillReceiveProps: function (newProps) {
+	    var userId = this.props.routeParams.userId;
+	    this.setState({ user_id: userId, user: UserStore.findUser(userId) });
+	    ApiUtil.fetchPosts();
+	  },
+	
+	  _postsChanged: function () {
+	    this.setState({ posts: _getRelevantPosts(this.state.user_id) });
+	    window.scrollTo(0, 0);
+	  },
+	
+	  _usersChanged: function () {
+	    this.setState({ user: _getApplicableUser(this.state.user_id) });
+	    window.scrollTo(0, 0);
+	  },
+	  _followsChanged: function () {
+	    this.setState({ nothing: {} });
+	  },
+	  _renderPicturePage: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'user-profile-picture-content' },
+	      React.createElement(
+	        'button',
+	        { onClick: this._setPostsPage, className: 'return-to-profile' },
+	        'Return to Profile'
+	      ),
+	      React.createElement(ImagesBody, { user: this.state.user.id })
+	    );
+	  },
+	  _renderPostsPage: function () {
+	    var Posts = this.state.posts.map(function (post) {
+	      return React.createElement(Post, { key: post.id, post: post });
+	    });
+	
+	    return Posts;
+	  },
+	  _setPicturePage: function () {
+	    this.setState({ showing: "pictures" });
+	  },
+	  _setPostsPage: function () {
+	    this.setState({ showing: "posts" });
+	  },
+	  followButtonLogic: function () {
+	    var follows = FollowStore.all();
+	    var profile_user = this.state.user;
+	    var current_user = UserStore.getCurrentUser();
+	
+	    if (!this.state.user.id) {
+	      return false;
+	    }
+	    var following = false;
+	    var that = this;
+	
+	    follows.forEach(function (follow) {
+	      if (follow.followed_user_id === that.state.user.id && follow.author_id === current_user.id) {
+	        following = true;
+	      }
+	    });
+	
+	    return following;
+	  },
+	
+	  // <div>
+	  //   <FollowButton user={this.state.user} />
+	  // </div>
+	
+	  render: function () {
+	    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
+	    var placeholder = this.followButtonLogic();
+	    var followButton;
+	
+	    if (placeholder === true) {
+	      followButton = React.createElement(UnfollowButton, { user: this.state.user });
+	    } else {
+	      followButton = React.createElement(FollowButton, { user: this.state.user });
+	    }
+	
+	    if (this.state.showing === "posts") {
+	      var content = this._renderPostsPage();
+	    } else if (this.state.showing === "pictures") {
+	      var content = this._renderPicturePage();
+	    }
+	
+	    return React.createElement(
+	      ReactCSSTransitionGroup,
+	      { transitionName: 'example',
+	        transitionAppear: true,
+	        transitionAppearTimeout: 500,
+	        transitionEnterTimeout: 500,
+	        transitionLeaveTimeout: 500 },
+	      React.createElement(
+	        'div',
+	        { className: 'user-profile' },
+	        React.createElement(
+	          'div',
+	          { className: 'user-profile-info' },
+	          React.createElement(
+	            'div',
+	            null,
+	            React.createElement(UserProfileUserInfo, { userId: this.state.user_id, user: this.state.user })
+	          ),
+	          React.createElement(
+	            'div',
+	            null,
+	            React.createElement(FriendsPane, { user: this.state.user })
+	          ),
+	          React.createElement(
+	            'div',
+	            null,
+	            followButton
+	          ),
+	          React.createElement(
+	            'div',
+	            null,
+	            React.createElement(Images, { user: this.state.user.id }),
+	            React.createElement(
+	              'button',
+	              { className: 'button', onClick: this._setPicturePage },
+	              'View All Picture'
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'user-profile-new-post' },
+	          React.createElement(NewPost, { targetUserId: this.state.user.id })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'user-profile-content' },
+	          content
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = UserProfile;
+
+/***/ },
+/* 350 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var UserProfileUserInfo = React.createClass({
+	  displayName: 'UserProfileUserInfo',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  _getProfilePic: function () {
+	    if (this.props.user.profile_image) {
+	      var profileLocation = this.buildUrl(this.props.user.profile_image);
+	    } else {
+	      var profileLocation = this.buildUrl("lifebook_default_pic");
+	    }
+	    return profileLocation;
+	  },
+	  buildUrl: function (image_path) {
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_168,w_168/v1450463928/" + image_path;
+	    return url;
+	  },
+	
+	  render: function () {
+	    //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h2',
+	        null,
+	        'User Profile User Info'
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'profile-pic' },
+	        React.createElement('img', { src: this._getProfilePic() })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.props.user.real_name
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.props.user.age
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.props.user.location
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.props.user.email
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = UserProfileUserInfo;
+
+/***/ },
+/* 351 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var History = __webpack_require__(159).History;
+	var ApiUtil = __webpack_require__(235);
+	
+	var FriendsPane = React.createClass({
+	  displayName: 'FriendsPane',
+	
+	  mixins: [History],
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  getInitialState: function () {
+	    return { user: {} };
+	  },
+	  componentWillReceiveProps: function (newProps) {
+	    this.setState({ user: newProps.user });
+	  },
+	  handleAuthorClick: function (destinationId) {
+	    this.history.pushState(null, "user/" + destinationId);
+	    window.scrollTo(0, 0);
+	  },
+	
+	  render: function () {
+	    var that = this;
+	    if (!this.state.user.usersFollowing) {
+	      var users = React.createElement('div', null);
+	    } else {
+	      var users = this.state.user.usersFollowing.map(function (user) {
+	        return React.createElement(
+	          'div',
+	          { key: user.id, onClick: that.handleAuthorClick.bind(null, user.id) },
+	          user.real_name
+	        );
+	      });
+	    }
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'profile-friends-pane' },
+	      React.createElement(
+	        'h2',
+	        null,
+	        'Following'
+	      ),
+	      users
+	    );
+	  }
+	});
+	
+	module.exports = FriendsPane;
+
+/***/ },
+/* 352 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var FollowStore = __webpack_require__(334);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var FollowButton = React.createClass({
+	  displayName: 'FollowButton',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  // getInitialState: function(){
+	  //   ApiUtil.fetchFollows();
+	  //   return {user: {}, isFollowing:{}, newProps:{}};
+	  // },
+	  // componentDidMount: function(){
+	  //   this.followListener = FollowStore.addListener(this._followsChanged);
+	  // },
+	  // _followsChanged: function(){
+	  //   debugger
+	  //   this.setState({
+	  //     user: UserStore.findUser(this.state.user.id),
+	  //     isFollowing: this.decideIfFollowOrUnfollow({user: UserStore.findUser(this.state.user.id)})
+	  //   });
+	  // },
+	  // componentWillUnmount: function(){
+	  //   this.followListener.remove();
+	  // },
+	  // componentWillReceiveProps: function (newProps) {
+	  //   debugger;
+	  //   this.setState({user: newProps.user,
+	  //                 isFollowing: this.decideIfFollowOrUnfollow(newProps)
+	  //
+	  //                   });
+	  // },
+	  // old handleSubmit
+	  // handleSubmit: function(event){
+	  //   event.preventDefault();
+	  //
+	  //   var follow = {followed_user_id: this.state.user.id};
+	  //   ApiUtil.createFollow(follow);
+	  // },
+	  // decideIfFollowOrUnfollow: function(newProps){
+	  //   debugger
+	  //   if (!newProps.user.id){
+	  //     return false;
+	  //   }
+	  //   var profile_user = newProps.user;
+	  //   var current_user = UserStore.getCurrentUser();
+	  //
+	  //   var followingList = current_user.usersFollowing;
+	  //   var following = false;
+	  //   var that = this;
+	  //
+	  //   followingList.forEach(function(user){
+	  //     if (user.id === that.state.user.id){
+	  //       following = true;
+	  //     }
+	  //   });
+	  //   return following;
+	  //
+	  // },
+	  handleFollowSubmit: function (event) {
+	    event.preventDefault();
+	    var follow = { followed_user_id: this.props.user.id };
+	    ApiUtil.createFollow(follow);
+	  },
+	  // handleUnfollowSubmit: function(event){
+	  //   event.preventDefault();
+	  //   var current_user = UserStore.getCurrentUser();
+	  //
+	  //   var followParams = {followed_user_id: this.state.user.id, author_id: current_user.id };
+	  //
+	  //   var follow = FollowStore.getByFollowParties(followParams);
+	  //
+	  //   ApiUtil.deleteFollow(follow);
+	  //
+	  //   // going to need to find the follow by the combo, then pass that id to destroy
+	  //   // ApiUtil.deleteFollow(follow);
+	  // },
+	
+	  render: function () {
+	    var properButton;
+	
+	    properButton = React.createElement(
+	      'button',
+	      { className: 'button', onClick: this.handleFollowSubmit },
+	      'Follow'
+	    );
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      properButton
+	    );
+	  }
+	});
+	
+	module.exports = FollowButton;
+
+/***/ },
+/* 353 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var FollowStore = __webpack_require__(334);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var UnfollowButton = React.createClass({
+	  displayName: 'UnfollowButton',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  // getInitialState: function(){
+	  //   ApiUtil.fetchFollows();
+	  //   return {user: {}, isFollowing:{}, newProps:{}};
+	  // },
+	  // componentDidMount: function(){
+	  //   this.followListener = FollowStore.addListener(this._followsChanged);
+	  // },
+	  // _followsChanged: function(){
+	  //   debugger
+	  //   this.setState({
+	  //     user: UserStore.findUser(this.state.user.id),
+	  //     isFollowing: this.decideIfFollowOrUnfollow({user: UserStore.findUser(this.state.user.id)})
+	  //   });
+	  // },
+	  // componentWillUnmount: function(){
+	  //   this.followListener.remove();
+	  // },
+	  // componentWillReceiveProps: function (newProps) {
+	  //   debugger;
+	  //   this.setState({user: newProps.user,
+	  //                 isFollowing: this.decideIfFollowOrUnfollow(newProps)
+	  //
+	  //                   });
+	  // },
+	  // old handleSubmit
+	  // handleSubmit: function(event){
+	  //   event.preventDefault();
+	  //
+	  //   var follow = {followed_user_id: this.state.user.id};
+	  //   ApiUtil.createFollow(follow);
+	  // },
+	  // decideIfFollowOrUnfollow: function(newProps){
+	  //   debugger
+	  //   if (!newProps.user.id){
+	  //     return false;
+	  //   }
+	  //   var profile_user = newProps.user;
+	  //   var current_user = UserStore.getCurrentUser();
+	  //
+	  //   var followingList = current_user.usersFollowing;
+	  //   var following = false;
+	  //   var that = this;
+	  //
+	  //   followingList.forEach(function(user){
+	  //     if (user.id === that.state.user.id){
+	  //       following = true;
+	  //     }
+	  //   });
+	  //   return following;
+	  //
+	  // },
+	  handleUnfollowSubmit: function (event) {
+	    event.preventDefault();
+	    var current_user = UserStore.getCurrentUser();
+	
+	    var followParams = { followed_user_id: this.props.user.id, author_id: current_user.id };
+	
+	    var follow = FollowStore.getByFollowParties(followParams);
+	
+	    ApiUtil.deleteFollow(follow);
+	
+	    // going to need to find the follow by the combo, then pass that id to destroy
+	    // ApiUtil.deleteFollow(follow);
+	  },
+	
+	  render: function () {
+	    var properButton;
+	
+	    properButton = React.createElement(
+	      'button',
+	      { className: 'button', onClick: this.handleUnfollowSubmit },
+	      'Unfollow'
+	    );
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      properButton
+	    );
+	  }
+	});
+	
+	module.exports = UnfollowButton;
+
+/***/ },
+/* 354 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Really the Image Pane, includes the individual images and Upload Button
+	
+	var React = __webpack_require__(1),
+	    ReactDOM = __webpack_require__(158),
+	    UploadButton = __webpack_require__(355),
+	    ImageModal = __webpack_require__(356),
+	    UserStore = __webpack_require__(233),
+	    ImageStore = __webpack_require__(377),
+	    LikeStore = __webpack_require__(335),
+	    ApiUtil = __webpack_require__(235),
+	    Modal = __webpack_require__(357),
+	    ImageComments = __webpack_require__(379),
+	    NewImageComment = __webpack_require__(382),
+	    ImageLikeButton = __webpack_require__(383),
+	    ProfilePicChangeButton = __webpack_require__(384),
+	    ImageModal = __webpack_require__(356);
+	
+	var customStyles = {
+	  overlay: {
+	    position: 'fixed',
+	    backgroundColor: 'rgba(255, 255, 255, 0.90)',
+	    zIndex: 5
+	  },
+	  content: {
+	    top: '50%',
+	    left: '50%',
+	    right: 'auto',
+	    bottom: 'auto',
+	    height: '600px',
+	    width: '1200px',
+	    marginRight: '-50%',
+	    transform: 'translate(-50%, -50%)'
+	  }
+	};
+	
+	var Images = React.createClass({
+	  displayName: 'Images',
+	
+	  getInitialState: function () {
+	    ApiUtil.fetchImages();
+	    this.imageListener = ImageStore.addListener(this._imagesChanged);
+	    this.likesListener = LikeStore.addListener(this._likesChanged);
+	
+	    return { images: [], user: this.props.user, modalIsOpen: false, selectedImage: "" };
+	  },
+	  _likesChanged: function () {
+	    this.forceUpdate();
+	  },
+	  openModal: function (event) {
+	
+	    this.setState({ modalIsOpen: true,
+	      selectedImage: event });
+	  },
+	
+	  closeModal: function () {
+	    this.setState({ modalIsOpen: false, selectedImage: "" });
+	  },
+	  componentWillReceiveProps: function (newProps) {
+	    ApiUtil.fetchImages();
+	    this.setState({ user: newProps.user });
+	    this.setState({ images: ImageStore.getByUserIdOnlyFirstNine(newProps.user) });
+	  },
+	  _imagesChanged: function () {
+	    this.setState({ images: ImageStore.getByUserIdOnlyFirstNine(this.state.user) });
+	  },
+	  componentWillUnmount: function () {
+	    this.imageListener.remove();
+	  },
+	  buildUrl: function (image_path) {
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + image_path;
+	    return url;
+	  },
+	  buildModalUrl: function (image_path) {
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/v1450463928/" + image_path;
+	    return url;
+	  },
+	  modal: function () {
+	    return;
+	  },
+	  likeButtonLogic: function (image) {
+	    var likes = LikeStore.all();
+	    var current_image = image;
+	    var current_user = UserStore.getCurrentUser();
+	
+	    if (!current_image.id) {
+	      return false;
+	    }
+	    var liking = false;
+	    var that = this;
+	
+	    likes.forEach(function (like) {
+	      if (like.post_id === current_image.id && like.author_id === current_user.id && like.like_type === "image") {
+	        liking = like;
+	      }
+	    });
+	
+	    return liking;
+	  },
+	  _buttonRenderFunction: function (image) {
+	    var placeholder = this.likeButtonLogic(image);
+	    var likeButton;
+	    var currentUser = UserStore.getCurrentUser();
+	
+	    if (placeholder) {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(ImageLikeButton, { currentUser: currentUser,
+	          image: image,
+	          like: placeholder })
+	      );
+	    } else {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(ImageLikeButton, { currentUser: currentUser,
+	          image: image,
+	          like: placeholder })
+	      );
+	    }
+	
+	    return likeButton;
+	  },
+	
+	  render: function () {
+	    var that = this;
+	    if (this.state.images) {
+	      var images = this.state.images.map((function (image) {
+	        return React.createElement(
+	          'div',
+	          { key: image.id,
+	            className: 'pictures-in-pane' },
+	          React.createElement('img', { onClick: this.openModal.bind(null, image),
+	            src: that.buildUrl(image.image_path) })
+	        );
+	      }).bind(this));
+	    } else {
+	      var images = React.createElement(
+	        'div',
+	        null,
+	        ' no images'
+	      );
+	    }
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'profile-images-pane' },
+	      images,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'div',
+	          { className: 'image-modal-outside' },
+	          React.createElement(
+	            Modal,
+	            {
+	              isOpen: this.state.modalIsOpen,
+	              onRequestClose: this.closeModal,
+	              style: customStyles,
+	              className: 'image-modal' },
+	            React.createElement(
+	              'h2',
+	              null,
+	              'Picture'
+	            ),
+	            React.createElement(
+	              'button',
+	              { onClick: this.closeModal },
+	              'close'
+	            ),
+	            React.createElement(ProfilePicChangeButton, { image: this.state.selectedImage }),
+	            that._buttonRenderFunction(this.state.selectedImage),
+	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage.image_path), className: 'image-modal-image' }),
+	            React.createElement(NewImageComment, { image: this.state.selectedImage, className: 'image-modal-new-comments' }),
+	            React.createElement(ImageComments, { image: this.state.selectedImage, className: 'image-modal-image-comments' })
+	          )
+	        )
+	      ),
+	      React.createElement(UploadButton, null)
+	    );
+	  }
+	});
+	
+	module.exports = Images;
+
+/***/ },
+/* 355 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var ApiUtil = __webpack_require__(235);
+	
+	var UploadButton = React.createClass({
+	  displayName: "UploadButton",
+	
+	  upload: function (e) {
+	    e.preventDefault();
+	    cloudinary.openUploadWidget(CLOUDINARY_OPTIONS, (function (error, results) {
+	      if (!error) {
+	        ApiUtil.createImage(results[0]);
+	      }
+	    }).bind(this));
+	  },
+	  render: function () {
+	    return React.createElement(
+	      "div",
+	      { className: "upload-form" },
+	      React.createElement(
+	        "button",
+	        { onClick: this.upload },
+	        "Upload new image!"
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = UploadButton;
+	
+	// the postImage function will no longet exist.  Needs to be a store action I believe
+
+/***/ },
+/* 356 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var Modal = __webpack_require__(357);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var customStyles = {
+	  content: {
+	    top: '50%',
+	    left: '50%',
+	    right: 'auto',
+	    bottom: 'auto',
+	    marginRight: '-50%',
+	    transform: 'translate(-50%, -50%)'
+	  }
+	};
+	
+	var ImageModal = React.createClass({
+	  displayName: 'ImageModal',
+	
+	  getInitialState: function () {
+	
+	    return { modalIsOpen: false };
+	  },
+	
+	  openModal: function () {
+	    this.setState({ modalIsOpen: true });
+	  },
+	
+	  closeModal: function () {
+	    this.setState({ modalIsOpen: false });
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        Modal,
+	        {
+	          isOpen: this.state.modalIsOpen,
+	          onRequestClose: this.closeModal,
+	          style: customStyles },
+	        React.createElement(
+	          'h2',
+	          null,
+	          'Hello'
+	        ),
+	        React.createElement(
+	          'button',
+	          { onClick: this.closeModal },
+	          'close'
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          'I am a modal'
+	        ),
+	        React.createElement(
+	          'form',
+	          null,
+	          React.createElement('input', null),
+	          React.createElement(
+	            'button',
+	            null,
+	            'tab navigation'
+	          ),
+	          React.createElement(
+	            'button',
+	            null,
+	            'stays'
+	          ),
+	          React.createElement(
+	            'button',
+	            null,
+	            'inside'
+	          ),
+	          React.createElement(
+	            'button',
+	            null,
+	            'the modal'
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = ImageModal;
+
+/***/ },
+/* 357 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(358);
+	
+
+
+/***/ },
+/* 358 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {var React = __webpack_require__(1);
+	var ReactDOM = __webpack_require__(158);
+	var ExecutionEnvironment = __webpack_require__(359);
+	var ModalPortal = React.createFactory(__webpack_require__(360));
+	var ariaAppHider = __webpack_require__(375);
+	var elementClass = __webpack_require__(376);
+	var renderSubtreeIntoContainer = __webpack_require__(158).unstable_renderSubtreeIntoContainer;
+	
+	var SafeHTMLElement = ExecutionEnvironment.canUseDOM ? window.HTMLElement : {};
+	
+	var Modal = module.exports = React.createClass({
+	
+	  displayName: 'Modal',
+	  statics: {
+	    setAppElement: ariaAppHider.setElement,
+	    injectCSS: function() {
+	      "production" !== process.env.NODE_ENV
+	        && console.warn('React-Modal: injectCSS has been deprecated ' +
+	                        'and no longer has any effect. It will be removed in a later version');
+	    }
+	  },
+	
+	  propTypes: {
+	    isOpen: React.PropTypes.bool.isRequired,
+	    style: React.PropTypes.shape({
+	      content: React.PropTypes.object,
+	      overlay: React.PropTypes.object
+	    }),
+	    appElement: React.PropTypes.instanceOf(SafeHTMLElement),
+	    onRequestClose: React.PropTypes.func,
+	    closeTimeoutMS: React.PropTypes.number,
+	    ariaHideApp: React.PropTypes.bool
+	  },
+	
+	  getDefaultProps: function () {
+	    return {
+	      isOpen: false,
+	      ariaHideApp: true,
+	      closeTimeoutMS: 0
+	    };
+	  },
+	
+	  componentDidMount: function() {
+	    this.node = document.createElement('div');
+	    this.node.className = 'ReactModalPortal';
+	    document.body.appendChild(this.node);
+	    this.renderPortal(this.props);
+	  },
+	
+	  componentWillReceiveProps: function(newProps) {
+	    this.renderPortal(newProps);
+	  },
+	
+	  componentWillUnmount: function() {
+	    ReactDOM.unmountComponentAtNode(this.node);
+	    document.body.removeChild(this.node);
+	  },
+	
+	  renderPortal: function(props) {
+	    if (props.isOpen) {
+	      elementClass(document.body).add('ReactModal__Body--open');
+	    } else {
+	      elementClass(document.body).remove('ReactModal__Body--open');
+	    }
+	
+	    if (props.ariaHideApp) {
+	      ariaAppHider.toggle(props.isOpen, props.appElement);
+	    }
+	    sanitizeProps(props);
+	    this.portal = renderSubtreeIntoContainer(this, ModalPortal(props), this.node);
+	  },
+	
+	  render: function () {
+	    return React.DOM.noscript();
+	  }
+	});
+	
+	function sanitizeProps(props) {
+	  delete props.ref;
+	}
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ },
+/* 359 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2015 Jed Watson.
+	  Based on code that is Copyright 2013-2015, Facebook, Inc.
+	  All rights reserved.
+	*/
+	
+	(function () {
+		'use strict';
+	
+		var canUseDOM = !!(
+			typeof window !== 'undefined' &&
+			window.document &&
+			window.document.createElement
+		);
+	
+		var ExecutionEnvironment = {
+	
+			canUseDOM: canUseDOM,
+	
+			canUseWorkers: typeof Worker !== 'undefined',
+	
+			canUseEventListeners:
+				canUseDOM && !!(window.addEventListener || window.attachEvent),
+	
+			canUseViewport: canUseDOM && !!window.screen
+	
+		};
+	
+		if (true) {
+			!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+				return ExecutionEnvironment;
+			}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		} else if (typeof module !== 'undefined' && module.exports) {
+			module.exports = ExecutionEnvironment;
+		} else {
+			window.ExecutionEnvironment = ExecutionEnvironment;
+		}
+	
+	}());
+
+
+/***/ },
+/* 360 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var div = React.DOM.div;
+	var focusManager = __webpack_require__(361);
+	var scopeTab = __webpack_require__(363);
+	var Assign = __webpack_require__(364);
+	
+	
+	// so that our CSS is statically analyzable
+	var CLASS_NAMES = {
+	  overlay: {
+	    base: 'ReactModal__Overlay',
+	    afterOpen: 'ReactModal__Overlay--after-open',
+	    beforeClose: 'ReactModal__Overlay--before-close'
+	  },
+	  content: {
+	    base: 'ReactModal__Content',
+	    afterOpen: 'ReactModal__Content--after-open',
+	    beforeClose: 'ReactModal__Content--before-close'
+	  }
+	};
+	
+	var defaultStyles = {
+	  overlay: {
+	    position        : 'fixed',
+	    top             : 0,
+	    left            : 0,
+	    right           : 0,
+	    bottom          : 0,
+	    backgroundColor : 'rgba(255, 255, 255, 0.75)'
+	  },
+	  content: {
+	    position                : 'absolute',
+	    top                     : '40px',
+	    left                    : '40px',
+	    right                   : '40px',
+	    bottom                  : '40px',
+	    border                  : '1px solid #ccc',
+	    background              : '#fff',
+	    overflow                : 'auto',
+	    WebkitOverflowScrolling : 'touch',
+	    borderRadius            : '4px',
+	    outline                 : 'none',
+	    padding                 : '20px'
+	  }
+	};
+	
+	function stopPropagation(event) {
+	  event.stopPropagation();
+	}
+	
+	var ModalPortal = module.exports = React.createClass({
+	
+	  displayName: 'ModalPortal',
+	
+	  getDefaultProps: function() {
+	    return {
+	      style: {
+	        overlay: {},
+	        content: {}
+	      }
+	    };
+	  },
+	
+	  getInitialState: function() {
+	    return {
+	      afterOpen: false,
+	      beforeClose: false
+	    };
+	  },
+	
+	  componentDidMount: function() {
+	    // Focus needs to be set when mounting and already open
+	    if (this.props.isOpen) {
+	      this.setFocusAfterRender(true);
+	      this.open();
+	    }
+	  },
+	
+	  componentWillUnmount: function() {
+	    clearTimeout(this.closeTimer);
+	  },
+	
+	  componentWillReceiveProps: function(newProps) {
+	    // Focus only needs to be set once when the modal is being opened
+	    if (!this.props.isOpen && newProps.isOpen) {
+	      this.setFocusAfterRender(true);
+	      this.open();
+	    } else if (this.props.isOpen && !newProps.isOpen) {
+	      this.close();
+	    }
+	  },
+	
+	  componentDidUpdate: function () {
+	    if (this.focusAfterRender) {
+	      this.focusContent();
+	      this.setFocusAfterRender(false);
+	    }
+	  },
+	
+	  setFocusAfterRender: function (focus) {
+	    this.focusAfterRender = focus;
+	  },
+	
+	  open: function() {
+	    focusManager.setupScopedFocus(this.node);
+	    focusManager.markForFocusLater();
+	    this.setState({isOpen: true}, function() {
+	      this.setState({afterOpen: true});
+	    }.bind(this));
+	  },
+	
+	  close: function() {
+	    if (!this.ownerHandlesClose())
+	      return;
+	    if (this.props.closeTimeoutMS > 0)
+	      this.closeWithTimeout();
+	    else
+	      this.closeWithoutTimeout();
+	  },
+	
+	  focusContent: function() {
+	    this.refs.content.focus();
+	  },
+	
+	  closeWithTimeout: function() {
+	    this.setState({beforeClose: true}, function() {
+	      this.closeTimer = setTimeout(this.closeWithoutTimeout, this.props.closeTimeoutMS);
+	    }.bind(this));
+	  },
+	
+	  closeWithoutTimeout: function() {
+	    this.setState({
+	      afterOpen: false,
+	      beforeClose: false
+	    }, this.afterClose);
+	  },
+	
+	  afterClose: function() {
+	    focusManager.returnFocus();
+	    focusManager.teardownScopedFocus();
+	  },
+	
+	  handleKeyDown: function(event) {
+	    if (event.keyCode == 9 /*tab*/) scopeTab(this.refs.content, event);
+	    if (event.keyCode == 27 /*esc*/) this.requestClose();
+	  },
+	
+	  handleOverlayClick: function() {
+	    if (this.ownerHandlesClose())
+	      this.requestClose();
+	    else
+	      this.focusContent();
+	  },
+	
+	  requestClose: function() {
+	    if (this.ownerHandlesClose())
+	      this.props.onRequestClose();
+	  },
+	
+	  ownerHandlesClose: function() {
+	    return this.props.onRequestClose;
+	  },
+	
+	  shouldBeClosed: function() {
+	    return !this.props.isOpen && !this.state.beforeClose;
+	  },
+	
+	  buildClassName: function(which, additional) {
+	    var className = CLASS_NAMES[which].base;
+	    if (this.state.afterOpen)
+	      className += ' '+CLASS_NAMES[which].afterOpen;
+	    if (this.state.beforeClose)
+	      className += ' '+CLASS_NAMES[which].beforeClose;
+	    return additional ? className + ' ' + additional : className;
+	  },
+	
+	  render: function() {
+	    return this.shouldBeClosed() ? div() : (
+	      div({
+	        ref: "overlay",
+	        className: this.buildClassName('overlay', this.props.overlayClassName),
+	        style: Assign({}, defaultStyles.overlay, this.props.style.overlay || {}),
+	        onClick: this.handleOverlayClick
+	      },
+	        div({
+	          ref: "content",
+	          style: Assign({}, defaultStyles.content, this.props.style.content || {}),
+	          className: this.buildClassName('content', this.props.className),
+	          tabIndex: "-1",
+	          onClick: stopPropagation,
+	          onKeyDown: this.handleKeyDown
+	        },
+	          this.props.children
+	        )
+	      )
+	    );
+	  }
+	});
+
+
+/***/ },
+/* 361 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var findTabbable = __webpack_require__(362);
+	var modalElement = null;
+	var focusLaterElement = null;
+	var needToFocus = false;
+	
+	function handleBlur(event) {
+	  needToFocus = true;
+	}
+	
+	function handleFocus(event) {
+	  if (needToFocus) {
+	    needToFocus = false;
+	    if (!modalElement) {
+	      return;
+	    }
+	    // need to see how jQuery shims document.on('focusin') so we don't need the
+	    // setTimeout, firefox doesn't support focusin, if it did, we could focus
+	    // the element outside of a setTimeout. Side-effect of this implementation 
+	    // is that the document.body gets focus, and then we focus our element right 
+	    // after, seems fine.
+	    setTimeout(function() {
+	      if (modalElement.contains(document.activeElement))
+	        return;
+	      var el = (findTabbable(modalElement)[0] || modalElement);
+	      el.focus();
+	    }, 0);
+	  }
+	}
+	
+	exports.markForFocusLater = function() {
+	  focusLaterElement = document.activeElement;
+	};
+	
+	exports.returnFocus = function() {
+	  try {
+	    focusLaterElement.focus();
+	  }
+	  catch (e) {
+	    console.warn('You tried to return focus to '+focusLaterElement+' but it is not in the DOM anymore');
+	  }
+	  focusLaterElement = null;
+	};
+	
+	exports.setupScopedFocus = function(element) {
+	  modalElement = element;
+	
+	  if (window.addEventListener) {
+	    window.addEventListener('blur', handleBlur, false);
+	    document.addEventListener('focus', handleFocus, true);
+	  } else {
+	    window.attachEvent('onBlur', handleBlur);
+	    document.attachEvent('onFocus', handleFocus);
+	  }
+	};
+	
+	exports.teardownScopedFocus = function() {
+	  modalElement = null;
+	
+	  if (window.addEventListener) {
+	    window.removeEventListener('blur', handleBlur);
+	    document.removeEventListener('focus', handleFocus);
+	  } else {
+	    window.detachEvent('onBlur', handleBlur);
+	    document.detachEvent('onFocus', handleFocus);
+	  }
+	};
+	
+	
+
+
+/***/ },
+/* 362 */
+/***/ function(module, exports) {
+
+	/*!
+	 * Adapted from jQuery UI core
+	 *
+	 * http://jqueryui.com
+	 *
+	 * Copyright 2014 jQuery Foundation and other contributors
+	 * Released under the MIT license.
+	 * http://jquery.org/license
+	 *
+	 * http://api.jqueryui.com/category/ui-core/
+	 */
+	
+	function focusable(element, isTabIndexNotNaN) {
+	  var nodeName = element.nodeName.toLowerCase();
+	  return (/input|select|textarea|button|object/.test(nodeName) ?
+	    !element.disabled :
+	    "a" === nodeName ?
+	      element.href || isTabIndexNotNaN :
+	      isTabIndexNotNaN) && visible(element);
+	}
+	
+	function hidden(el) {
+	  return (el.offsetWidth <= 0 && el.offsetHeight <= 0) ||
+	    el.style.display === 'none';
+	}
+	
+	function visible(element) {
+	  while (element) {
+	    if (element === document.body) break;
+	    if (hidden(element)) return false;
+	    element = element.parentNode;
+	  }
+	  return true;
+	}
+	
+	function tabbable(element) {
+	  var tabIndex = element.getAttribute('tabindex');
+	  if (tabIndex === null) tabIndex = undefined;
+	  var isTabIndexNaN = isNaN(tabIndex);
+	  return (isTabIndexNaN || tabIndex >= 0) && focusable(element, !isTabIndexNaN);
+	}
+	
+	function findTabbableDescendants(element) {
+	  return [].slice.call(element.querySelectorAll('*'), 0).filter(function(el) {
+	    return tabbable(el);
+	  });
+	}
+	
+	module.exports = findTabbableDescendants;
+	
+
+
+/***/ },
+/* 363 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var findTabbable = __webpack_require__(362);
+	
+	module.exports = function(node, event) {
+	  var tabbable = findTabbable(node);
+	  var finalTabbable = tabbable[event.shiftKey ? 0 : tabbable.length - 1];
+	  var leavingFinalTabbable = (
+	    finalTabbable === document.activeElement ||
+	    // handle immediate shift+tab after opening with mouse
+	    node === document.activeElement
+	  );
+	  if (!leavingFinalTabbable) return;
+	  event.preventDefault();
+	  var target = tabbable[event.shiftKey ? tabbable.length - 1 : 0];
+	  target.focus();
+	};
+
+
+/***/ },
+/* 364 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * lodash 3.2.0 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	var baseAssign = __webpack_require__(365),
+	    createAssigner = __webpack_require__(371),
+	    keys = __webpack_require__(367);
+	
+	/**
+	 * A specialized version of `_.assign` for customizing assigned values without
+	 * support for argument juggling, multiple sources, and `this` binding `customizer`
+	 * functions.
+	 *
+	 * @private
+	 * @param {Object} object The destination object.
+	 * @param {Object} source The source object.
+	 * @param {Function} customizer The function to customize assigned values.
+	 * @returns {Object} Returns `object`.
+	 */
+	function assignWith(object, source, customizer) {
+	  var index = -1,
+	      props = keys(source),
+	      length = props.length;
+	
+	  while (++index < length) {
+	    var key = props[index],
+	        value = object[key],
+	        result = customizer(value, source[key], key, object, source);
+	
+	    if ((result === result ? (result !== value) : (value === value)) ||
+	        (value === undefined && !(key in object))) {
+	      object[key] = result;
+	    }
+	  }
+	  return object;
+	}
+	
+	/**
+	 * Assigns own enumerable properties of source object(s) to the destination
+	 * object. Subsequent sources overwrite property assignments of previous sources.
+	 * If `customizer` is provided it is invoked to produce the assigned values.
+	 * The `customizer` is bound to `thisArg` and invoked with five arguments:
+	 * (objectValue, sourceValue, key, object, source).
+	 *
+	 * **Note:** This method mutates `object` and is based on
+	 * [`Object.assign`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.assign).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @alias extend
+	 * @category Object
+	 * @param {Object} object The destination object.
+	 * @param {...Object} [sources] The source objects.
+	 * @param {Function} [customizer] The function to customize assigned values.
+	 * @param {*} [thisArg] The `this` binding of `customizer`.
+	 * @returns {Object} Returns `object`.
+	 * @example
+	 *
+	 * _.assign({ 'user': 'barney' }, { 'age': 40 }, { 'user': 'fred' });
+	 * // => { 'user': 'fred', 'age': 40 }
+	 *
+	 * // using a customizer callback
+	 * var defaults = _.partialRight(_.assign, function(value, other) {
+	 *   return _.isUndefined(value) ? other : value;
+	 * });
+	 *
+	 * defaults({ 'user': 'barney' }, { 'age': 36 }, { 'user': 'fred' });
+	 * // => { 'user': 'barney', 'age': 36 }
+	 */
+	var assign = createAssigner(function(object, source, customizer) {
+	  return customizer
+	    ? assignWith(object, source, customizer)
+	    : baseAssign(object, source);
+	});
+	
+	module.exports = assign;
+
+
+/***/ },
+/* 365 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * lodash 3.2.0 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	var baseCopy = __webpack_require__(366),
+	    keys = __webpack_require__(367);
+	
+	/**
+	 * The base implementation of `_.assign` without support for argument juggling,
+	 * multiple sources, and `customizer` functions.
+	 *
+	 * @private
+	 * @param {Object} object The destination object.
+	 * @param {Object} source The source object.
+	 * @returns {Object} Returns `object`.
+	 */
+	function baseAssign(object, source) {
+	  return source == null
+	    ? object
+	    : baseCopy(source, keys(source), object);
+	}
+	
+	module.exports = baseAssign;
+
+
+/***/ },
+/* 366 */
+/***/ function(module, exports) {
+
+	/**
+	 * lodash 3.0.1 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	
+	/**
+	 * Copies properties of `source` to `object`.
+	 *
+	 * @private
+	 * @param {Object} source The object to copy properties from.
+	 * @param {Array} props The property names to copy.
+	 * @param {Object} [object={}] The object to copy properties to.
+	 * @returns {Object} Returns `object`.
+	 */
+	function baseCopy(source, props, object) {
+	  object || (object = {});
+	
+	  var index = -1,
+	      length = props.length;
+	
+	  while (++index < length) {
+	    var key = props[index];
+	    object[key] = source[key];
+	  }
+	  return object;
+	}
+	
+	module.exports = baseCopy;
+
+
+/***/ },
+/* 367 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * lodash 3.1.2 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	var getNative = __webpack_require__(368),
+	    isArguments = __webpack_require__(369),
+	    isArray = __webpack_require__(370);
+	
+	/** Used to detect unsigned integer values. */
+	var reIsUint = /^\d+$/;
+	
+	/** Used for native method references. */
+	var objectProto = Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/* Native method references for those with the same name as other `lodash` methods. */
+	var nativeKeys = getNative(Object, 'keys');
+	
+	/**
+	 * Used as the [maximum length](http://ecma-international.org/ecma-262/6.0/#sec-number.max_safe_integer)
+	 * of an array-like value.
+	 */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+	
+	/**
+	 * The base implementation of `_.property` without support for deep paths.
+	 *
+	 * @private
+	 * @param {string} key The key of the property to get.
+	 * @returns {Function} Returns the new function.
+	 */
+	function baseProperty(key) {
+	  return function(object) {
+	    return object == null ? undefined : object[key];
+	  };
+	}
+	
+	/**
+	 * Gets the "length" property value of `object`.
+	 *
+	 * **Note:** This function is used to avoid a [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792)
+	 * that affects Safari on at least iOS 8.1-8.3 ARM64.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {*} Returns the "length" value.
+	 */
+	var getLength = baseProperty('length');
+	
+	/**
+	 * Checks if `value` is array-like.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+	 */
+	function isArrayLike(value) {
+	  return value != null && isLength(getLength(value));
+	}
+	
+	/**
+	 * Checks if `value` is a valid array-like index.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+	 */
+	function isIndex(value, length) {
+	  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
+	  length = length == null ? MAX_SAFE_INTEGER : length;
+	  return value > -1 && value % 1 == 0 && value < length;
+	}
+	
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * **Note:** This function is based on [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+	}
+	
+	/**
+	 * A fallback implementation of `Object.keys` which creates an array of the
+	 * own enumerable property names of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function shimKeys(object) {
+	  var props = keysIn(object),
+	      propsLength = props.length,
+	      length = propsLength && object.length;
+	
+	  var allowIndexes = !!length && isLength(length) &&
+	    (isArray(object) || isArguments(object));
+	
+	  var index = -1,
+	      result = [];
+	
+	  while (++index < propsLength) {
+	    var key = props[index];
+	    if ((allowIndexes && isIndex(key, length)) || hasOwnProperty.call(object, key)) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+	
+	/**
+	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(1);
+	 * // => false
+	 */
+	function isObject(value) {
+	  // Avoid a V8 JIT bug in Chrome 19-20.
+	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+	  var type = typeof value;
+	  return !!value && (type == 'object' || type == 'function');
+	}
+	
+	/**
+	 * Creates an array of the own enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects. See the
+	 * [ES spec](http://ecma-international.org/ecma-262/6.0/#sec-object.keys)
+	 * for more details.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keys(new Foo);
+	 * // => ['a', 'b'] (iteration order is not guaranteed)
+	 *
+	 * _.keys('hi');
+	 * // => ['0', '1']
+	 */
+	var keys = !nativeKeys ? shimKeys : function(object) {
+	  var Ctor = object == null ? undefined : object.constructor;
+	  if ((typeof Ctor == 'function' && Ctor.prototype === object) ||
+	      (typeof object != 'function' && isArrayLike(object))) {
+	    return shimKeys(object);
+	  }
+	  return isObject(object) ? nativeKeys(object) : [];
+	};
+	
+	/**
+	 * Creates an array of the own and inherited enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keysIn(new Foo);
+	 * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
+	 */
+	function keysIn(object) {
+	  if (object == null) {
+	    return [];
+	  }
+	  if (!isObject(object)) {
+	    object = Object(object);
+	  }
+	  var length = object.length;
+	  length = (length && isLength(length) &&
+	    (isArray(object) || isArguments(object)) && length) || 0;
+	
+	  var Ctor = object.constructor,
+	      index = -1,
+	      isProto = typeof Ctor == 'function' && Ctor.prototype === object,
+	      result = Array(length),
+	      skipIndexes = length > 0;
+	
+	  while (++index < length) {
+	    result[index] = (index + '');
+	  }
+	  for (var key in object) {
+	    if (!(skipIndexes && isIndex(key, length)) &&
+	        !(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+	
+	module.exports = keys;
+
+
+/***/ },
+/* 368 */
+/***/ function(module, exports) {
+
+	/**
+	 * lodash 3.9.1 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	
+	/** `Object#toString` result references. */
+	var funcTag = '[object Function]';
+	
+	/** Used to detect host constructors (Safari > 5). */
+	var reIsHostCtor = /^\[object .+?Constructor\]$/;
+	
+	/**
+	 * Checks if `value` is object-like.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 */
+	function isObjectLike(value) {
+	  return !!value && typeof value == 'object';
+	}
+	
+	/** Used for native method references. */
+	var objectProto = Object.prototype;
+	
+	/** Used to resolve the decompiled source of functions. */
+	var fnToString = Function.prototype.toString;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objToString = objectProto.toString;
+	
+	/** Used to detect if a method is native. */
+	var reIsNative = RegExp('^' +
+	  fnToString.call(hasOwnProperty).replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')
+	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+	);
+	
+	/**
+	 * Gets the native function at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {string} key The key of the method to get.
+	 * @returns {*} Returns the function if it's native, else `undefined`.
+	 */
+	function getNative(object, key) {
+	  var value = object == null ? undefined : object[key];
+	  return isNative(value) ? value : undefined;
+	}
+	
+	/**
+	 * Checks if `value` is classified as a `Function` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isFunction(_);
+	 * // => true
+	 *
+	 * _.isFunction(/abc/);
+	 * // => false
+	 */
+	function isFunction(value) {
+	  // The use of `Object#toString` avoids issues with the `typeof` operator
+	  // in older versions of Chrome and Safari which return 'function' for regexes
+	  // and Safari 8 equivalents which return 'object' for typed array constructors.
+	  return isObject(value) && objToString.call(value) == funcTag;
+	}
+	
+	/**
+	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(1);
+	 * // => false
+	 */
+	function isObject(value) {
+	  // Avoid a V8 JIT bug in Chrome 19-20.
+	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+	  var type = typeof value;
+	  return !!value && (type == 'object' || type == 'function');
+	}
+	
+	/**
+	 * Checks if `value` is a native function.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a native function, else `false`.
+	 * @example
+	 *
+	 * _.isNative(Array.prototype.push);
+	 * // => true
+	 *
+	 * _.isNative(_);
+	 * // => false
+	 */
+	function isNative(value) {
+	  if (value == null) {
+	    return false;
+	  }
+	  if (isFunction(value)) {
+	    return reIsNative.test(fnToString.call(value));
+	  }
+	  return isObjectLike(value) && reIsHostCtor.test(value);
+	}
+	
+	module.exports = getNative;
+
+
+/***/ },
+/* 369 */
+/***/ function(module, exports) {
+
+	/**
+	 * lodash 3.0.4 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	
+	/**
+	 * Checks if `value` is object-like.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 */
+	function isObjectLike(value) {
+	  return !!value && typeof value == 'object';
+	}
+	
+	/** Used for native method references. */
+	var objectProto = Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/** Native method references. */
+	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+	
+	/**
+	 * Used as the [maximum length](http://ecma-international.org/ecma-262/6.0/#sec-number.max_safe_integer)
+	 * of an array-like value.
+	 */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+	
+	/**
+	 * The base implementation of `_.property` without support for deep paths.
+	 *
+	 * @private
+	 * @param {string} key The key of the property to get.
+	 * @returns {Function} Returns the new function.
+	 */
+	function baseProperty(key) {
+	  return function(object) {
+	    return object == null ? undefined : object[key];
+	  };
+	}
+	
+	/**
+	 * Gets the "length" property value of `object`.
+	 *
+	 * **Note:** This function is used to avoid a [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792)
+	 * that affects Safari on at least iOS 8.1-8.3 ARM64.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {*} Returns the "length" value.
+	 */
+	var getLength = baseProperty('length');
+	
+	/**
+	 * Checks if `value` is array-like.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+	 */
+	function isArrayLike(value) {
+	  return value != null && isLength(getLength(value));
+	}
+	
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * **Note:** This function is based on [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+	}
+	
+	/**
+	 * Checks if `value` is classified as an `arguments` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isArguments(function() { return arguments; }());
+	 * // => true
+	 *
+	 * _.isArguments([1, 2, 3]);
+	 * // => false
+	 */
+	function isArguments(value) {
+	  return isObjectLike(value) && isArrayLike(value) &&
+	    hasOwnProperty.call(value, 'callee') && !propertyIsEnumerable.call(value, 'callee');
+	}
+	
+	module.exports = isArguments;
+
+
+/***/ },
+/* 370 */
+/***/ function(module, exports) {
+
+	/**
+	 * lodash 3.0.4 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	
+	/** `Object#toString` result references. */
+	var arrayTag = '[object Array]',
+	    funcTag = '[object Function]';
+	
+	/** Used to detect host constructors (Safari > 5). */
+	var reIsHostCtor = /^\[object .+?Constructor\]$/;
+	
+	/**
+	 * Checks if `value` is object-like.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 */
+	function isObjectLike(value) {
+	  return !!value && typeof value == 'object';
+	}
+	
+	/** Used for native method references. */
+	var objectProto = Object.prototype;
+	
+	/** Used to resolve the decompiled source of functions. */
+	var fnToString = Function.prototype.toString;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objToString = objectProto.toString;
+	
+	/** Used to detect if a method is native. */
+	var reIsNative = RegExp('^' +
+	  fnToString.call(hasOwnProperty).replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')
+	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+	);
+	
+	/* Native method references for those with the same name as other `lodash` methods. */
+	var nativeIsArray = getNative(Array, 'isArray');
+	
+	/**
+	 * Used as the [maximum length](http://ecma-international.org/ecma-262/6.0/#sec-number.max_safe_integer)
+	 * of an array-like value.
+	 */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+	
+	/**
+	 * Gets the native function at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {string} key The key of the method to get.
+	 * @returns {*} Returns the function if it's native, else `undefined`.
+	 */
+	function getNative(object, key) {
+	  var value = object == null ? undefined : object[key];
+	  return isNative(value) ? value : undefined;
+	}
+	
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * **Note:** This function is based on [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+	}
+	
+	/**
+	 * Checks if `value` is classified as an `Array` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isArray([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArray(function() { return arguments; }());
+	 * // => false
+	 */
+	var isArray = nativeIsArray || function(value) {
+	  return isObjectLike(value) && isLength(value.length) && objToString.call(value) == arrayTag;
+	};
+	
+	/**
+	 * Checks if `value` is classified as a `Function` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isFunction(_);
+	 * // => true
+	 *
+	 * _.isFunction(/abc/);
+	 * // => false
+	 */
+	function isFunction(value) {
+	  // The use of `Object#toString` avoids issues with the `typeof` operator
+	  // in older versions of Chrome and Safari which return 'function' for regexes
+	  // and Safari 8 equivalents which return 'object' for typed array constructors.
+	  return isObject(value) && objToString.call(value) == funcTag;
+	}
+	
+	/**
+	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(1);
+	 * // => false
+	 */
+	function isObject(value) {
+	  // Avoid a V8 JIT bug in Chrome 19-20.
+	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+	  var type = typeof value;
+	  return !!value && (type == 'object' || type == 'function');
+	}
+	
+	/**
+	 * Checks if `value` is a native function.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a native function, else `false`.
+	 * @example
+	 *
+	 * _.isNative(Array.prototype.push);
+	 * // => true
+	 *
+	 * _.isNative(_);
+	 * // => false
+	 */
+	function isNative(value) {
+	  if (value == null) {
+	    return false;
+	  }
+	  if (isFunction(value)) {
+	    return reIsNative.test(fnToString.call(value));
+	  }
+	  return isObjectLike(value) && reIsHostCtor.test(value);
+	}
+	
+	module.exports = isArray;
+
+
+/***/ },
+/* 371 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * lodash 3.1.1 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	var bindCallback = __webpack_require__(372),
+	    isIterateeCall = __webpack_require__(373),
+	    restParam = __webpack_require__(374);
+	
+	/**
+	 * Creates a function that assigns properties of source object(s) to a given
+	 * destination object.
+	 *
+	 * **Note:** This function is used to create `_.assign`, `_.defaults`, and `_.merge`.
+	 *
+	 * @private
+	 * @param {Function} assigner The function to assign values.
+	 * @returns {Function} Returns the new assigner function.
+	 */
+	function createAssigner(assigner) {
+	  return restParam(function(object, sources) {
+	    var index = -1,
+	        length = object == null ? 0 : sources.length,
+	        customizer = length > 2 ? sources[length - 2] : undefined,
+	        guard = length > 2 ? sources[2] : undefined,
+	        thisArg = length > 1 ? sources[length - 1] : undefined;
+	
+	    if (typeof customizer == 'function') {
+	      customizer = bindCallback(customizer, thisArg, 5);
+	      length -= 2;
+	    } else {
+	      customizer = typeof thisArg == 'function' ? thisArg : undefined;
+	      length -= (customizer ? 1 : 0);
+	    }
+	    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
+	      customizer = length < 3 ? undefined : customizer;
+	      length = 1;
+	    }
+	    while (++index < length) {
+	      var source = sources[index];
+	      if (source) {
+	        assigner(object, source, customizer);
+	      }
+	    }
+	    return object;
+	  });
+	}
+	
+	module.exports = createAssigner;
+
+
+/***/ },
+/* 372 */
+/***/ function(module, exports) {
+
+	/**
+	 * lodash 3.0.1 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	
+	/**
+	 * A specialized version of `baseCallback` which only supports `this` binding
+	 * and specifying the number of arguments to provide to `func`.
+	 *
+	 * @private
+	 * @param {Function} func The function to bind.
+	 * @param {*} thisArg The `this` binding of `func`.
+	 * @param {number} [argCount] The number of arguments to provide to `func`.
+	 * @returns {Function} Returns the callback.
+	 */
+	function bindCallback(func, thisArg, argCount) {
+	  if (typeof func != 'function') {
+	    return identity;
+	  }
+	  if (thisArg === undefined) {
+	    return func;
+	  }
+	  switch (argCount) {
+	    case 1: return function(value) {
+	      return func.call(thisArg, value);
+	    };
+	    case 3: return function(value, index, collection) {
+	      return func.call(thisArg, value, index, collection);
+	    };
+	    case 4: return function(accumulator, value, index, collection) {
+	      return func.call(thisArg, accumulator, value, index, collection);
+	    };
+	    case 5: return function(value, other, key, object, source) {
+	      return func.call(thisArg, value, other, key, object, source);
+	    };
+	  }
+	  return function() {
+	    return func.apply(thisArg, arguments);
+	  };
+	}
+	
+	/**
+	 * This method returns the first argument provided to it.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Utility
+	 * @param {*} value Any value.
+	 * @returns {*} Returns `value`.
+	 * @example
+	 *
+	 * var object = { 'user': 'fred' };
+	 *
+	 * _.identity(object) === object;
+	 * // => true
+	 */
+	function identity(value) {
+	  return value;
+	}
+	
+	module.exports = bindCallback;
+
+
+/***/ },
+/* 373 */
+/***/ function(module, exports) {
+
+	/**
+	 * lodash 3.0.9 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	
+	/** Used to detect unsigned integer values. */
+	var reIsUint = /^\d+$/;
+	
+	/**
+	 * Used as the [maximum length](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.max_safe_integer)
+	 * of an array-like value.
+	 */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+	
+	/**
+	 * The base implementation of `_.property` without support for deep paths.
+	 *
+	 * @private
+	 * @param {string} key The key of the property to get.
+	 * @returns {Function} Returns the new function.
+	 */
+	function baseProperty(key) {
+	  return function(object) {
+	    return object == null ? undefined : object[key];
+	  };
+	}
+	
+	/**
+	 * Gets the "length" property value of `object`.
+	 *
+	 * **Note:** This function is used to avoid a [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792)
+	 * that affects Safari on at least iOS 8.1-8.3 ARM64.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {*} Returns the "length" value.
+	 */
+	var getLength = baseProperty('length');
+	
+	/**
+	 * Checks if `value` is array-like.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+	 */
+	function isArrayLike(value) {
+	  return value != null && isLength(getLength(value));
+	}
+	
+	/**
+	 * Checks if `value` is a valid array-like index.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+	 */
+	function isIndex(value, length) {
+	  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
+	  length = length == null ? MAX_SAFE_INTEGER : length;
+	  return value > -1 && value % 1 == 0 && value < length;
+	}
+	
+	/**
+	 * Checks if the provided arguments are from an iteratee call.
+	 *
+	 * @private
+	 * @param {*} value The potential iteratee value argument.
+	 * @param {*} index The potential iteratee index or key argument.
+	 * @param {*} object The potential iteratee object argument.
+	 * @returns {boolean} Returns `true` if the arguments are from an iteratee call, else `false`.
+	 */
+	function isIterateeCall(value, index, object) {
+	  if (!isObject(object)) {
+	    return false;
+	  }
+	  var type = typeof index;
+	  if (type == 'number'
+	      ? (isArrayLike(object) && isIndex(index, object.length))
+	      : (type == 'string' && index in object)) {
+	    var other = object[index];
+	    return value === value ? (value === other) : (other !== other);
+	  }
+	  return false;
+	}
+	
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * **Note:** This function is based on [`ToLength`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength).
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+	}
+	
+	/**
+	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(1);
+	 * // => false
+	 */
+	function isObject(value) {
+	  // Avoid a V8 JIT bug in Chrome 19-20.
+	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+	  var type = typeof value;
+	  return !!value && (type == 'object' || type == 'function');
+	}
+	
+	module.exports = isIterateeCall;
+
+
+/***/ },
+/* 374 */
+/***/ function(module, exports) {
+
+	/**
+	 * lodash 3.6.1 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	
+	/** Used as the `TypeError` message for "Functions" methods. */
+	var FUNC_ERROR_TEXT = 'Expected a function';
+	
+	/* Native method references for those with the same name as other `lodash` methods. */
+	var nativeMax = Math.max;
+	
+	/**
+	 * Creates a function that invokes `func` with the `this` binding of the
+	 * created function and arguments from `start` and beyond provided as an array.
+	 *
+	 * **Note:** This method is based on the [rest parameter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Function
+	 * @param {Function} func The function to apply a rest parameter to.
+	 * @param {number} [start=func.length-1] The start position of the rest parameter.
+	 * @returns {Function} Returns the new function.
+	 * @example
+	 *
+	 * var say = _.restParam(function(what, names) {
+	 *   return what + ' ' + _.initial(names).join(', ') +
+	 *     (_.size(names) > 1 ? ', & ' : '') + _.last(names);
+	 * });
+	 *
+	 * say('hello', 'fred', 'barney', 'pebbles');
+	 * // => 'hello fred, barney, & pebbles'
+	 */
+	function restParam(func, start) {
+	  if (typeof func != 'function') {
+	    throw new TypeError(FUNC_ERROR_TEXT);
+	  }
+	  start = nativeMax(start === undefined ? (func.length - 1) : (+start || 0), 0);
+	  return function() {
+	    var args = arguments,
+	        index = -1,
+	        length = nativeMax(args.length - start, 0),
+	        rest = Array(length);
+	
+	    while (++index < length) {
+	      rest[index] = args[start + index];
+	    }
+	    switch (start) {
+	      case 0: return func.call(this, rest);
+	      case 1: return func.call(this, args[0], rest);
+	      case 2: return func.call(this, args[0], args[1], rest);
+	    }
+	    var otherArgs = Array(start + 1);
+	    index = -1;
+	    while (++index < start) {
+	      otherArgs[index] = args[index];
+	    }
+	    otherArgs[start] = rest;
+	    return func.apply(this, otherArgs);
+	  };
+	}
+	
+	module.exports = restParam;
+
+
+/***/ },
+/* 375 */
+/***/ function(module, exports) {
+
+	var _element = typeof document !== 'undefined' ? document.body : null;
+	
+	function setElement(element) {
+	  if (typeof element === 'string') {
+	    var el = document.querySelectorAll(element);
+	    element = 'length' in el ? el[0] : el;
+	  }
+	  _element = element || _element;
+	}
+	
+	function hide(appElement) {
+	  validateElement(appElement);
+	  (appElement || _element).setAttribute('aria-hidden', 'true');
+	}
+	
+	function show(appElement) {
+	  validateElement(appElement);
+	  (appElement || _element).removeAttribute('aria-hidden');
+	}
+	
+	function toggle(shouldHide, appElement) {
+	  if (shouldHide)
+	    hide(appElement);
+	  else
+	    show(appElement);
+	}
+	
+	function validateElement(appElement) {
+	  if (!appElement && !_element)
+	    throw new Error('react-modal: You must set an element with `Modal.setAppElement(el)` to make this accessible');
+	}
+	
+	function resetForTesting() {
+	  _element = document.body;
+	}
+	
+	exports.toggle = toggle;
+	exports.setElement = setElement;
+	exports.show = show;
+	exports.hide = hide;
+	exports.resetForTesting = resetForTesting;
+
+
+/***/ },
+/* 376 */
+/***/ function(module, exports) {
+
+	module.exports = function(opts) {
+	  return new ElementClass(opts)
+	}
+	
+	function indexOf(arr, prop) {
+	  if (arr.indexOf) return arr.indexOf(prop)
+	  for (var i = 0, len = arr.length; i < len; i++)
+	    if (arr[i] === prop) return i
+	  return -1
+	}
+	
+	function ElementClass(opts) {
+	  if (!(this instanceof ElementClass)) return new ElementClass(opts)
+	  var self = this
+	  if (!opts) opts = {}
+	
+	  // similar doing instanceof HTMLElement but works in IE8
+	  if (opts.nodeType) opts = {el: opts}
+	
+	  this.opts = opts
+	  this.el = opts.el || document.body
+	  if (typeof this.el !== 'object') this.el = document.querySelector(this.el)
+	}
+	
+	ElementClass.prototype.add = function(className) {
+	  var el = this.el
+	  if (!el) return
+	  if (el.className === "") return el.className = className
+	  var classes = el.className.split(' ')
+	  if (indexOf(classes, className) > -1) return classes
+	  classes.push(className)
+	  el.className = classes.join(' ')
+	  return classes
+	}
+	
+	ElementClass.prototype.remove = function(className) {
+	  var el = this.el
+	  if (!el) return
+	  if (el.className === "") return
+	  var classes = el.className.split(' ')
+	  var idx = indexOf(classes, className)
+	  if (idx > -1) classes.splice(idx, 1)
+	  el.className = classes.join(' ')
+	  return classes
+	}
+	
+	ElementClass.prototype.has = function(className) {
+	  var el = this.el
+	  if (!el) return
+	  var classes = el.className.split(' ')
+	  return indexOf(classes, className) > -1
+	}
+	
+	ElementClass.prototype.toggle = function(className) {
+	  var el = this.el
+	  if (!el) return
+	  if (this.has(className)) this.remove(className)
+	  else this.add(className)
+	}
+
+
+/***/ },
+/* 377 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var ImageConstants = __webpack_require__(378);
+	var AppDispatcher = __webpack_require__(230);
+	var UserStore = __webpack_require__(233);
+	
+	var ImageStore = new Store(AppDispatcher);
+	
+	var _images = [];
+	
+	var resetImages = function (images) {
+	  _images = images.slice(0);
+	};
+	
+	var addNewImage = function (newImage) {
+	  _images.unshift(newImage);
+	};
+	
+	ImageStore.all = function () {
+	  return _images.slice(0);
+	};
+	
+	// for use on profile page, will return images the user imageed
+	// or images imageed to their wall
+	ImageStore.getByUserId = function (userIdString) {
+	
+	  var userId = parseInt(userIdString);
+	  var images = ImageStore.all();
+	  var relevantImages = [];
+	
+	  images.forEach(function (image) {
+	
+	    if (image.owner_id === userId) {
+	      relevantImages.push(image);
+	    }
+	  });
+	
+	  return relevantImages;
+	};
+	
+	ImageStore.getByUserIdOnlyFirstNine = function (userIdString) {
+	
+	  var userId = parseInt(userIdString);
+	  var images = ImageStore.all();
+	  var relevantImages = [];
+	
+	  images.forEach(function (image) {
+	
+	    if (image.owner_id === userId) {
+	      relevantImages.push(image);
+	    }
+	  });
+	
+	  return relevantImages.slice(0, 9);
+	};
+	
+	// Could be useful for putting images in the feed, not sure yet
+	// ImageStore.getUsersFollowedImages = function(userIdString){
+	//   var userId = parseInt(userIdString);
+	//   var user = UserStore.findUser(userId);
+	//   var images = ImageStore.all();
+	//
+	//   if(images === [] || user.string === "Bad User"){
+	//     return null;
+	//   }
+	//   var relevantImages = [];
+	//   var relevantUsers = [];
+	//
+	// // now we get an array of good user ids
+	//     user.usersFollowing.forEach(function(user){
+	//       relevantUsers.push(user.id);
+	//     });
+	//
+	// // now we reference the images against the
+	//   images.forEach(function(image){
+	//     if (relevantUsers.indexOf(image.author_id) !== -1){
+	//       relevantImages.push(image);
+	//     }
+	//   });
+	//   return relevantImages;
+	// },
+	
+	ImageStore.__onDispatch = function (payload) {
+	
+	  switch (payload.actionType) {
+	    case ImageConstants.IMAGES_RECEIVED:
+	      var result = resetImages(payload.images);
+	      ImageStore.__emitChange();
+	      break;
+	    case ImageConstants.NEW_IMAGE_RECEIVED:
+	      var result = addNewImage(payload.newImage);
+	      ImageStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = ImageStore;
+
+/***/ },
+/* 378 */
+/***/ function(module, exports) {
+
+	ImageConstants = {
+	  IMAGES_RECEIVED: "IMAGES_RECEIVED",
+	  NEW_IMAGE_RECEIVED: "NEW_IMAGE_RECEIVED"
+	};
+	module.exports = ImageConstants;
+
+/***/ },
+/* 379 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var ImageCommentLikeButton = __webpack_require__(380);
+	var ImageCommentStore = __webpack_require__(381);
+	var LikeStore = __webpack_require__(335);
+	
+	var ApiUtil = __webpack_require__(235);
+	var History = __webpack_require__(159).History;
+	
+	var ImageComment = React.createClass({
+	  displayName: 'ImageComment',
+	
+	  mixins: [History],
+	
+	  _commentsChanged: function () {
+	    this.setState({ comments: ImageCommentStore.getByPostId(this.props.image.id) });
+	  },
+	
+	  getInitialState: function () {
+	    return {
+	      comments: ImageCommentStore.getByPostId(this.props.image.id)
+	    };
+	  },
+	
+	  componentDidMount: function () {
+	    this.commentListener = ImageCommentStore.addListener(this._commentsChanged);
+	    ApiUtil.fetchComments();
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.commentListener.remove();
+	  },
+	  handleAuthorClick: function (authorId) {
+	    this.history.pushState(null, "user/" + authorId);
+	    window.scrollTo(0, 0);
+	  },
+	  likeButtonLogic: function (comment) {
+	    var likes = LikeStore.all();
+	    var current_comment = comment;
+	    var current_user = UserStore.getCurrentUser();
+	
+	    if (!current_comment.id) {
+	      return false;
+	    }
+	    var liking = false;
+	    var that = this;
+	
+	    likes.forEach(function (like) {
+	      if (like.post_id === current_comment.id && like.author_id === current_user.id && like.like_type === "comment") {
+	        liking = like;
+	      }
+	    });
+	
+	    return liking;
+	  },
+	  _buttonRenderFunction: function (comment) {
+	    var placeholder = this.likeButtonLogic(comment);
+	    var likeButton;
+	    var currentUser = UserStore.getCurrentUser();
+	
+	    if (placeholder) {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(ImageCommentLikeButton, { currentUser: currentUser,
+	          comment: comment,
+	          like: placeholder })
+	      );
+	    } else {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(ImageCommentLikeButton, { currentUser: currentUser,
+	          comment: comment,
+	          like: placeholder })
+	      );
+	    }
+	
+	    return likeButton;
+	  },
+	
+	  render: function () {
+	    var that = this;
+	    var Comments = this.state.comments.map(function (comment, i) {
+	      return React.createElement(
+	        'div',
+	        { key: comment.id, className: 'post-comment' },
+	        React.createElement(
+	          'div',
+	          { onClick: that.handleAuthorClick.bind(null, comment.author.id) },
+	          comment.author.real_name
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          comment.body
+	        ),
+	        that._buttonRenderFunction(comment)
+	      );
+	    });
+	    return React.createElement(
+	      'div',
+	      { className: 'image-post-comments' },
+	      Comments
+	    );
+	  }
+	});
+	
+	module.exports = ImageComment;
+
+/***/ },
+/* 380 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var FollowStore = __webpack_require__(334);
+	var LikeStore = __webpack_require__(335);
+	var classNames = __webpack_require__(336);
+	var ApiUtil = __webpack_require__(235);
+	
+	var ImageCommentLikeButton = React.createClass({
+	  displayName: 'ImageCommentLikeButton',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	
+	  handleLikeSubmit: function (event) {
+	    event.preventDefault();
+	    var like = { author_id: this.props.currentUser.id,
+	      like_type: "comment",
+	      post_id: this.props.comment.id };
+	
+	    if (this.props.like) {
+	      var targetLike = LikeStore.getByLikeParties(like);
+	      ApiUtil.deleteLike(targetLike);
+	    } else {
+	      ApiUtil.createLike(like);
+	    }
+	  },
+	  componentWillReceiveProps: function (newProps) {},
+	  buttonText: function () {
+	    var text;
+	
+	    if (this.props.like) {
+	      text = "Unlike";
+	    } else {
+	      text = "Like";
+	    }
+	    return text;
+	  },
+	  likeClass: function () {
+	    var likeClass = classNames({
+	      'like-button-liked': this.props.like,
+	      'like-button-unliked': this.props.like === false
+	    });
+	    return likeClass;
+	  },
+	  getAllLikers: function () {
+	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
+	    // MUST BE A POST LIKE
+	    // pass in 2 props, the post_id and the like_type=("post")
+	    var otherPeople = LikeStore.getTheUsers(this.props.like);
+	    return otherPeople;
+	  },
+	  render: function () {
+	    var people = this.getAllLikers();
+	
+	    if (!people) {
+	      fellowLikers = React.createElement(
+	        'div',
+	        null,
+	        'Loading'
+	      );
+	    } else {
+	      fellowLikers = people.map(function (person, i) {
+	        return React.createElement(
+	          'div',
+	          { key: i },
+	          person.real_name
+	        );
+	      });
+	    }
+	
+	    var properButton;
+	    properButton = React.createElement(
+	      'button',
+	      { className: this.likeClass, onClick: this.handleLikeSubmit },
+	      this.buttonText()
+	    );
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit }),
+	      fellowLikers
+	    );
+	  }
+	});
+	
+	module.exports = ImageCommentLikeButton;
+
+/***/ },
+/* 381 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var ImageConstants = __webpack_require__(238);
+	var AppDispatcher = __webpack_require__(230);
+	
+	var ImageCommentsStore = new Store(AppDispatcher);
+	
+	var _image_comments = [];
+	
+	var resetImageComments = function (image_comments) {
+	
+	  _image_comments = image_comments.slice(0);
+	};
+	
+	var addNewImageComment = function (newImageComment) {
+	
+	  _image_comments.push(newImageComment);
+	};
+	
+	ImageCommentsStore.all = function () {
+	  return _image_comments.slice(0);
+	};
+	
+	ImageCommentsStore.getByPostId = function (imageIdString) {
+	
+	  var imageId = parseInt(imageIdString);
+	  var image_comments = ImageCommentsStore.all();
+	  var relevantImageComments = [];
+	
+	  image_comments.forEach(function (comment) {
+	
+	    if (comment.image_id === imageId) {
+	      relevantImageComments.push(comment);
+	    }
+	  });
+	
+	  return relevantImageComments;
+	};
+	
+	ImageCommentsStore.__onDispatch = function (payload) {
+	
+	  switch (payload.actionType) {
+	    case ImageConstants.IMAGE_COMMENTS_RECEIVED:
+	
+	      var result = resetImageComments(payload.image_comments);
+	      ImageCommentsStore.__emitChange();
+	      break;
+	    case ImageConstants.NEW_IMAGE_COMMENT_RECEIVED:
+	      var result = addNewImageComment(payload.newImageComment);
+	      ImageCommentsStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = ImageCommentsStore;
+
+/***/ },
+/* 382 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var NewImageComment = React.createClass({
+	  displayName: 'NewImageComment',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  componentWillMount: function () {
+	    this.setState({ currentUser: UserStore.getCurrentUser() });
+	  },
+	  handleSubmit: function (event) {
+	    event.preventDefault();
+	    var post = { body: event.currentTarget[0].value, image_id: this.props.image.id };
+	    ApiUtil.createImageComment(post);
+	    event.currentTarget[0].value = null;
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'image-post-new-post' },
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'form',
+	          { onSubmit: this.handleSubmit },
+	          React.createElement(
+	            'label',
+	            { htmlFor: 'comment_body' },
+	            'Leave a new comment'
+	          ),
+	          React.createElement('br', null),
+	          React.createElement('textarea', {
+	            name: 'comment[body]',
+	            id: 'comment_body', rows: '4', cols: '50' }),
+	          React.createElement('br', null),
+	          React.createElement('input', { type: 'submit', value: 'Comment' })
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = NewImageComment;
+
+/***/ },
+/* 383 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var FollowStore = __webpack_require__(334);
+	var LikeStore = __webpack_require__(335);
+	var classNames = __webpack_require__(336);
+	var ApiUtil = __webpack_require__(235);
+	
+	var ImageLikeButton = React.createClass({
+	  displayName: 'ImageLikeButton',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	
+	  handleLikeSubmit: function (event) {
+	    event.preventDefault();
+	
+	    var like = { author_id: this.props.currentUser.id,
+	      like_type: "image",
+	      post_id: this.props.image.id };
+	
+	    if (this.props.like) {
+	      var targetLike = LikeStore.getByLikeParties(like);
+	      ApiUtil.deleteLike(targetLike);
+	    } else {
+	      ApiUtil.createLike(like);
+	    }
+	  },
+	  componentWillReceiveProps: function (newProps) {},
+	  buttonText: function () {
+	    var text;
+	
+	    if (this.props.like) {
+	      text = "Unlike";
+	    } else {
+	      text = "Like";
+	    }
+	    return text;
+	  },
+	  likeClass: function () {
+	    var likeClass = classNames({
+	      'like-button-liked': this.props.like,
+	      'like-button-unliked': this.props.like === false
+	    });
+	    return likeClass;
+	  },
+	  getAllLikers: function () {
+	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
+	    // MUST BE A POST LIKE
+	    // pass in 2 props, the post_id and the like_type=("post")
+	    var otherPeople = LikeStore.getTheUsers(this.props.like);
+	    return otherPeople;
+	  },
+	  render: function () {
+	    var people = this.getAllLikers();
+	
+	    if (!people) {
+	      fellowLikers = React.createElement(
+	        'div',
+	        null,
+	        'Loading'
+	      );
+	    } else {
+	      fellowLikers = people.map(function (person, i) {
+	        return React.createElement(
+	          'div',
+	          { key: i },
+	          person.real_name
+	        );
+	      });
+	    }
+	
+	    var properButton;
+	    properButton = React.createElement(
+	      'button',
+	      { className: this.likeClass, onClick: this.handleLikeSubmit },
+	      this.buttonText()
+	    );
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit })
+	    );
+	  }
+	});
+	
+	module.exports = ImageLikeButton;
+
+/***/ },
+/* 384 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var UserProfileUserInfo = React.createClass({
+	  displayName: 'UserProfileUserInfo',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  // getInitialState: function(){
+	  //   return ({})
+	  // },
+	
+	  handleClick: function (event) {
+	    var image_path = this.props.image.image_path;
+	    var current_user = UserStore.getCurrentUser();
+	    ApiUtil.updateProfilePic({ user: current_user, profile_image: image_path });
+	  },
+	  buildUrl: function (image_path) {
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_168,w_168/v1450463928/" + image_path;
+	    return url;
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'button',
+	        { onClick: this.handleClick },
+	        'Make this your Profile Picture'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = UserProfileUserInfo;
+
+/***/ },
+/* 385 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Really the Image Pane, includes the individual images and Upload Button
+	
+	var React = __webpack_require__(1),
+	    ReactDOM = __webpack_require__(158),
+	    UploadButton = __webpack_require__(355),
+	    ImageModal = __webpack_require__(356),
+	    UserStore = __webpack_require__(233),
+	    ImageStore = __webpack_require__(377),
+	    LikeStore = __webpack_require__(335),
+	    ImageLikeButton = __webpack_require__(383),
+	    Modal = __webpack_require__(357),
+	    ImageComments = __webpack_require__(379),
+	    NewImageComment = __webpack_require__(382),
+	    ProfilePicChangeButton = __webpack_require__(384),
+	    ApiUtil = __webpack_require__(235);
+	
+	var customStyles = {
+	  overlay: {
+	    position: 'fixed',
+	    backgroundColor: 'rgba(255, 255, 255, 0.75)',
+	    zIndex: 5
+	  },
+	  content: {
+	    top: '50%',
+	    left: '50%',
+	    right: 'auto',
+	    bottom: 'auto',
+	    height: '600px',
+	    width: '1200px',
+	    marginRight: '-50%',
+	    transform: 'translate(-50%, -50%)'
+	  }
+	};
+	
+	var ImagesBody = React.createClass({
+	  displayName: 'ImagesBody',
+	
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  getInitialState: function () {
+	    ApiUtil.fetchImages();
+	    this.likesListener = LikeStore.addListener(this._likesChanged);
+	    return { images: ImageStore.getByUserId(this.props.user),
+	      user: this.props.user,
+	      modalIsOpen: false,
+	      selectedImage: "" };
+	  },
+	  _likesChanged: function () {
+	    this.forceUpdate();
+	  },
+	  openModal: function (event) {
+	    this.setState({ modalIsOpen: true,
+	      selectedImage: event });
+	  },
+	
+	  closeModal: function () {
+	    this.setState({ modalIsOpen: false, selectedImage: "" });
+	  },
+	
+	  componentWillReceiveProps: function (newProps) {
+	    ApiUtil.fetchImages();
+	    this.setState({ user: newProps.user });
+	    this.setState({ images: ImageStore.getByUserId(newProps.user) });
+	  },
+	  // componentWillUnmount: function(){
+	  //   this.setState({user: null});
+	  // },
+	  buildUrl: function (image_path) {
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_200,w_200/v1450463928/" + image_path;
+	    return url;
+	  },
+	  buildModalUrl: function (image_path) {
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/v1450463928/" + image_path;
+	    return url;
+	  },
+	  modal: function () {
+	    return;
+	  },
+	  likeButtonLogic: function (image) {
+	    var likes = LikeStore.all();
+	    var current_image = image;
+	    var current_user = UserStore.getCurrentUser();
+	
+	    if (!current_image.id) {
+	      return false;
+	    }
+	    var liking = false;
+	    var that = this;
+	
+	    likes.forEach(function (like) {
+	      if (like.post_id === current_image.id && like.author_id === current_user.id && like.like_type === "image") {
+	        liking = like;
+	      }
+	    });
+	
+	    return liking;
+	  },
+	  _buttonRenderFunction: function (image) {
+	    var placeholder = this.likeButtonLogic(image);
+	    var likeButton;
+	    var currentUser = UserStore.getCurrentUser();
+	
+	    if (placeholder) {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(ImageLikeButton, { currentUser: currentUser,
+	          image: image,
+	          like: placeholder })
+	      );
+	    } else {
+	      likeButton = React.createElement(
+	        'div',
+	        { className: 'like-button' },
+	        React.createElement(ImageLikeButton, { currentUser: currentUser,
+	          image: image,
+	          like: placeholder })
+	      );
+	    }
+	
+	    return likeButton;
+	  },
+	
+	  render: function () {
+	    var that = this;
+	    if (this.state.images) {
+	      var images = this.state.images.map((function (image) {
+	        return React.createElement(
+	          'div',
+	          { key: image.id,
+	            className: 'image-body-image' },
+	          React.createElement('img', { onClick: this.openModal.bind(null, image),
+	            src: that.buildUrl(image.image_path) })
+	        );
+	      }).bind(this));
+	    } else {
+	      var images = React.createElement(
+	        'div',
+	        null,
+	        ' no images'
+	      );
+	    }
+	    return React.createElement(
+	      'div',
+	      { className: 'profile-images-body' },
+	      images,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'div',
+	          { className: 'image-modal-outside' },
+	          React.createElement(
+	            Modal,
+	            {
+	              isOpen: this.state.modalIsOpen,
+	              onRequestClose: this.closeModal,
+	              style: customStyles,
+	              className: 'image-modal' },
+	            React.createElement(
+	              'h2',
+	              null,
+	              'Picture'
+	            ),
+	            React.createElement(
+	              'button',
+	              { onClick: this.closeModal },
+	              'close'
+	            ),
+	            React.createElement(ProfilePicChangeButton, { image: this.state.selectedImage }),
+	            that._buttonRenderFunction(this.state.selectedImage),
+	            React.createElement('img', { src: that.buildModalUrl(that.state.selectedImage.image_path), className: 'image-modal-image' }),
+	            React.createElement(NewImageComment, { image: this.state.selectedImage, className: 'image-modal-new-comments' }),
+	            React.createElement(ImageComments, { image: this.state.selectedImage, className: 'image-modal-image-comments' })
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = ImagesBody;
+
+/***/ },
+/* 386 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// This page is intended to be the page you go to when you are looking at that exact
+	// single post.  May not make in into final production
+	
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var PostPage = React.createClass({
+	  displayName: 'PostPage',
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        'This is where the posts will go'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = PostPage;
+
+/***/ },
+/* 387 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var PostStore = __webpack_require__(211);
+	var Post = __webpack_require__(240);
+	var UserStore = __webpack_require__(233);
+	var SearchBar = __webpack_require__(347);
+	var History = __webpack_require__(159).History;
+	var SignoutButton = __webpack_require__(348);
+	
+	var ApiUtil = __webpack_require__(235);
+	
+	var HeaderBar = React.createClass({
+	  displayName: 'HeaderBar',
+	
+	  mixins: [History],
+	  contextTypes: {
+	    router: React.PropTypes.func
+	  },
+	  getInitialState: function () {
+	
+	    return { user: {} };
+	  },
+	  redirectToHome: function () {
+	    this.history.pushState(null, "/");
+	    window.scrollTo(0, 0);
+	  },
+	  handleAuthorClick: function (destinationId) {
+	    this.history.pushState(null, "user/" + this.state.user.id);
+	    window.scrollTo(0, 0);
+	  },
+	  componentDidMount: function () {
+	    this.userListener = UserStore.addListener(this._usersChanged);
+	  },
+	  _usersChanged: function () {
+	    this.setState({ user: UserStore.getCurrentUser() });
+	  },
+	  componentWillReceiveProps: function (newProps) {
+	    this.setState({ user: newProps.currentUser });
+	  },
+	  _buildUrl: function (image_path) {
+	    var publicID;
+	    if (!image_path) {
+	      publicID = "lifebook_default_pic.jpg";
+	    } else {
+	      publicID = image_path;
+	    }
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_30,w_30/v1450463928/" + publicID;
+	    return url;
+	  },
+	
+	  render: function () {
+	    var name, profile_image;
+	
+	    if (this.state.user.real_name) {
+	      name = this.state.user.real_name;
+	      profile_image = this.state.user.profile_image;
+	    } else {
+	      name = "Loading";
+	    }
+	
+	    return React.createElement(
+	      'nav',
+	      { className: 'header-bar' },
+	      React.createElement(
+	        'div',
+	        { className: 'header-bar-search-bar' },
+	        React.createElement(SearchBar, null)
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'header-bar-go-home' },
+	        React.createElement(
+	          'h1',
+	          { onClick: this.redirectToHome },
+	          'Lifebook'
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'header-bar-profile-pic', onClick: this.handleAuthorClick },
+	        React.createElement('img', { src: this._buildUrl(profile_image) })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'header-bar-real-name', onClick: this.handleAuthorClick },
+	        name
+	      ),
+	      React.createElement(SignoutButton, null)
+	    );
+	  }
+	});
+	
+	module.exports = HeaderBar;
 
 /***/ }
 /******/ ]);
