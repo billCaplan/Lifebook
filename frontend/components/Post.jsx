@@ -69,11 +69,29 @@ if (this.props.post.created_at.created_at){
 }
   var finalTime = moment(time*1000).fromNow();
 
-  return finalTime;
+  return <div time={time}
+              onMouseOver={this.mouseOverTime.bind(null, time)}
+              onMouseOut={this.mouseLeaveTime.bind(null, time)}
+              className={time}
+              text="WOrds">{finalTime}</div>;
+},
+mouseOverTime: function(time){
+  var date = moment(time*1000).format('MMMM Do YYYY, h:mm:ss a');
+  $(('.' + time)).each(function() {
+  $(this).text(date);
+});
+
+  // event.value===time;
+},
+mouseLeaveTime: function(time){
+  $(('.' + time)).each(function() {
+    $(this).text(moment(time*1000).fromNow());
+});
+  // value===finalTime
 },
 
   render: function(){
-
+    var timeline = this.getTimeFrame();
 
     var currentUser = UserStore.getCurrentUser();
     var subjectName = this.props.post.subject.real_name;
@@ -115,7 +133,7 @@ if (this.props.post.created_at.created_at){
                               transitionLeaveTimeout={500}>
       <div className="whole-post">
         <div className="feed-post-body">
-         {nameLine}{this.getTimeFrame()}
+         {nameLine}{timeline}
          <div className="post-only-the-body">{this.props.post.body}</div>
          {likeButton}
        </div>

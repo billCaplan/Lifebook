@@ -31766,10 +31766,33 @@
 	    }
 	    var finalTime = moment(time * 1000).fromNow();
 	
-	    return finalTime;
+	    return React.createElement(
+	      'div',
+	      { time: time,
+	        onMouseOver: this.mouseOverTime.bind(null, time),
+	        onMouseOut: this.mouseLeaveTime.bind(null, time),
+	        className: time,
+	        text: 'WOrds' },
+	      finalTime
+	    );
+	  },
+	  mouseOverTime: function (time) {
+	    var date = moment(time * 1000).format('MMMM Do YYYY, h:mm:ss a');
+	    $('.' + time).each(function () {
+	      $(this).text(date);
+	    });
+	
+	    // event.value===time;
+	  },
+	  mouseLeaveTime: function (time) {
+	    $('.' + time).each(function () {
+	      $(this).text(moment(time * 1000).fromNow());
+	    });
+	    // value===finalTime
 	  },
 	
 	  render: function () {
+	    var timeline = this.getTimeFrame();
 	
 	    var currentUser = UserStore.getCurrentUser();
 	    var subjectName = this.props.post.subject.real_name;
@@ -31835,7 +31858,7 @@
 	          'div',
 	          { className: 'feed-post-body' },
 	          nameLine,
-	          this.getTimeFrame(),
+	          timeline,
 	          React.createElement(
 	            'div',
 	            { className: 'post-only-the-body' },
