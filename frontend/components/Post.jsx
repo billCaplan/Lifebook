@@ -93,6 +93,7 @@ var Post = React.createClass({
   render: function(){
 
     var time = this.props.post.created_at;
+    debugger
     var finalTime = moment(time*1000).fromNow();
     var currentUser = UserStore.getCurrentUser();
     var subjectName = this.props.post.subject.real_name;
