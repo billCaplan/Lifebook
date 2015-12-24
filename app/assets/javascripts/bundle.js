@@ -43370,7 +43370,7 @@
 	            name: 'comment[body]',
 	            id: 'comment_body', rows: '4', cols: '50' }),
 	          React.createElement('br', null),
-	          React.createElement('input', { type: 'submit', value: 'Comment' })
+	          React.createElement('input', { type: 'submit', className: 'button', value: 'Comment' })
 	        )
 	      )
 	    );
@@ -44822,7 +44822,7 @@
 	          name: 'post[body]',
 	          id: 'post_body', rows: '4', cols: '50' }),
 	        React.createElement('br', null),
-	        React.createElement('input', { type: 'submit', value: 'Post' })
+	        React.createElement('input', { type: 'submit', className: 'button', value: 'Post' })
 	      )
 	    );
 	  }
@@ -45033,7 +45033,7 @@
 	      { className: 'header-bar-signout-button' },
 	      React.createElement(
 	        'button',
-	        { onClick: this.handleSignout },
+	        { className: 'button', onClick: this.handleSignout },
 	        'Sign Out'
 	      )
 	    );
@@ -45550,7 +45550,7 @@
 	    var likes = LikeStore.all();
 	    var current_image = image;
 	    var current_user = UserStore.getCurrentUser();
-	
+	    debugger;
 	    if (!current_image.id) {
 	      return false;
 	    }
@@ -45635,7 +45635,7 @@
 	            ),
 	            React.createElement(
 	              'button',
-	              { onClick: this.closeModal },
+	              { className: 'button', onClick: this.closeModal },
 	              'close'
 	            ),
 	            React.createElement(ProfilePicChangeButton, { image: this.state.selectedImage }),
@@ -47901,7 +47901,7 @@
 	            name: 'comment[body]',
 	            id: 'comment_body', rows: '4', cols: '50' }),
 	          React.createElement('br', null),
-	          React.createElement('input', { type: 'submit', value: 'Comment' })
+	          React.createElement('input', { className: 'button', type: 'submit', value: 'Comment' })
 	        )
 	      )
 	    );
@@ -48037,7 +48037,7 @@
 	      null,
 	      React.createElement(
 	        'button',
-	        { onClick: this.handleClick },
+	        { className: 'button', onClick: this.handleClick },
 	        'Make this your Profile Picture'
 	      )
 	    );

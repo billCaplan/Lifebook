@@ -78,7 +78,7 @@ var Images = React.createClass({
     var likes = LikeStore.all();
     var current_image = image;
     var current_user = UserStore.getCurrentUser();
-
+    debugger
     if (!current_image.id){
       return false;
     }
@@ -145,7 +145,7 @@ var Images = React.createClass({
                className="image-modal" >
 
                <h2>Picture</h2>
-               <button onClick={this.closeModal}>close</button>
+               <button className="button" onClick={this.closeModal}>close</button>
                <ProfilePicChangeButton image={this.state.selectedImage}/>
                {that._buttonRenderFunction(this.state.selectedImage)}
                <img src={that.buildModalUrl(that.state.selectedImage.image_path)} className="image-modal-image"></img>

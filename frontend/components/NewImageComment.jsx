@@ -32,7 +32,7 @@ var NewImageComment = React.createClass({
              name="comment[body]"
              id="comment_body" rows="4" cols="50"></textarea>
            <br></br>
-           <input type="submit" value="Comment"/>
+           <input className="button" type="submit" value="Comment"/>
           </form>
         </div>
       </div>

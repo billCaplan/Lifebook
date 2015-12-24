@@ -24,7 +24,7 @@ var UserProfileUserInfo = React.createClass({
   render: function(){
     return(
       <div>
-        <button onClick={this.handleClick}>Make this your Profile Picture</button>
+        <button className="button" onClick={this.handleClick}>Make this your Profile Picture</button>
       </div>
     );
   }

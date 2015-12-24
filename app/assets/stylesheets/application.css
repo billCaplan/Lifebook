@@ -170,7 +170,7 @@ visibility: hidden;
  .button{
     /*color: white;*/
     border-radius: 4px;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    
     background: #f6f7f8;
  }
 
@@ -439,15 +439,15 @@ padding-right: 10px;
 .search-list{
   position: relative;
   visibility: hidden;
-  background-color: grey;
-  width: 90px;
+  background-color: white;
+  width: 275px;
   color: black;
-  border: 7px;
+  border: 2px;
   border-color: black;
   border-radius: 5px;
   margin-left: 50px;
 
-  z-index: 2;
+  z-index: 10;
 }
 
 .search-list-visible{

@@ -41,7 +41,7 @@ var NewPost = React.createClass({
            name="post[body]"
            id="post_body" rows="4" cols="50"></textarea>
          <br></br>
-         <input type="submit" value="Post"/>
+         <input type="submit"  className="button" value="Post"/>
         </form>
       </div>
     );
