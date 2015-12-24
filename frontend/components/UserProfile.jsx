@@ -38,14 +38,14 @@ var UserProfile = React.createClass({
     };
   },
   componentDidMount: function(){
-    //ApiUtil to fetch users
+
 
       ApiUtil.fetchPosts();
       ApiUtil.fetchUsers();
       ApiUtil.fetchImages();
       ApiUtil.fetchFollows();
       ApiUtil.fetchImageComments();
-    //Add listener to update state
+
     this.postListener = PostStore.addListener(this._postsChanged);
     this.userListener = UserStore.addListener(this._usersChanged);
     this.followListener = FollowStore.addListener(this._followsChanged);
@@ -55,7 +55,7 @@ var UserProfile = React.createClass({
     this.userListener.remove();
     this.followListener.remove();
   },
-  //Fixes navigating to new user id
+
   componentWillReceiveProps: function (newProps) {
     var userId = this.props.routeParams.userId;
     this.setState({user_id: userId, user: UserStore.findUser(userId)});
@@ -114,13 +114,9 @@ var UserProfile = React.createClass({
     return following;
   },
 
-  // <div>
-  //   <FollowButton user={this.state.user} />
-  // </div>
-
 
   render: function(){
-    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
+
     var placeholder = this.followButtonLogic();
     var followButton;
 

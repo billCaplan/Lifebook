@@ -24,7 +24,7 @@ var UserProfileUserInfo = React.createClass({
   },
 
   render: function(){
-    //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts
+    
     return(
       <div>
           <h2>User Profile User Info</h2>

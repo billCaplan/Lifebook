@@ -33,7 +33,7 @@ var Feed = React.createClass({
   componentDidMount: function(){
     ApiUtil.fetchPosts();
     ApiUtil.fetchUsers();
-    // ApiUtil.fetchLikes();
+
     this.postListener = PostStore.addListener(this._postsChanged);
     this.userListener = UserStore.addListener(this._usersChanged);
   },
@@ -44,7 +44,6 @@ var Feed = React.createClass({
   },
 
   render: function(){
-    // need to filter the posts to only the ones that are being followed
     var posts;
 
     if (!this.state.posts){

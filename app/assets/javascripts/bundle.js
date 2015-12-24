@@ -24505,7 +24505,7 @@
 	  componentDidMount: function () {
 	    ApiUtil.fetchPosts();
 	    ApiUtil.fetchUsers();
-	    // ApiUtil.fetchLikes();
+	
 	    this.postListener = PostStore.addListener(this._postsChanged);
 	    this.userListener = UserStore.addListener(this._usersChanged);
 	  },
@@ -24516,7 +24516,6 @@
 	  },
 	
 	  render: function () {
-	    // need to filter the posts to only the ones that are being followed
 	    var posts;
 	
 	    if (!this.state.posts) {
@@ -31719,7 +31718,6 @@
 	    router: React.PropTypes.func
 	  },
 	  componentDidMount: function () {
-	    // ApiUtil.fetchLikes();
 	    this.likeListener = LikeStore.addListener(this._likesChanged);
 	  },
 	  componentWillUnmount: function () {
@@ -31759,34 +31757,6 @@
 	
 	    return liking;
 	  },
-	  //   timeSince: function(date) {
-	  //     var thing = date * 1000;
-	  //     debugger
-	  //     var seconds = Math.floor((new Date() - date) / 1000);
-	  //
-	  //     var interval = Math.floor(seconds / 31536000);
-	  //
-	  //     if (interval > 1) {
-	  //         return interval + " years";
-	  //     }
-	  //     interval = Math.floor(seconds / 2592000);
-	  //     if (interval > 1) {
-	  //         return interval + " months";
-	  //     }
-	  //     interval = Math.floor(seconds / 86400);
-	  //     if (interval > 1) {
-	  //         return interval + " days";
-	  //     }
-	  //     interval = Math.floor(seconds / 3600);
-	  //     if (interval > 1) {
-	  //         return interval + " hours";
-	  //     }
-	  //     interval = Math.floor(seconds / 60);
-	  //     if (interval > 1) {
-	  //         return interval + " minutes";
-	  //     }
-	  //     return Math.floor(seconds) + " seconds";
-	  // },
 	  getTimeFrame: function () {
 	    var time;
 	    if (this.props.post.created_at.created_at) {
@@ -43505,7 +43475,8 @@
 	        { key: comment.id, className: 'post-comment' },
 	        React.createElement(
 	          'div',
-	          { onClick: that.handleAuthorClick.bind(null, comment.author.id) },
+	          { className: 'comment-user-name',
+	            onClick: that.handleAuthorClick.bind(null, comment.author.id) },
 	          comment.author.real_name
 	        ),
 	        React.createElement(
@@ -43523,8 +43494,6 @@
 	    );
 	  }
 	});
-	
-	// render the top level comment, then render its kids
 	
 	module.exports = Comment;
 
@@ -43639,9 +43608,7 @@
 	    return text;
 	  },
 	  getAllLikers: function () {
-	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
-	    // MUST BE A POST LIKE
-	    // pass in 2 props, the post_id and the like_type=("post")
+	
 	    var otherPeople = LikeStore.getTheUsers(this.props.like);
 	    return otherPeople;
 	  },
@@ -43931,9 +43898,6 @@
 	    return likeClass;
 	  },
 	  getAllLikers: function () {
-	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
-	    // MUST BE A POST LIKE
-	    // pass in 2 props, the post_id and the like_type=("post")
 	    var otherPeople = LikeStore.getTheUsers(this.props.like);
 	    return otherPeople;
 	  },
@@ -44970,8 +44934,6 @@
 	  },
 	
 	  selectName: function (result) {
-	    // debugger
-	    // var name = event.currentTarget.innerText;
 	    this.setState({ listVisible: false, inputVal: "" });
 	    this.history.pushState(null, "user/" + result.id);
 	    window.scrollTo(0, 0);
@@ -45059,13 +45021,9 @@
 	      method: 'DELETE',
 	      url: 'session/',
 	      success: function (resp) {
-	        //  $("content").hide().show(0);
 	        window.location.replace(window.location.origin);
 	      },
-	      error: function (xhr, ajaxOptions, thrownError) {
-	        // debugger;
-	        // that.history.pushState(null, "/");
-	      }
+	      error: function (xhr, ajaxOptions, thrownError) {}
 	    });
 	  },
 	
@@ -45130,14 +45088,13 @@
 	    };
 	  },
 	  componentDidMount: function () {
-	    //ApiUtil to fetch users
 	
 	    ApiUtil.fetchPosts();
 	    ApiUtil.fetchUsers();
 	    ApiUtil.fetchImages();
 	    ApiUtil.fetchFollows();
 	    ApiUtil.fetchImageComments();
-	    //Add listener to update state
+	
 	    this.postListener = PostStore.addListener(this._postsChanged);
 	    this.userListener = UserStore.addListener(this._usersChanged);
 	    this.followListener = FollowStore.addListener(this._followsChanged);
@@ -45147,7 +45104,7 @@
 	    this.userListener.remove();
 	    this.followListener.remove();
 	  },
-	  //Fixes navigating to new user id
+	
 	  componentWillReceiveProps: function (newProps) {
 	    var userId = this.props.routeParams.userId;
 	    this.setState({ user_id: userId, user: UserStore.findUser(userId) });
@@ -45211,12 +45168,8 @@
 	    return following;
 	  },
 	
-	  // <div>
-	  //   <FollowButton user={this.state.user} />
-	  // </div>
-	
 	  render: function () {
-	    // All posts here will have a target_id === profile.user_id, or user_id = profile.user_id
+	
 	    var placeholder = this.followButtonLogic();
 	    var followButton;
 	
@@ -45319,7 +45272,7 @@
 	  },
 	
 	  render: function () {
-	    //Profile pics will render along with the Username, User age, email, and Location, maybe number of posts
+	
 	    return React.createElement(
 	      'div',
 	      null,
@@ -45390,10 +45343,11 @@
 	
 	  render: function () {
 	    var that = this;
+	    var users;
 	    if (!this.state.user.usersFollowing) {
-	      var users = React.createElement('div', null);
+	      users = React.createElement('div', null);
 	    } else {
-	      var users = this.state.user.usersFollowing.map(function (user) {
+	      users = this.state.user.usersFollowing.map(function (user) {
 	        return React.createElement(
 	          'div',
 	          { key: user.id,
@@ -45437,75 +45391,12 @@
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
-	  // getInitialState: function(){
-	  //   ApiUtil.fetchFollows();
-	  //   return {user: {}, isFollowing:{}, newProps:{}};
-	  // },
-	  // componentDidMount: function(){
-	  //   this.followListener = FollowStore.addListener(this._followsChanged);
-	  // },
-	  // _followsChanged: function(){
-	  //   debugger
-	  //   this.setState({
-	  //     user: UserStore.findUser(this.state.user.id),
-	  //     isFollowing: this.decideIfFollowOrUnfollow({user: UserStore.findUser(this.state.user.id)})
-	  //   });
-	  // },
-	  // componentWillUnmount: function(){
-	  //   this.followListener.remove();
-	  // },
-	  // componentWillReceiveProps: function (newProps) {
-	  //   debugger;
-	  //   this.setState({user: newProps.user,
-	  //                 isFollowing: this.decideIfFollowOrUnfollow(newProps)
-	  //
-	  //                   });
-	  // },
-	  // old handleSubmit
-	  // handleSubmit: function(event){
-	  //   event.preventDefault();
-	  //
-	  //   var follow = {followed_user_id: this.state.user.id};
-	  //   ApiUtil.createFollow(follow);
-	  // },
-	  // decideIfFollowOrUnfollow: function(newProps){
-	  //   debugger
-	  //   if (!newProps.user.id){
-	  //     return false;
-	  //   }
-	  //   var profile_user = newProps.user;
-	  //   var current_user = UserStore.getCurrentUser();
-	  //
-	  //   var followingList = current_user.usersFollowing;
-	  //   var following = false;
-	  //   var that = this;
-	  //
-	  //   followingList.forEach(function(user){
-	  //     if (user.id === that.state.user.id){
-	  //       following = true;
-	  //     }
-	  //   });
-	  //   return following;
-	  //
-	  // },
+	
 	  handleFollowSubmit: function (event) {
 	    event.preventDefault();
 	    var follow = { followed_user_id: this.props.user.id };
 	    ApiUtil.createFollow(follow);
 	  },
-	  // handleUnfollowSubmit: function(event){
-	  //   event.preventDefault();
-	  //   var current_user = UserStore.getCurrentUser();
-	  //
-	  //   var followParams = {followed_user_id: this.state.user.id, author_id: current_user.id };
-	  //
-	  //   var follow = FollowStore.getByFollowParties(followParams);
-	  //
-	  //   ApiUtil.deleteFollow(follow);
-	  //
-	  //   // going to need to find the follow by the combo, then pass that id to destroy
-	  //   // ApiUtil.deleteFollow(follow);
-	  // },
 	
 	  render: function () {
 	    var properButton;
@@ -45544,57 +45435,6 @@
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
-	  // getInitialState: function(){
-	  //   ApiUtil.fetchFollows();
-	  //   return {user: {}, isFollowing:{}, newProps:{}};
-	  // },
-	  // componentDidMount: function(){
-	  //   this.followListener = FollowStore.addListener(this._followsChanged);
-	  // },
-	  // _followsChanged: function(){
-	  //   debugger
-	  //   this.setState({
-	  //     user: UserStore.findUser(this.state.user.id),
-	  //     isFollowing: this.decideIfFollowOrUnfollow({user: UserStore.findUser(this.state.user.id)})
-	  //   });
-	  // },
-	  // componentWillUnmount: function(){
-	  //   this.followListener.remove();
-	  // },
-	  // componentWillReceiveProps: function (newProps) {
-	  //   debugger;
-	  //   this.setState({user: newProps.user,
-	  //                 isFollowing: this.decideIfFollowOrUnfollow(newProps)
-	  //
-	  //                   });
-	  // },
-	  // old handleSubmit
-	  // handleSubmit: function(event){
-	  //   event.preventDefault();
-	  //
-	  //   var follow = {followed_user_id: this.state.user.id};
-	  //   ApiUtil.createFollow(follow);
-	  // },
-	  // decideIfFollowOrUnfollow: function(newProps){
-	  //   debugger
-	  //   if (!newProps.user.id){
-	  //     return false;
-	  //   }
-	  //   var profile_user = newProps.user;
-	  //   var current_user = UserStore.getCurrentUser();
-	  //
-	  //   var followingList = current_user.usersFollowing;
-	  //   var following = false;
-	  //   var that = this;
-	  //
-	  //   followingList.forEach(function(user){
-	  //     if (user.id === that.state.user.id){
-	  //       following = true;
-	  //     }
-	  //   });
-	  //   return following;
-	  //
-	  // },
 	  handleUnfollowSubmit: function (event) {
 	    event.preventDefault();
 	    var current_user = UserStore.getCurrentUser();
@@ -45604,9 +45444,6 @@
 	    var follow = FollowStore.getByFollowParties(followParams);
 	
 	    ApiUtil.deleteFollow(follow);
-	
-	    // going to need to find the follow by the combo, then pass that id to destroy
-	    // ApiUtil.deleteFollow(follow);
 	  },
 	
 	  render: function () {
@@ -45637,7 +45474,6 @@
 	var React = __webpack_require__(1),
 	    ReactDOM = __webpack_require__(158),
 	    UploadButton = __webpack_require__(355),
-	    ImageModal = __webpack_require__(356),
 	    UserStore = __webpack_require__(233),
 	    ImageStore = __webpack_require__(377),
 	    LikeStore = __webpack_require__(335),
@@ -45646,8 +45482,7 @@
 	    ImageComments = __webpack_require__(379),
 	    NewImageComment = __webpack_require__(382),
 	    ImageLikeButton = __webpack_require__(383),
-	    ProfilePicChangeButton = __webpack_require__(384),
-	    ImageModal = __webpack_require__(356);
+	    ProfilePicChangeButton = __webpack_require__(384);
 	
 	var customStyles = {
 	  overlay: {
@@ -45850,106 +45685,9 @@
 	});
 	
 	module.exports = UploadButton;
-	
-	// the postImage function will no longet exist.  Needs to be a store action I believe
 
 /***/ },
-/* 356 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var PostStore = __webpack_require__(211);
-	var Post = __webpack_require__(240);
-	var UserStore = __webpack_require__(233);
-	var Modal = __webpack_require__(357);
-	
-	var ApiUtil = __webpack_require__(235);
-	
-	var customStyles = {
-	  content: {
-	    top: '50%',
-	    left: '50%',
-	    right: 'auto',
-	    bottom: 'auto',
-	    marginRight: '-50%',
-	    transform: 'translate(-50%, -50%)'
-	  }
-	};
-	
-	var ImageModal = React.createClass({
-	  displayName: 'ImageModal',
-	
-	  getInitialState: function () {
-	
-	    return { modalIsOpen: false };
-	  },
-	
-	  openModal: function () {
-	    this.setState({ modalIsOpen: true });
-	  },
-	
-	  closeModal: function () {
-	    this.setState({ modalIsOpen: false });
-	  },
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        Modal,
-	        {
-	          isOpen: this.state.modalIsOpen,
-	          onRequestClose: this.closeModal,
-	          style: customStyles },
-	        React.createElement(
-	          'h2',
-	          null,
-	          'Hello'
-	        ),
-	        React.createElement(
-	          'button',
-	          { onClick: this.closeModal },
-	          'close'
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          'I am a modal'
-	        ),
-	        React.createElement(
-	          'form',
-	          null,
-	          React.createElement('input', null),
-	          React.createElement(
-	            'button',
-	            null,
-	            'tab navigation'
-	          ),
-	          React.createElement(
-	            'button',
-	            null,
-	            'stays'
-	          ),
-	          React.createElement(
-	            'button',
-	            null,
-	            'inside'
-	          ),
-	          React.createElement(
-	            'button',
-	            null,
-	            'the modal'
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = ImageModal;
-
-/***/ },
+/* 356 */,
 /* 357 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -48015,9 +47753,6 @@
 	    return likeClass;
 	  },
 	  getAllLikers: function () {
-	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
-	    // MUST BE A POST LIKE
-	    // pass in 2 props, the post_id and the like_type=("post")
 	    var otherPeople = LikeStore.getTheUsers(this.props.like);
 	    return otherPeople;
 	  },
@@ -48228,9 +47963,7 @@
 	    return likeClass;
 	  },
 	  getAllLikers: function () {
-	    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
-	    // MUST BE A POST LIKE
-	    // pass in 2 props, the post_id and the like_type=("post")
+	
 	    var otherPeople = LikeStore.getTheUsers(this.props.like);
 	    return otherPeople;
 	  },
@@ -48287,9 +48020,6 @@
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
-	  // getInitialState: function(){
-	  //   return ({})
-	  // },
 	
 	  handleClick: function (event) {
 	    var image_path = this.props.image.image_path;
@@ -48325,7 +48055,6 @@
 	var React = __webpack_require__(1),
 	    ReactDOM = __webpack_require__(158),
 	    UploadButton = __webpack_require__(355),
-	    ImageModal = __webpack_require__(356),
 	    UserStore = __webpack_require__(233),
 	    ImageStore = __webpack_require__(377),
 	    LikeStore = __webpack_require__(335),

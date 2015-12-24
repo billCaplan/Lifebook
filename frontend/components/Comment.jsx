@@ -85,7 +85,8 @@ var Comment = React.createClass({
       var Comments = this.state.comments.map(function (comment, i) {
         return(
           <div key={comment.id} className="post-comment">
-            <div  onClick={that.handleAuthorClick.bind(null, comment.author.id)}>
+            <div  className="comment-user-name"
+                  onClick={that.handleAuthorClick.bind(null, comment.author.id)}>
                   {comment.author.real_name}
             </div>
 
@@ -102,8 +103,6 @@ var Comment = React.createClass({
     );
   }
 });
-
-// render the top level comment, then render its kids
 
 
 module.exports = Comment;

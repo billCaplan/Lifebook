@@ -14,9 +14,11 @@
  *= require_self
  */
 
+ .comment-user-name{
+   cursor: pointer;
+ }
  .following-user-name{
-     cursor: pointer;
-
+   cursor: pointer;
  }
 
 .splash-page{
@@ -166,10 +168,10 @@ visibility: hidden;
     background: rgb(28, 184, 65);
  }
  .button{
-    color: white;
+    /*color: white;*/
     border-radius: 4px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-    background: rgb(28, 184, 65);
+    background: #f6f7f8;
  }
 
  .example-appear {
@@ -308,6 +310,7 @@ padding-right: 10px;
 
  .post-user-name{
    text-decoration: underline;
+   cursor: pointer;
 
  }
 
@@ -560,6 +563,9 @@ box-shadow: 0px 0px 10px rgba(0,0,0,.8);
   min-height: 400px;
   width: 600px;
 
+}
+.profile-pic{
+  margin-left: 30px;
 }
 
 .user-profile-picture-content:after {

@@ -19,7 +19,6 @@ var Post = React.createClass({
     router: React.PropTypes.func
   },
   componentDidMount: function(){
-    // ApiUtil.fetchLikes();
     this.likeListener = LikeStore.addListener(this._likesChanged);
   },
   componentWillUnmount: function(){
@@ -61,34 +60,6 @@ var Post = React.createClass({
 
     return liking;
   },
-//   timeSince: function(date) {
-//     var thing = date * 1000;
-//     debugger
-//     var seconds = Math.floor((new Date() - date) / 1000);
-//
-//     var interval = Math.floor(seconds / 31536000);
-//
-//     if (interval > 1) {
-//         return interval + " years";
-//     }
-//     interval = Math.floor(seconds / 2592000);
-//     if (interval > 1) {
-//         return interval + " months";
-//     }
-//     interval = Math.floor(seconds / 86400);
-//     if (interval > 1) {
-//         return interval + " days";
-//     }
-//     interval = Math.floor(seconds / 3600);
-//     if (interval > 1) {
-//         return interval + " hours";
-//     }
-//     interval = Math.floor(seconds / 60);
-//     if (interval > 1) {
-//         return interval + " minutes";
-//     }
-//     return Math.floor(seconds) + " seconds";
-// },
 getTimeFrame: function(){
   var time;
 if (this.props.post.created_at.created_at){

@@ -20,5 +20,3 @@ var UploadButton = React.createClass({
 });
 
 module.exports = UploadButton;
-
-// the postImage function will no longet exist.  Needs to be a store action I believe

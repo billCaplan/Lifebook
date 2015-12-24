@@ -3,7 +3,6 @@
 var React = require('react'),
     ReactDOM = require('react-dom'),
     UploadButton = require("../components/UploadButton"),
-    ImageModal = require("../components/ImageModal"),
     UserStore = require("../stores/user"),
     ImageStore = require("../stores/image"),
     LikeStore = require("../stores/like"),

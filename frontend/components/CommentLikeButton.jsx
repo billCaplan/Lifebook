@@ -41,9 +41,7 @@ var CommentLikeButton = React.createClass({
   return text;
   },
   getAllLikers: function(){
-    // NEED THE POST ID INSTEAD, WONT RENDER UNLESS THERE IS A LIKE
-    // MUST BE A POST LIKE
-    // pass in 2 props, the post_id and the like_type=("post")
+
     var otherPeople = LikeStore.getTheUsers(this.props.like);
       return otherPeople;
   },

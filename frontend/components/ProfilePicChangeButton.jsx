@@ -9,9 +9,6 @@ var UserProfileUserInfo = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
-  // getInitialState: function(){
-  //   return ({})
-  // },
 
   handleClick: function(event){
     var image_path = this.props.image.image_path;

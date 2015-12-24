@@ -3,7 +3,6 @@
 var React = require('react'),
     ReactDOM = require('react-dom'),
     UploadButton = require("../components/UploadButton"),
-    ImageModal = require("../components/ImageModal"),
     UserStore = require("../stores/user"),
     ImageStore = require("../stores/image"),
     LikeStore = require("../stores/like"),
@@ -12,8 +11,8 @@ var React = require('react'),
     ImageComments = require('../components/ImageComment'),
     NewImageComment = require('../components/NewImageComment'),
     ImageLikeButton = require('../components/ImageLikeButton'),
-    ProfilePicChangeButton = require('../components/ProfilePicChangeButton'),
-    ImageModal = require('../components/ImageModal');
+    ProfilePicChangeButton = require('../components/ProfilePicChangeButton');
+
 
     var customStyles = {
       overlay : {

@@ -23,10 +23,11 @@ var FriendsPane = React.createClass({
 
   render: function(){
     var that = this;
+    var users;
     if (!this.state.user.usersFollowing){
-      var users = <div></div>;
+      users = <div></div>;
     } else {
-    var users = this.state.user.usersFollowing.map(function (user) {
+    users = this.state.user.usersFollowing.map(function (user) {
       return <div key={user.id}
                   className="following-user-name"
                   onClick={that.handleAuthorClick.bind(null, user.id)}>{user.real_name}</div>;

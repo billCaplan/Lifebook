@@ -52,8 +52,6 @@ var SearchBar = React.createClass({
   },
 
   selectName: function (result) {
-    // debugger
-    // var name = event.currentTarget.innerText;
     this.setState({listVisible: false, inputVal: ""});
     this.history.pushState(null, "user/" + result.id);
     window.scrollTo(0, 0);
