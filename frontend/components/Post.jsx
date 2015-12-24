@@ -19,7 +19,7 @@ var Post = React.createClass({
     router: React.PropTypes.func
   },
   componentDidMount: function(){
-    ApiUtil.fetchLikes();
+    // ApiUtil.fetchLikes();
     this.likeListener = LikeStore.addListener(this._likesChanged);
   },
   componentWillUnmount: function(){

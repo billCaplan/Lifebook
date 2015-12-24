@@ -24505,7 +24505,7 @@
 	  componentDidMount: function () {
 	    ApiUtil.fetchPosts();
 	    ApiUtil.fetchUsers();
-	    ApiUtil.fetchLikes();
+	    // ApiUtil.fetchLikes();
 	    this.postListener = PostStore.addListener(this._postsChanged);
 	    this.userListener = UserStore.addListener(this._usersChanged);
 	  },
@@ -24524,6 +24524,12 @@
 	        'div',
 	        null,
 	        'Loading'
+	      );
+	    } else if (this.state.posts.length === 0) {
+	      posts = React.createElement(
+	        'p',
+	        null,
+	        'Welcome to Lifebook.  Try making a post above, or searching for your friend\'s using the Search Bar above.'
 	      );
 	    } else {
 	      posts = this.state.posts.map(function (post, i) {
@@ -31713,7 +31719,7 @@
 	    router: React.PropTypes.func
 	  },
 	  componentDidMount: function () {
-	    ApiUtil.fetchLikes();
+	    // ApiUtil.fetchLikes();
 	    this.likeListener = LikeStore.addListener(this._likesChanged);
 	  },
 	  componentWillUnmount: function () {
@@ -45390,7 +45396,9 @@
 	      var users = this.state.user.usersFollowing.map(function (user) {
 	        return React.createElement(
 	          'div',
-	          { key: user.id, onClick: that.handleAuthorClick.bind(null, user.id) },
+	          { key: user.id,
+	            className: 'following-user-name',
+	            onClick: that.handleAuthorClick.bind(null, user.id) },
 	          user.real_name
 	        );
 	      });
@@ -45834,7 +45842,7 @@
 	      { className: "upload-form" },
 	      React.createElement(
 	        "button",
-	        { onClick: this.upload },
+	        { className: "button", onClick: this.upload },
 	        "Upload new image!"
 	      )
 	    );

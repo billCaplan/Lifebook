@@ -1,33 +1,143 @@
-<%= link_to "Sign up!", new_user_url %>
+<!-- <%= link_to "Sign up!", new_user_url %>
 <br>
-<br>
+<br> -->
+
+<div class="splash-page">
+
+  <div class="splash-page-header">
+    <h1 class="splash-page-header-logo">Lifebook</h1>
 
 
-<header> Welcome to Lifebook</header>
+      <div class="splash-page-sign-in">
+        <form action="<%= session_url %>" method="post">
+          <input type="hidden"
+          name="authenticity_token"
+          id=""
+          value="<%= form_authenticity_token %>">
 
-<div class="sign-up-link">
-  <%= link_to "Sign up!", new_user_url %>
+          <label for="user_email">Email</label>
+          <input
+          type="text"
+          name="user[email]"
+          id="user_email">
+
+          <label for="user_password">Password</label>
+          <input type="password" name="user[password]" id="user_password" value="">
+        </label>
+
+        <input type="submit" value="Sign In">
+      </form>
+    </div>
+
+  </div>
+
+  <!-- <div class="sign-up-link">
+    <%= link_to "Sign up!", new_user_url %>
+  </div>
+  <h1>Login</h1> -->
+
+  <div class="splash-page-intro">
+    <p>
+    Thank you for visiting Lifebook.  Enter your information to get started today.
+    If you are already a User, plese Sign In above.
+    If you would like to continue as a Guest, please click the Guest button above Sign Up.
+    </p>
+
+  </div>
+
+  <div class="guest-sign-in-mark">
+    <form action="<%= session_url %>" method="post">
+      <input type="hidden"
+      name="authenticity_token"
+      id=""
+      value="<%= form_authenticity_token %>">
+
+
+      <input
+      type="hidden"
+      name="user[email]"
+      id="user_email" value="mark@gmail.com">
+
+
+      <input type="hidden" name="user[password]" id="user_password" value="password">
+    </label>
+
+    <input type="submit" value="Guest Sign In as Mark">
+  </form>
+  </div>
+
+  <div class="guest-sign-in-sally">
+    <form action="<%= session_url %>" method="post">
+      <input type="hidden"
+      name="authenticity_token"
+      id=""
+      value="<%= form_authenticity_token %>">
+
+
+      <input
+      type="hidden"
+      name="user[email]"
+      id="user_email"
+      value="sally@gmail.com">
+
+
+      <input type="hidden" name="user[password]" id="user_password" value="password">
+    </label>
+
+    <input type="submit" value="Guest Sign In as Sally">
+  </form>
+  </div>
+
+  <div class="splash-page-sign-up">
+    <h1>Sign Up</h1>
+    <form action="<%= users_url %>" method="post">
+      <input type="hidden" name="authenticity_token"
+             value="<%= form_authenticity_token %>">
+      <label for="user_email">Email</label>
+      <input
+        type="text"
+        name="user[email]"
+        value="<%= @user.email %>"
+        id="user_email">
+        <br>
+
+      <label for="user_real_name">Real Name</label>
+        <input
+          type="text"
+          name="user[real_name]"
+          value="<%= @user.real_name %>"
+          id="user_real_name">
+          <br>
+
+      <label for="user_age">Age</label>
+      <input
+        type="text"
+        name="user[age]"
+        value="<%= @user.age %>"
+        id="user_age">
+        <br>
+
+      <label for="user_location">Location</label>
+      <input
+        type="text"
+        name="user[location]"
+        value="<%= @user.location %>"
+        id="user_location">
+        <br>
+
+
+      <label for="user_password">Password</label>
+      <input
+        type="password"
+        name="user[password]"
+        id="user_password">
+
+        <input type="hidden" name="user[type_id]" value="1">
+
+      <input type="submit" value="Create User">
+    </form>
+  </div>
 </div>
-<h1>Login</h1>
-
-<form action="<%= session_url %>" method="post">
-  <input type="hidden"
-    name="authenticity_token"
-    id=""
-    value="<%= form_authenticity_token %>">
-
-  <label for="user_email">Email</label>
-  <input
-    type="text"
-    name="user[email]"
-    id="user_email">
-
-  <label for="user_password">Password</label>
-  <input type="password" name="user[password]" id="user_password" value="">
-</label>
-
-  <input type="submit" value="Sign In">
-</form>
 
 
 <!-- This link may or may not work, depends on my routes -->

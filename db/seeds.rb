@@ -97,6 +97,15 @@ User.create({
   profile_image: "canstock7478741_fnrkkb",
   password: "password"
 })
+User.create({
+  email: "mark@gmail.com",
+  type_id: 1,
+  real_name: "Mark Thomas",
+  age: 26,
+  location: "San Francisco, CA",
+  profile_image: "canstock7478741_fnrkkb",
+  password: "password"
+})
 
 # Posts
 

@@ -33,7 +33,7 @@ var Feed = React.createClass({
   componentDidMount: function(){
     ApiUtil.fetchPosts();
     ApiUtil.fetchUsers();
-    ApiUtil.fetchLikes();
+    // ApiUtil.fetchLikes();
     this.postListener = PostStore.addListener(this._postsChanged);
     this.userListener = UserStore.addListener(this._usersChanged);
   },
@@ -49,6 +49,8 @@ var Feed = React.createClass({
 
     if (!this.state.posts){
       posts = <div>Loading</div>;
+    } else if (this.state.posts.length === 0) {
+      posts = <p>Welcome to Lifebook.  Try making a post above, or searching for your friend's using the Search Bar above.</p>;
     }
     else {
       posts = this.state.posts.map(function (post, i) {

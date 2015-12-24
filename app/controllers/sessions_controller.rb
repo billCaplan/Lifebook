@@ -3,11 +3,13 @@ class SessionsController < ApplicationController
   before_action :require_signed_in!, only: [:destroy]
 
   def new
-    @user
+    @user = User.new
+
     render :new
   end
 
   def create
+
 
     @user = User.find_by_credentials(
       params[:user][:email],
