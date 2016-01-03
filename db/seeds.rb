@@ -457,13 +457,8 @@ Follow.create({
   author_id: 8,
   followed_user_id: 3
 })
-26
+#26
 Follow.create({
   author_id: 9,
   followed_user_id: 2
-})
-27
-Follow.create({
-  author_id: 7,
-  followed_user_id: 5
 })
