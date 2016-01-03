@@ -45309,18 +45309,14 @@
 	      React.createElement(
 	        'h2',
 	        null,
-	        'User Profile User Info'
+	        this.props.user.real_name
 	      ),
 	      React.createElement(
 	        'div',
 	        { className: 'profile-pic' },
 	        React.createElement('img', { src: this._getProfilePic() })
 	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.props.user.real_name
-	      ),
+	      React.createElement('div', null),
 	      React.createElement(
 	        'div',
 	        null,

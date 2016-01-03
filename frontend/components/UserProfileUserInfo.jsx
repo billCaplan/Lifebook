@@ -24,12 +24,12 @@ var UserProfileUserInfo = React.createClass({
   },
 
   render: function(){
-    
+
     return(
       <div>
-          <h2>User Profile User Info</h2>
+          <h2>{this.props.user.real_name}</h2>
           <div className="profile-pic"><img src={this._getProfilePic()}></img></div>
-          <div>{this.props.user.real_name}</div>
+          <div></div>
           <div>{this.props.user.age}</div>
           <div>{this.props.user.location}</div>
           <div>{this.props.user.email}</div>
