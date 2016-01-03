@@ -61,14 +61,20 @@ var ImageCommentLikeButton = React.createClass({
         return <div key={i}>{person.real_name}</div>;
         });
     }
+    var properText = this.buttonText();
 
     var properButton;
     properButton = <button  className={this.likeClass} onClick={this.handleLikeSubmit}>{this.buttonText()}</button>;
 
     return (
       <div>
-        <img src="/assets/thumb.png" height="20" width="20" className={this.likeClass()} onClick={this.handleLikeSubmit}></img>
-        {fellowLikers}
+        <div>
+          <img src="/assets/thumb.png" height="20" width="20" className={this.likeClass()} onClick={this.handleLikeSubmit}></img>
+          {properText}
+      </div>
+        <div className="liker-names">
+          {fellowLikers}
+        </div>
     </div>
     );
   }

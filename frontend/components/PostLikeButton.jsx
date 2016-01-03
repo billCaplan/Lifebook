@@ -66,7 +66,7 @@ var PostLikeButton = React.createClass({
         return <div key={i}>{person.real_name}</div>;
         });
     }
-
+    var properText = this.buttonText();
     var properButton;
     properButton = <button  className={this.likeClass()} onClick={this.handleLikeSubmit}>{this.buttonText()}</button>;
 
@@ -75,6 +75,7 @@ var PostLikeButton = React.createClass({
         <div>
 
           <img src="/assets/thumb.png" height="20" width="20" className={this.likeClass()} onClick={this.handleLikeSubmit}></img>
+          {properText}
         </div>
         <div>
         {fellowLikers}

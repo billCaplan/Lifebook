@@ -66,6 +66,8 @@ var CommentLikeButton = React.createClass({
         });
     }
 
+    var properText = this.buttonText();
+
     var properButton;
     properButton = <button className={this.likeClass()}
                             onClick={this.handleLikeSubmit}>
@@ -78,6 +80,7 @@ var CommentLikeButton = React.createClass({
               height="20" width="20"
               className={this.likeClass()}
               onClick={this.handleLikeSubmit}></img>
+            {properText}
         </div>
         <div className="liker-names">
           {fellowLikers}

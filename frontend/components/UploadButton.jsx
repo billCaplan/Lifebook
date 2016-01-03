@@ -13,7 +13,7 @@ var UploadButton = React.createClass({
   render: function () {
     return (
       <div className="upload-form">
-        <button className="button" onClick={this.upload}>Upload new image!</button>
+        <button className="button" onClick={this.upload}>Upload New Picture</button>
       </div>
     );
   }

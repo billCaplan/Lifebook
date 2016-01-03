@@ -6,6 +6,7 @@ var ApiUtil = require('../util/api_util');
 var UserProfileUserInfo = require('../components/UserProfileUserInfo');
 var NewPost = require('../components/NewPost');
 var UserStore = require('../stores/user');
+var UploadButton = require("../components/UploadButton");
 var FriendsPane = require('../components/FriendsPane');
 var FollowButton = require('../components/FollowButton');
 var UnfollowButton = require('../components/UnfollowButton');
@@ -76,7 +77,7 @@ var UserProfile = React.createClass({
   },
   _renderPicturePage: function(){
     return <div className="user-profile-picture-content">
-              <button onClick={this._setPostsPage} className="return-to-profile">Return to Profile</button>
+              <button onClick={this._setPostsPage} className="return-to-profile button">Return to Profile</button>
               <ImagesBody user={this.state.user.id} />
           </div>;
   },
@@ -151,7 +152,8 @@ var UserProfile = React.createClass({
           </div>
           <div>
             <Images user={this.state.user.id}/>
-            <button className="button" onClick={this._setPicturePage}>View All Picture</button>
+            <button className="button" onClick={this._setPicturePage}>View All Pictures</button>
+            <UploadButton />
           </div>
         </div>
         <div className="user-profile-new-post">

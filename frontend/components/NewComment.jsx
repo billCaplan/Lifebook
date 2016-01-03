@@ -30,7 +30,7 @@ var NewComment = React.createClass({
            <br></br>
            <textarea
              name="comment[body]"
-             id="comment_body" rows="4" cols="50"></textarea>
+             id="comment_body" rows="2" cols="75"></textarea>
            <br></br>
            <input type="submit" className="button" value="Comment"/>
           </form>

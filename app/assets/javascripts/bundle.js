@@ -55,13 +55,13 @@
 	
 	var Feed = __webpack_require__(210);
 	var UserProfile = __webpack_require__(349);
-	var PostPage = __webpack_require__(386);
+	var PostPage = __webpack_require__(385);
 	var ApiUtil = __webpack_require__(235);
 	var UserStore = __webpack_require__(233);
 	var NewPost = __webpack_require__(345);
 	var NewComment = __webpack_require__(329);
 	var Comment = __webpack_require__(330);
-	var HeaderBar = __webpack_require__(387);
+	var HeaderBar = __webpack_require__(386);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -43391,7 +43391,7 @@
 	          React.createElement('br', null),
 	          React.createElement('textarea', {
 	            name: 'comment[body]',
-	            id: 'comment_body', rows: '4', cols: '50' }),
+	            id: 'comment_body', rows: '2', cols: '75' }),
 	          React.createElement('br', null),
 	          React.createElement('input', { type: 'submit', className: 'button', value: 'Comment' })
 	        )
@@ -43663,6 +43663,8 @@
 	      });
 	    }
 	
+	    var properText = this.buttonText();
+	
 	    var properButton;
 	    properButton = React.createElement(
 	      'button',
@@ -43680,7 +43682,8 @@
 	        React.createElement('img', { src: '/assets/thumb.png',
 	          height: '20', width: '20',
 	          className: this.likeClass(),
-	          onClick: this.handleLikeSubmit })
+	          onClick: this.handleLikeSubmit }),
+	        properText
 	      ),
 	      React.createElement(
 	        'div',
@@ -43970,7 +43973,7 @@
 	        );
 	      });
 	    }
-	
+	    var properText = this.buttonText();
 	    var properButton;
 	    properButton = React.createElement(
 	      'button',
@@ -43984,7 +43987,8 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit })
+	        React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit }),
+	        properText
 	      ),
 	      React.createElement(
 	        'div',
@@ -44991,7 +44995,8 @@
 	    var listClass = classNames({
 	      'search-list': true,
 	      'search-list-hidden': this.state.listVisible === false,
-	      'search-list-visible': this.state.listVisible
+	      'search-list-visible': this.state.listVisible,
+	      'search-list-username': true
 	    });
 	    return listClass;
 	  },
@@ -45077,11 +45082,12 @@
 	var UserProfileUserInfo = __webpack_require__(350);
 	var NewPost = __webpack_require__(345);
 	var UserStore = __webpack_require__(233);
+	var UploadButton = __webpack_require__(355);
 	var FriendsPane = __webpack_require__(351);
 	var FollowButton = __webpack_require__(352);
 	var UnfollowButton = __webpack_require__(353);
 	var Images = __webpack_require__(354);
-	var ImagesBody = __webpack_require__(385);
+	var ImagesBody = __webpack_require__(384);
 	var ReactCSSTransitionGroup = __webpack_require__(338);
 	var FollowStore = __webpack_require__(334);
 	
@@ -45152,7 +45158,7 @@
 	      { className: 'user-profile-picture-content' },
 	      React.createElement(
 	        'button',
-	        { onClick: this._setPostsPage, className: 'return-to-profile' },
+	        { onClick: this._setPostsPage, className: 'return-to-profile button' },
 	        'Return to Profile'
 	      ),
 	      React.createElement(ImagesBody, { user: this.state.user.id })
@@ -45243,8 +45249,9 @@
 	            React.createElement(
 	              'button',
 	              { className: 'button', onClick: this._setPicturePage },
-	              'View All Picture'
-	            )
+	              'View All Pictures'
+	            ),
+	            React.createElement(UploadButton, null)
 	          )
 	        ),
 	        React.createElement(
@@ -45496,16 +45503,15 @@
 	
 	var React = __webpack_require__(1),
 	    ReactDOM = __webpack_require__(158),
-	    UploadButton = __webpack_require__(355),
 	    UserStore = __webpack_require__(233),
-	    ImageStore = __webpack_require__(377),
+	    ImageStore = __webpack_require__(356),
 	    LikeStore = __webpack_require__(335),
 	    ApiUtil = __webpack_require__(235),
-	    Modal = __webpack_require__(357),
-	    ImageComments = __webpack_require__(379),
-	    NewImageComment = __webpack_require__(382),
-	    ImageLikeButton = __webpack_require__(383),
-	    ProfilePicChangeButton = __webpack_require__(384);
+	    Modal = __webpack_require__(358),
+	    ImageComments = __webpack_require__(378),
+	    NewImageComment = __webpack_require__(381),
+	    ImageLikeButton = __webpack_require__(382),
+	    ProfilePicChangeButton = __webpack_require__(383);
 	
 	var customStyles = {
 	  overlay: {
@@ -45637,6 +45643,11 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'profile-images-pane' },
+	      React.createElement(
+	        'h2',
+	        null,
+	        'Pictures'
+	      ),
 	      images,
 	      React.createElement(
 	        'div',
@@ -45668,8 +45679,7 @@
 	            React.createElement(ImageComments, { image: this.state.selectedImage, className: 'image-modal-image-comments' })
 	          )
 	        )
-	      ),
-	      React.createElement(UploadButton, null)
+	      )
 	    );
 	  }
 	});
@@ -45701,7 +45711,7 @@
 	      React.createElement(
 	        "button",
 	        { className: "button", onClick: this.upload },
-	        "Upload new image!"
+	        "Upload New Picture"
 	      )
 	    );
 	  }
@@ -45710,24 +45720,134 @@
 	module.exports = UploadButton;
 
 /***/ },
-/* 356 */,
-/* 357 */
+/* 356 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(358);
+	var Store = __webpack_require__(212).Store;
+	var ImageConstants = __webpack_require__(357);
+	var AppDispatcher = __webpack_require__(230);
+	var UserStore = __webpack_require__(233);
 	
+	var ImageStore = new Store(AppDispatcher);
+	
+	var _images = [];
+	
+	var resetImages = function (images) {
+	  _images = images.slice(0);
+	};
+	
+	var addNewImage = function (newImage) {
+	  _images.unshift(newImage);
+	};
+	
+	ImageStore.all = function () {
+	  return _images.slice(0);
+	};
+	
+	// for use on profile page, will return images the user imageed
+	// or images imageed to their wall
+	ImageStore.getByUserId = function (userIdString) {
+	
+	  var userId = parseInt(userIdString);
+	  var images = ImageStore.all();
+	  var relevantImages = [];
+	
+	  images.forEach(function (image) {
+	
+	    if (image.owner_id === userId) {
+	      relevantImages.push(image);
+	    }
+	  });
+	
+	  return relevantImages;
+	};
+	
+	ImageStore.getByUserIdOnlyFirstNine = function (userIdString) {
+	
+	  var userId = parseInt(userIdString);
+	  var images = ImageStore.all();
+	  var relevantImages = [];
+	
+	  images.forEach(function (image) {
+	
+	    if (image.owner_id === userId) {
+	      relevantImages.push(image);
+	    }
+	  });
+	
+	  return relevantImages.slice(0, 9);
+	};
+	
+	// Could be useful for putting images in the feed, not sure yet
+	// ImageStore.getUsersFollowedImages = function(userIdString){
+	//   var userId = parseInt(userIdString);
+	//   var user = UserStore.findUser(userId);
+	//   var images = ImageStore.all();
+	//
+	//   if(images === [] || user.string === "Bad User"){
+	//     return null;
+	//   }
+	//   var relevantImages = [];
+	//   var relevantUsers = [];
+	//
+	// // now we get an array of good user ids
+	//     user.usersFollowing.forEach(function(user){
+	//       relevantUsers.push(user.id);
+	//     });
+	//
+	// // now we reference the images against the
+	//   images.forEach(function(image){
+	//     if (relevantUsers.indexOf(image.author_id) !== -1){
+	//       relevantImages.push(image);
+	//     }
+	//   });
+	//   return relevantImages;
+	// },
+	
+	ImageStore.__onDispatch = function (payload) {
+	
+	  switch (payload.actionType) {
+	    case ImageConstants.IMAGES_RECEIVED:
+	      var result = resetImages(payload.images);
+	      ImageStore.__emitChange();
+	      break;
+	    case ImageConstants.NEW_IMAGE_RECEIVED:
+	      var result = addNewImage(payload.newImage);
+	      ImageStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = ImageStore;
 
+/***/ },
+/* 357 */
+/***/ function(module, exports) {
+
+	ImageConstants = {
+	  IMAGES_RECEIVED: "IMAGES_RECEIVED",
+	  NEW_IMAGE_RECEIVED: "NEW_IMAGE_RECEIVED"
+	};
+	module.exports = ImageConstants;
 
 /***/ },
 /* 358 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports = __webpack_require__(359);
+	
+
+
+/***/ },
+/* 359 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(process) {var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(158);
-	var ExecutionEnvironment = __webpack_require__(359);
-	var ModalPortal = React.createFactory(__webpack_require__(360));
-	var ariaAppHider = __webpack_require__(375);
-	var elementClass = __webpack_require__(376);
+	var ExecutionEnvironment = __webpack_require__(360);
+	var ModalPortal = React.createFactory(__webpack_require__(361));
+	var ariaAppHider = __webpack_require__(376);
+	var elementClass = __webpack_require__(377);
 	var renderSubtreeIntoContainer = __webpack_require__(158).unstable_renderSubtreeIntoContainer;
 	
 	var SafeHTMLElement = ExecutionEnvironment.canUseDOM ? window.HTMLElement : {};
@@ -45806,7 +45926,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 359 */
+/* 360 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -45851,14 +45971,14 @@
 
 
 /***/ },
-/* 360 */
+/* 361 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var div = React.DOM.div;
-	var focusManager = __webpack_require__(361);
-	var scopeTab = __webpack_require__(363);
-	var Assign = __webpack_require__(364);
+	var focusManager = __webpack_require__(362);
+	var scopeTab = __webpack_require__(364);
+	var Assign = __webpack_require__(365);
 	
 	
 	// so that our CSS is statically analyzable
@@ -46055,10 +46175,10 @@
 
 
 /***/ },
-/* 361 */
+/* 362 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var findTabbable = __webpack_require__(362);
+	var findTabbable = __webpack_require__(363);
 	var modalElement = null;
 	var focusLaterElement = null;
 	var needToFocus = false;
@@ -46129,7 +46249,7 @@
 
 
 /***/ },
-/* 362 */
+/* 363 */
 /***/ function(module, exports) {
 
 	/*!
@@ -46185,10 +46305,10 @@
 
 
 /***/ },
-/* 363 */
+/* 364 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var findTabbable = __webpack_require__(362);
+	var findTabbable = __webpack_require__(363);
 	
 	module.exports = function(node, event) {
 	  var tabbable = findTabbable(node);
@@ -46206,7 +46326,7 @@
 
 
 /***/ },
-/* 364 */
+/* 365 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -46217,9 +46337,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseAssign = __webpack_require__(365),
-	    createAssigner = __webpack_require__(371),
-	    keys = __webpack_require__(367);
+	var baseAssign = __webpack_require__(366),
+	    createAssigner = __webpack_require__(372),
+	    keys = __webpack_require__(368);
 	
 	/**
 	 * A specialized version of `_.assign` for customizing assigned values without
@@ -46292,7 +46412,7 @@
 
 
 /***/ },
-/* 365 */
+/* 366 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -46303,8 +46423,8 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseCopy = __webpack_require__(366),
-	    keys = __webpack_require__(367);
+	var baseCopy = __webpack_require__(367),
+	    keys = __webpack_require__(368);
 	
 	/**
 	 * The base implementation of `_.assign` without support for argument juggling,
@@ -46325,7 +46445,7 @@
 
 
 /***/ },
-/* 366 */
+/* 367 */
 /***/ function(module, exports) {
 
 	/**
@@ -46363,7 +46483,7 @@
 
 
 /***/ },
-/* 367 */
+/* 368 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -46374,9 +46494,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var getNative = __webpack_require__(368),
-	    isArguments = __webpack_require__(369),
-	    isArray = __webpack_require__(370);
+	var getNative = __webpack_require__(369),
+	    isArguments = __webpack_require__(370),
+	    isArray = __webpack_require__(371);
 	
 	/** Used to detect unsigned integer values. */
 	var reIsUint = /^\d+$/;
@@ -46605,7 +46725,7 @@
 
 
 /***/ },
-/* 368 */
+/* 369 */
 /***/ function(module, exports) {
 
 	/**
@@ -46748,7 +46868,7 @@
 
 
 /***/ },
-/* 369 */
+/* 370 */
 /***/ function(module, exports) {
 
 	/**
@@ -46860,7 +46980,7 @@
 
 
 /***/ },
-/* 370 */
+/* 371 */
 /***/ function(module, exports) {
 
 	/**
@@ -47046,7 +47166,7 @@
 
 
 /***/ },
-/* 371 */
+/* 372 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -47057,9 +47177,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var bindCallback = __webpack_require__(372),
-	    isIterateeCall = __webpack_require__(373),
-	    restParam = __webpack_require__(374);
+	var bindCallback = __webpack_require__(373),
+	    isIterateeCall = __webpack_require__(374),
+	    restParam = __webpack_require__(375);
 	
 	/**
 	 * Creates a function that assigns properties of source object(s) to a given
@@ -47104,7 +47224,7 @@
 
 
 /***/ },
-/* 372 */
+/* 373 */
 /***/ function(module, exports) {
 
 	/**
@@ -47175,7 +47295,7 @@
 
 
 /***/ },
-/* 373 */
+/* 374 */
 /***/ function(module, exports) {
 
 	/**
@@ -47313,7 +47433,7 @@
 
 
 /***/ },
-/* 374 */
+/* 375 */
 /***/ function(module, exports) {
 
 	/**
@@ -47386,7 +47506,7 @@
 
 
 /***/ },
-/* 375 */
+/* 376 */
 /***/ function(module, exports) {
 
 	var _element = typeof document !== 'undefined' ? document.body : null;
@@ -47433,7 +47553,7 @@
 
 
 /***/ },
-/* 376 */
+/* 377 */
 /***/ function(module, exports) {
 
 	module.exports = function(opts) {
@@ -47498,126 +47618,15 @@
 
 
 /***/ },
-/* 377 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(212).Store;
-	var ImageConstants = __webpack_require__(378);
-	var AppDispatcher = __webpack_require__(230);
-	var UserStore = __webpack_require__(233);
-	
-	var ImageStore = new Store(AppDispatcher);
-	
-	var _images = [];
-	
-	var resetImages = function (images) {
-	  _images = images.slice(0);
-	};
-	
-	var addNewImage = function (newImage) {
-	  _images.unshift(newImage);
-	};
-	
-	ImageStore.all = function () {
-	  return _images.slice(0);
-	};
-	
-	// for use on profile page, will return images the user imageed
-	// or images imageed to their wall
-	ImageStore.getByUserId = function (userIdString) {
-	
-	  var userId = parseInt(userIdString);
-	  var images = ImageStore.all();
-	  var relevantImages = [];
-	
-	  images.forEach(function (image) {
-	
-	    if (image.owner_id === userId) {
-	      relevantImages.push(image);
-	    }
-	  });
-	
-	  return relevantImages;
-	};
-	
-	ImageStore.getByUserIdOnlyFirstNine = function (userIdString) {
-	
-	  var userId = parseInt(userIdString);
-	  var images = ImageStore.all();
-	  var relevantImages = [];
-	
-	  images.forEach(function (image) {
-	
-	    if (image.owner_id === userId) {
-	      relevantImages.push(image);
-	    }
-	  });
-	
-	  return relevantImages.slice(0, 9);
-	};
-	
-	// Could be useful for putting images in the feed, not sure yet
-	// ImageStore.getUsersFollowedImages = function(userIdString){
-	//   var userId = parseInt(userIdString);
-	//   var user = UserStore.findUser(userId);
-	//   var images = ImageStore.all();
-	//
-	//   if(images === [] || user.string === "Bad User"){
-	//     return null;
-	//   }
-	//   var relevantImages = [];
-	//   var relevantUsers = [];
-	//
-	// // now we get an array of good user ids
-	//     user.usersFollowing.forEach(function(user){
-	//       relevantUsers.push(user.id);
-	//     });
-	//
-	// // now we reference the images against the
-	//   images.forEach(function(image){
-	//     if (relevantUsers.indexOf(image.author_id) !== -1){
-	//       relevantImages.push(image);
-	//     }
-	//   });
-	//   return relevantImages;
-	// },
-	
-	ImageStore.__onDispatch = function (payload) {
-	
-	  switch (payload.actionType) {
-	    case ImageConstants.IMAGES_RECEIVED:
-	      var result = resetImages(payload.images);
-	      ImageStore.__emitChange();
-	      break;
-	    case ImageConstants.NEW_IMAGE_RECEIVED:
-	      var result = addNewImage(payload.newImage);
-	      ImageStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	module.exports = ImageStore;
-
-/***/ },
 /* 378 */
-/***/ function(module, exports) {
-
-	ImageConstants = {
-	  IMAGES_RECEIVED: "IMAGES_RECEIVED",
-	  NEW_IMAGE_RECEIVED: "NEW_IMAGE_RECEIVED"
-	};
-	module.exports = ImageConstants;
-
-/***/ },
-/* 379 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
 	var Post = __webpack_require__(240);
 	var UserStore = __webpack_require__(233);
-	var ImageCommentLikeButton = __webpack_require__(380);
-	var ImageCommentStore = __webpack_require__(381);
+	var ImageCommentLikeButton = __webpack_require__(379);
+	var ImageCommentStore = __webpack_require__(380);
 	var LikeStore = __webpack_require__(335);
 	
 	var ApiUtil = __webpack_require__(235);
@@ -47725,7 +47734,7 @@
 	module.exports = ImageComment;
 
 /***/ },
-/* 380 */
+/* 379 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -47797,6 +47806,7 @@
 	        );
 	      });
 	    }
+	    var properText = this.buttonText();
 	
 	    var properButton;
 	    properButton = React.createElement(
@@ -47808,8 +47818,17 @@
 	    return React.createElement(
 	      'div',
 	      null,
-	      React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit }),
-	      fellowLikers
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit }),
+	        properText
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'liker-names' },
+	        fellowLikers
+	      )
 	    );
 	  }
 	});
@@ -47817,7 +47836,7 @@
 	module.exports = ImageCommentLikeButton;
 
 /***/ },
-/* 381 */
+/* 380 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(212).Store;
@@ -47876,7 +47895,7 @@
 	module.exports = ImageCommentsStore;
 
 /***/ },
-/* 382 */
+/* 381 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -47934,7 +47953,7 @@
 	module.exports = NewImageComment;
 
 /***/ },
-/* 383 */
+/* 382 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -48008,6 +48027,7 @@
 	        );
 	      });
 	    }
+	    var properText = this.buttonText();
 	
 	    var properButton;
 	    properButton = React.createElement(
@@ -48019,7 +48039,8 @@
 	    return React.createElement(
 	      'div',
 	      null,
-	      React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit })
+	      React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit }),
+	      properText
 	    );
 	  }
 	});
@@ -48027,7 +48048,7 @@
 	module.exports = ImageLikeButton;
 
 /***/ },
-/* 384 */
+/* 383 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -48070,7 +48091,7 @@
 	module.exports = UserProfileUserInfo;
 
 /***/ },
-/* 385 */
+/* 384 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Really the Image Pane, includes the individual images and Upload Button
@@ -48079,13 +48100,13 @@
 	    ReactDOM = __webpack_require__(158),
 	    UploadButton = __webpack_require__(355),
 	    UserStore = __webpack_require__(233),
-	    ImageStore = __webpack_require__(377),
+	    ImageStore = __webpack_require__(356),
 	    LikeStore = __webpack_require__(335),
-	    ImageLikeButton = __webpack_require__(383),
-	    Modal = __webpack_require__(357),
-	    ImageComments = __webpack_require__(379),
-	    NewImageComment = __webpack_require__(382),
-	    ProfilePicChangeButton = __webpack_require__(384),
+	    ImageLikeButton = __webpack_require__(382),
+	    Modal = __webpack_require__(358),
+	    ImageComments = __webpack_require__(378),
+	    NewImageComment = __webpack_require__(381),
+	    ProfilePicChangeButton = __webpack_require__(383),
 	    ApiUtil = __webpack_require__(235);
 	
 	var customStyles = {
@@ -48257,7 +48278,7 @@
 	module.exports = ImagesBody;
 
 /***/ },
-/* 386 */
+/* 385 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// This page is intended to be the page you go to when you are looking at that exact
@@ -48287,7 +48308,7 @@
 	module.exports = PostPage;
 
 /***/ },
-/* 387 */
+/* 386 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);

@@ -2,7 +2,7 @@
 
 var React = require('react'),
     ReactDOM = require('react-dom'),
-    UploadButton = require("../components/UploadButton"),
+
     UserStore = require("../stores/user"),
     ImageStore = require("../stores/image"),
     LikeStore = require("../stores/like"),
@@ -135,6 +135,7 @@ var Images = React.createClass({
 
     return (
       <div className="profile-images-pane">
+        <h2>Pictures</h2>
         {images}
         <div>
           <div className="image-modal-outside">
@@ -154,7 +155,7 @@ var Images = React.createClass({
              </Modal>
            </div>
         </div>
-        <UploadButton />
+
       </div>
     );
   }

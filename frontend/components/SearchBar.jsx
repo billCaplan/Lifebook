@@ -79,7 +79,8 @@ var SearchBar = React.createClass({
     var listClass = classNames({
       'search-list': true,
       'search-list-hidden': this.state.listVisible === false,
-      'search-list-visible': this.state.listVisible
+      'search-list-visible': this.state.listVisible,
+      'search-list-username': true,
     });
     return listClass;
   },
