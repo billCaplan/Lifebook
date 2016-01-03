@@ -419,6 +419,16 @@ padding-right: 10px;
   padding-left: 10px;
   padding-right: 10px;
 }
+.header-bar > span {
+  float: left;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.header-bar > button {
+  float: left;
+  padding-left: 10px;
+  padding-right: 10px;
+}
 
 .header-bar{
   position: fixed;

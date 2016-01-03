@@ -41,9 +41,9 @@ var App = React.createClass({
 
     return (
       <div className="app-body">
-        <div>
+        
           <HeaderBar currentUser={this.state.currentUser}/>
-        </div>
+
         {this.props.children}
       </div>
     );

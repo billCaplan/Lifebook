@@ -86,11 +86,7 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'app-body' },
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(HeaderBar, { currentUser: this.state.currentUser })
-	      ),
+	      React.createElement(HeaderBar, { currentUser: this.state.currentUser }),
 	      this.props.children
 	    );
 	  }
@@ -48375,7 +48371,13 @@
 	    var name, profile_image;
 	
 	    if (this.state.user.real_name) {
-	      name = this.state.user.real_name;
+	      var string = this.state.user.real_name;
+	      if (string.includes(" ")) {
+	        name = string.substring(0, string.indexOf(" "));
+	      } else {
+	        name = this.state.user.real_name;
+	      }
+	
 	      profile_image = this.state.user.profile_image;
 	    } else {
 	      name = "Loading";

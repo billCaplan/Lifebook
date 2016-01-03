@@ -49,7 +49,15 @@ var HeaderBar = React.createClass({
     var name, profile_image;
 
     if (this.state.user.real_name){
-      name = this.state.user.real_name;
+      var string = this.state.user.real_name;
+      if(string.includes(" ")){
+        name = string.substring(0, string.indexOf(" "));
+      } else {
+        name = this.state.user.real_name;
+      }
+
+
+
       profile_image = this.state.user.profile_image;
     } else {
       name = "Loading";
