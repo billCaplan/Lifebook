@@ -68,23 +68,24 @@ if (this.props.post.created_at.created_at){
   time = this.props.post.created_at;
 }
   var finalTime = moment(time*1000).fromNow();
+  var that = this;
 
   return <div time={time}
               onMouseOver={this.mouseOverTime.bind(null, time)}
               onMouseOut={this.mouseLeaveTime.bind(null, time)}
-              className={time}
+              className={that.props.post.id}
               text="WOrds">{finalTime}</div>;
 },
 mouseOverTime: function(time){
   var date = moment(time*1000).format('MMMM Do YYYY, h:mm:ss a');
-  $(('.' + time)).each(function() {
+  $(('.' + this.props.post.id)).each(function() {
   $(this).text(date);
 });
 
   // event.value===time;
 },
 mouseLeaveTime: function(time){
-  $(('.' + time)).each(function() {
+  $(('.' + this.props.post.id)).each(function() {
     $(this).text(moment(time*1000).fromNow());
 });
   // value===finalTime
