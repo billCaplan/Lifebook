@@ -375,8 +375,8 @@ padding-right: 10px;
  }
  .profile-images-pane {
    /*margin: 30px auto;*/
-   min-width: 244px;
-   width: 244px;
+   /*min-width: 244px;*/
+   width: 248px;
    border: 1px solid black;
    float: left;
    display: block;
