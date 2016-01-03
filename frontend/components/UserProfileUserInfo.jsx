@@ -28,7 +28,7 @@ var UserProfileUserInfo = React.createClass({
     return(
       <div>
           <h2>{this.props.user.real_name}</h2>
-          <div className="profile-pic"><img src={this._getProfilePic()}></img></div>
+          <div ><img className="profile-pic" src={this._getProfilePic()}></img></div>
           <div></div>
           <div>{this.props.user.age}</div>
           <div>{this.props.user.location}</div>

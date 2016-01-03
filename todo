@@ -10,13 +10,13 @@ MUST DO bundle exec rake assets:precompile BEFORE EVERY HEROKU PUSH
   Distance of the borders on the post v/
   Add the word like next to the like button, but inside the like unlike styling so I can change the content
     like I change the color v/
-  CHANGE User Profile User Info to the UserName
+  CHANGE User Profile User Info to the UserName v/
   REmove follow button from the users own page  if currentUser === currentProfileUser then no button
-    make a div to keep a space in between the two segments
+    make a div to keep a space in between the two segments v/
   Change the Following spacing in the follow box
-  Add Pitcures to the picture box
-  change the blue
-  make the headers smaller
+  Add Pitcures to the picture box v/
+  change the blue v/
+  make the headers smaller v/
 
 NOTES:
   body tag on app breaks all the things inside DO NOT DO

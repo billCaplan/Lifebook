@@ -36,7 +36,7 @@ var FriendsPane = React.createClass({
 
     return(
       <div className="profile-friends-pane">
-        <h2>Following</h2>
+        <div className="follow-pic-header">Following</div>
         {users}
       </div>
     );

@@ -66,7 +66,7 @@ var ImagesBody = React.createClass({
   //   this.setState({user: null});
   // },
   buildUrl: function(image_path){
-    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_200,w_200/v1450463928/" + image_path;
+    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_120,w_120/v1450463928/" + image_path;
     return url;
   },
   buildModalUrl: function(image_path){

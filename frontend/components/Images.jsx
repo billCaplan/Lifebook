@@ -78,7 +78,6 @@ var Images = React.createClass({
     var likes = LikeStore.all();
     var current_image = image;
     var current_user = UserStore.getCurrentUser();
-    debugger
     if (!current_image.id){
       return false;
     }
@@ -135,7 +134,7 @@ var Images = React.createClass({
 
     return (
       <div className="profile-images-pane">
-        <h2>Pictures</h2>
+        <div className="follow-pic-header">Pictures</div>
         {images}
         <div>
           <div className="image-modal-outside">

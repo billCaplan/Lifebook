@@ -120,11 +120,14 @@ var UserProfile = React.createClass({
 
     var placeholder = this.followButtonLogic();
     var followButton;
+    var currentUser = UserStore.getCurrentUser();
 
-    if (placeholder === true) {
+    if (placeholder === true && parseInt(this.state.user_id) !== currentUser.id) {
       followButton = <UnfollowButton user={this.state.user} />;
-    } else {
+    } else if (placeholder === false && parseInt(this.state.user_id) !== currentUser.id) {
       followButton = <FollowButton user={this.state.user} />;
+    } else {
+      followButton = <div className="empty-follow-button"></div>;
     }
 
     if (this.state.showing === "posts"){

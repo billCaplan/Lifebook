@@ -45201,11 +45201,14 @@
 	
 	    var placeholder = this.followButtonLogic();
 	    var followButton;
+	    var currentUser = UserStore.getCurrentUser();
 	
-	    if (placeholder === true) {
+	    if (placeholder === true && parseInt(this.state.user_id) !== currentUser.id) {
 	      followButton = React.createElement(UnfollowButton, { user: this.state.user });
-	    } else {
+	    } else if (placeholder === false && parseInt(this.state.user_id) !== currentUser.id) {
 	      followButton = React.createElement(FollowButton, { user: this.state.user });
+	    } else {
+	      followButton = React.createElement('div', { className: 'empty-follow-button' });
 	    }
 	
 	    if (this.state.showing === "posts") {
@@ -45313,8 +45316,8 @@
 	      ),
 	      React.createElement(
 	        'div',
-	        { className: 'profile-pic' },
-	        React.createElement('img', { src: this._getProfilePic() })
+	        null,
+	        React.createElement('img', { className: 'profile-pic', src: this._getProfilePic() })
 	      ),
 	      React.createElement('div', null),
 	      React.createElement(
@@ -45388,8 +45391,8 @@
 	      'div',
 	      { className: 'profile-friends-pane' },
 	      React.createElement(
-	        'h2',
-	        null,
+	        'div',
+	        { className: 'follow-pic-header' },
 	        'Following'
 	      ),
 	      users
@@ -45575,7 +45578,6 @@
 	    var likes = LikeStore.all();
 	    var current_image = image;
 	    var current_user = UserStore.getCurrentUser();
-	    debugger;
 	    if (!current_image.id) {
 	      return false;
 	    }
@@ -45640,8 +45642,8 @@
 	      'div',
 	      { className: 'profile-images-pane' },
 	      React.createElement(
-	        'h2',
-	        null,
+	        'div',
+	        { className: 'follow-pic-header' },
 	        'Pictures'
 	      ),
 	      images,
@@ -48158,7 +48160,7 @@
 	  //   this.setState({user: null});
 	  // },
 	  buildUrl: function (image_path) {
-	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_200,w_200/v1450463928/" + image_path;
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_120,w_120/v1450463928/" + image_path;
 	    return url;
 	  },
 	  buildModalUrl: function (image_path) {
@@ -48386,7 +48388,7 @@
 	      React.createElement(
 	        'div',
 	        { className: 'header-bar-profile-pic', onClick: this.handleAuthorClick },
-	        React.createElement('img', { src: this._buildUrl(profile_image) })
+	        React.createElement('img', { className: 'header-bar-profile-pic-actual-pic', src: this._buildUrl(profile_image) })
 	      ),
 	      React.createElement(
 	        'div',
