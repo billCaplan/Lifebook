@@ -104,7 +104,7 @@ User.create({
   real_name: "Mark Thomas",
   age: 26,
   location: "San Francisco, CA",
-  profile_image: "canstock7478741_fnrkkb",
+  profile_image: "j0182769_debzav",
   password: "password"
 })
 
@@ -540,3 +540,92 @@ Like.create({
   post_id: 5,
   like_type: "post"
 })
+
+# create_table "images", force: :cascade do |t|
+#   t.text     "image_path", null: false
+#   t.datetime "created_at", null: false
+#   t.datetime "updated_at", null: false
+#   t.integer  "owner_id"
+# end
+
+#1 Sally Phone
+Image.create({
+  image_path: "qdwlzjvx7dcc8nu0igm5",
+  owner_id: 5
+  })
+# 2 Sally Tree in fog
+  Image.create({
+    image_path: "jr9n0wel4nqzpo1rm8ta",
+    owner_id: 5
+  })
+  # 3 Sally Beach footsteps
+  Image.create({
+    image_path: "svrhrsnqnxiggiaegqvw",
+    owner_id: 5
+  })
+  # 4 Sally Apples
+  Image.create({
+    image_path: "j0182665_pw9b4d",
+    owner_id: 5
+  })
+  # 5 Sally Moose Fight
+  Image.create({
+    image_path: "j0202109_yywyxg",
+    owner_id: 5
+  })
+  # 6 Dave Windmill
+  Image.create({
+    image_path: "j0185206_xeisio",
+    owner_id: 1
+  })
+  # 7 Mike Wedding Pic
+  Image.create({
+    image_path: "j0309372_l4s9le",
+    owner_id: 2
+  })
+  # 8 Sam Goalie
+  Image.create({
+    image_path: "j0202176_nfa8nj",
+    owner_id: 3
+  })
+  # 9 Todd Frog
+  Image.create({
+    image_path: "j0182512_kutfes",
+    owner_id: 4
+  })
+  # 10 Sally Space
+  Image.create({
+    image_path: "uvq8lztmmj6tpjtd5aoj",
+    owner_id: 5
+  })
+  # 11 Amanda Road
+  Image.create({
+    image_path: "uvq8lztmmj6tpjtd5aoj",
+    owner_id: 6
+  })
+
+  # 12 Beth Softball
+  Image.create({
+    image_path: "j0179010_kvq3gf",
+    owner_id: 7
+  })
+  # 13 Blake Flowers
+  Image.create({
+    image_path: "sample",
+    owner_id: 8
+  })
+  # 14 Bill Fire Tire
+  Image.create({
+    image_path: "canstock7478741_fnrkkb",
+    owner_id: 9
+  })
+  # 14 Mark Astronaut
+  Image.create({
+    image_path: "j0182769_debzav",
+    owner_id: 10
+  })
+  # 15 Mark Houses
+  Image.create({
+    image_path: "j0149118_b3b9pn",
+    owner_id: 10
+  })
