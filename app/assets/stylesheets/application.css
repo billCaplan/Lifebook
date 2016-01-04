@@ -372,16 +372,18 @@ padding-right: 10px;
    width: auto;
    background-color: #F6F7F8;
    border: 1px solid black;
+   padding: 3px;
  }
  .profile-images-pane {
    /*margin: 30px auto;*/
    /*min-width: 244px;*/
-   width: 248px;
+   width: 242px;
    border: 1px solid black;
    float: left;
    display: block;
    min-height: 100px;
    background-color: #F6F7F8;
+   padding: 3px;
 
    position:relative;
 

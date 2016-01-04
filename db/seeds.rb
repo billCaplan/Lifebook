@@ -11,7 +11,7 @@
 User.create({
   email: "dave@gmail.com",
   type_id: 1,
-  real_name: "Dave",
+  real_name: "Dave Johnson",
   age: 27,
   location: "Columbus, OH",
   profile_image: "j0185206_xeisio",
@@ -21,7 +21,7 @@ User.create({
 User.create({
   email: "mike@gmail.com",
   type_id: 1,
-  real_name: "Mike",
+  real_name: "Mike Williams",
   age: 33,
   location: "Washington, DC",
   profile_image: "j0309372_l4s9le",
@@ -31,7 +31,7 @@ User.create({
 User.create({
   email: "sam@gmail.com",
   type_id: 1,
-  real_name: "Sam",
+  real_name: "Sam Donald",
   age: 103,
   location: "Nebraska",
   profile_image: "j0202176_nfa8nj",
@@ -41,7 +41,7 @@ User.create({
 User.create({
   email: "todd@gmail.com",
   type_id: 1,
-  real_name: "Todd",
+  real_name: "Todd Simmons",
   age: 55,
   location: "Houston, TX",
   profile_image: "j0182512_kutfes",
@@ -51,7 +51,7 @@ User.create({
 User.create({
   email: "sally@gmail.com",
   type_id: 1,
-  real_name: "Sally",
+  real_name: "Sally Jenkins",
   age: 25,
   location: "Columbus, OH",
   profile_image: "uvq8lztmmj6tpjtd5aoj",
@@ -61,7 +61,7 @@ User.create({
 User.create({
   email: "amanda@gmail.com",
   type_id: 1,
-  real_name: "Amanda",
+  real_name: "Amanda Smith",
   age: 24,
   location: "Nashville, TN",
   profile_image: "twp4e6yslc6naak4cuna",
@@ -71,7 +71,7 @@ User.create({
 User.create({
   email: "beth@gmail.com",
   type_id: 1,
-  real_name: "Beth",
+  real_name: "Beth Bishop",
   age: 35,
   location: "Reston, VA",
   profile_image: "j0179010_kvq3gf",
@@ -81,7 +81,7 @@ User.create({
 User.create({
   email: "blake@gmail.com",
   type_id: 1,
-  real_name: "Blake",
+  real_name: "Blake Franklin",
   age: 42,
   location: "Nashville, TN",
   profile_image: "sample",
@@ -91,12 +91,13 @@ User.create({
 User.create({
   email: "bill@gmail.com",
   type_id: 1,
-  real_name: "Bill",
+  real_name: "Bill Caplan",
   age: 23,
   location: "San Francisco, CA",
   profile_image: "canstock7478741_fnrkkb",
   password: "password"
 })
+#10
 User.create({
   email: "mark@gmail.com",
   type_id: 1,
@@ -216,7 +217,7 @@ Post.create({
 })
 #17
 Post.create({
-  body: "Just dropped my phone into the river",
+  body: "Just dropped my on the sidewalk!",
   author_id: 5,
   target_id: 5,
 })
@@ -226,11 +227,29 @@ Post.create({
   author_id: 8,
   target_id: 8,
 })
-#20
+#19
 Post.create({
   body: "I think this site is the best!",
   author_id: 2,
   target_id: 2,
+})
+#20
+Post.create({
+  body: "Anyone want to go camping this weekend?",
+  author_id: 10,
+  target_id: 10,
+})
+#21
+Post.create({
+  body: "Just bought a new tent and sleeping bag.",
+  author_id: 10,
+  target_id: 10,
+})
+#22
+Post.create({
+  body: "Looking like its going to be a beautiful weekend!",
+  author_id: 10,
+  target_id: 10,
 })
 
 # Comments
@@ -255,71 +274,78 @@ Comment.create({
   post_id: 18,
   author_id: 2
 })
-# 1
+# 3
 Comment.create({
   body: "No",
   post_id: 18,
   author_id: 3
 })
-# 1
+# 4
 Comment.create({
   body: "No",
   post_id: 18,
   author_id: 4
 })
-# 1
+# 5
 Comment.create({
   body: "No",
   post_id: 18,
   author_id: 5
 })
-# 1
+# 6
 Comment.create({
   body: "No",
   post_id: 18,
   author_id: 6
 })
-# 1
+# 7
 Comment.create({
   body: "No",
   post_id: 18,
   author_id: 7
 })
-# 1
+# 8
 Comment.create({
   body: "No",
   post_id: 18,
   author_id: 8
 })
-# 1
+# 9
 Comment.create({
   body: "Not yet you?",
   post_id: 9,
   author_id: 6
 })
-# 1
+# 10
 Comment.create({
   body: "Nope",
   post_id: 9,
   author_id: 5
 })
-# 1
+# 11
 Comment.create({
   body: "No",
   post_id: 7,
   author_id: 1
 })
-# 1
+# 12
 Comment.create({
   body: "No",
   post_id: 15,
   author_id: 6
 })
-# 1
+# 13
 Comment.create({
   body: "No",
   post_id: 12,
   author_id: 7
+})
+#14
+# 8
+Comment.create({
+  body: "Yeah! Give me a call later.",
+  post_id: 20,
+  author_id: 8
 })
 
 # Follows
@@ -461,4 +487,56 @@ Follow.create({
 Follow.create({
   author_id: 9,
   followed_user_id: 2
+})
+#
+# create_table "likes", force: :cascade do |t|
+#   t.integer  "author_id",  null: false
+#   t.integer  "post_id",    null: false
+#   t.datetime "created_at"
+#   t.datetime "updated_at"
+#   t.string   "like_type"
+# end
+
+# likes
+#1
+Like.create({
+  author_id: 9,
+  post_id: 19,
+  like_type: "post"
+})
+#2
+Like.create({
+  author_id: 8,
+  post_id: 19,
+  like_type: "post"
+})
+#3
+Like.create({
+  author_id: 7,
+  post_id: 19,
+  like_type: "post"
+})
+#4
+Like.create({
+  author_id: 5,
+  post_id: 19,
+  like_type: "post"
+})
+#5
+Like.create({
+  author_id: 2,
+  post_id: 12,
+  like_type: "post"
+})
+#6
+Like.create({
+  author_id: 1,
+  post_id: 12,
+  like_type: "post"
+})
+#7
+Like.create({
+  author_id: 9,
+  post_id: 5,
+  like_type: "post"
 })

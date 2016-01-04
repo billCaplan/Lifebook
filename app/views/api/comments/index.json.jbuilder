@@ -6,5 +6,5 @@ json.array!(@comments) do |comment|
     json.author do
       json.partial! 'api/users/user', user: comment.author
     end
-    json.created_at comment.created_at
+    json.created_at comment.created_at.to_datetime.to_i
   end

@@ -1,6 +1,7 @@
 var React = require('react');
 var PostStore = require('../stores/post');
 var Post = require('../components/Post');
+var moment = require('moment');
 var UserStore = require('../stores/user');
 var CommentStore = require('../stores/comment');
 var CommentLikeButton = require('../components/CommentLikeButton');
@@ -76,9 +77,47 @@ var Comment = React.createClass({
 
       return likeButton;
     },
+    getTimeFrame: function(comment){
+      var time;
+      if (comment.created_at.created_at){
+        time = comment.created_at.created_at;
+      } else {
+        time = comment.created_at;
+      }
+      var finalTime = moment(time*1000).fromNow();
+      var that = this;
+      debugger
+      return <div time={time}
+                  onMouseOver={this.mouseOverTime.bind(null, time, comment)}
+                  onMouseOut={this.mouseLeaveTime.bind(null, time, comment)}
+                  className={comment.id}
+                  text="WOrds">{finalTime}</div>;
+    },
+    mouseOverTime: function(time, comment){
+      var date = moment(time*1000).format('MMMM Do YYYY, h:mm:ss a');
+      $(('.' + comment.id)).each(function() {
+      $(this).text(date);
+    });
+
+      // event.value===time;
+    },
+    mouseLeaveTime: function(time, comment){
+      $(('.' + comment.id)).each(function() {
+        $(this).text(moment(time*1000).fromNow());
+    });
+      // value===finalTime
+    },
 
     render: function(){
       var that=this;
+      // var timeline;
+      //
+      // if (this.state.comment){
+      //   timeline = this.getTimeFrame();
+      // } else {
+      //   timeline = <div>Loading</div>;
+      // }
+
 
 
 
@@ -89,7 +128,7 @@ var Comment = React.createClass({
                   onClick={that.handleAuthorClick.bind(null, comment.author.id)}>
                   {comment.author.real_name}
             </div>
-
+            {that.getTimeFrame(comment)}
             <div className="comment-only-the-body">{comment.body}</div>
             {that._buttonRenderFunction(comment)}
           </div>

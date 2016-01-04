@@ -43406,6 +43406,7 @@
 	var React = __webpack_require__(1);
 	var PostStore = __webpack_require__(211);
 	var Post = __webpack_require__(240);
+	var moment = __webpack_require__(241);
 	var UserStore = __webpack_require__(233);
 	var CommentStore = __webpack_require__(331);
 	var CommentLikeButton = __webpack_require__(333);
@@ -43485,9 +43486,50 @@
 	
 	    return likeButton;
 	  },
+	  getTimeFrame: function (comment) {
+	    var time;
+	    if (comment.created_at.created_at) {
+	      time = comment.created_at.created_at;
+	    } else {
+	      time = comment.created_at;
+	    }
+	    var finalTime = moment(time * 1000).fromNow();
+	    var that = this;
+	    debugger;
+	    return React.createElement(
+	      'div',
+	      { time: time,
+	        onMouseOver: this.mouseOverTime.bind(null, time, comment),
+	        onMouseOut: this.mouseLeaveTime.bind(null, time, comment),
+	        className: comment.id,
+	        text: 'WOrds' },
+	      finalTime
+	    );
+	  },
+	  mouseOverTime: function (time, comment) {
+	    var date = moment(time * 1000).format('MMMM Do YYYY, h:mm:ss a');
+	    $('.' + comment.id).each(function () {
+	      $(this).text(date);
+	    });
+	
+	    // event.value===time;
+	  },
+	  mouseLeaveTime: function (time, comment) {
+	    $('.' + comment.id).each(function () {
+	      $(this).text(moment(time * 1000).fromNow());
+	    });
+	    // value===finalTime
+	  },
 	
 	  render: function () {
 	    var that = this;
+	    // var timeline;
+	    //
+	    // if (this.state.comment){
+	    //   timeline = this.getTimeFrame();
+	    // } else {
+	    //   timeline = <div>Loading</div>;
+	    // }
 	
 	    var Comments = this.state.comments.map(function (comment, i) {
 	      return React.createElement(
@@ -43499,6 +43541,7 @@
 	            onClick: that.handleAuthorClick.bind(null, comment.author.id) },
 	          comment.author.real_name
 	        ),
+	        that.getTimeFrame(comment),
 	        React.createElement(
 	          'div',
 	          { className: 'comment-only-the-body' },

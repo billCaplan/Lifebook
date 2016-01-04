@@ -62,11 +62,11 @@ var Post = React.createClass({
   },
 getTimeFrame: function(){
   var time;
-if (this.props.post.created_at.created_at){
-  time = this.props.post.created_at.created_at;
-} else {
-  time = this.props.post.created_at;
-}
+  if (this.props.post.created_at.created_at){
+    time = this.props.post.created_at.created_at;
+  } else {
+    time = this.props.post.created_at;
+  }
   var finalTime = moment(time*1000).fromNow();
   var that = this;
 
