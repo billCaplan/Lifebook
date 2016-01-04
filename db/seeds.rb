@@ -217,7 +217,7 @@ Post.create({
 })
 #17
 Post.create({
-  body: "Just dropped my on the sidewalk!",
+  body: "Just dropped my phone on the sidewalk!",
   author_id: 5,
   target_id: 5,
 })
