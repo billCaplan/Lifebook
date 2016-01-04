@@ -488,7 +488,7 @@ padding-right: 10px;
   position: relative;
   visibility: hidden;
   background-color: white;
-  width: 275px;
+  width: auto;
   color: black;
   border: 2px;
   border-color: black;
