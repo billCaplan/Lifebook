@@ -1,23 +1,20 @@
 # Lifebook
 
-[Heroku link][heroku] **NB:** This should be a link to your production site
+[Production Link][heroku]
 
 [heroku]: http://www.lifebook.tech/
 
-## Minimum Viable Product
-
-Lifebook is a web application inspired by Facebook built using Ruby on Rails
-and React.js. Lifebook allows users to:
+Lifebook is a web application inspired by Facebook built using Ruby on Raill, React, Cloudinary, PostgreSQL, and jQuery. Lifebook allows users to:
 
 <!-- This is a Markdown checklist. Use it to keep track of your progress! -->
 
-- [ ] Create an account
-- [ ] Log in / Log out
-- [ ] Create a user profile.
-- [ ] Post photos and updates to their profiles
-- [ ] Follow other users and keep up to date on their activities
-- [ ] Contact other users directly
-- [ ] Engage in discussion with other users on profile pages
+-  Create an account
+-  Log in / Log out
+-  Create a user profile.
+-  Post photos and updates to their profiles
+-  Follow other users and keep up to date on their activities
+-  Contact other users directly
+-  Engage in discussion with other users on profile pages
 
 
 ## Design Docs
@@ -54,7 +51,7 @@ Phase 3 is focused on how the users will interact.  I will be creating a Comment
 
 [Details][phase-three]
 
-### Phase 4: Implement notifications and likes.  (2 day)
+### Phase 4: Implement images and likes.  (2 day)
 Phase 4 integrates Cloudinary to allow users to upload profile pics and pictures to their profile.  I will also be implementing the News stream view on the root page.  The news stream will load the posts of all the users followed by the current user.  I will also create the custom templates for each user, based on their user type.  Each user type will have a slightly different view, all rendered in the User show page, through react.  From the news stream, I also will have the ability for users to search for other users using a live search style search bar.
 
 
@@ -71,7 +68,8 @@ Phase 5 introduces the notification feature.  When someone leaves a comment on o
 The site will be build with bootstrap to keep it looking nice, so at this point I will need to clean it up.  Adding smooth transitions when possible and making sure my styling and layouts are matching my wireframes.  I will also have to generate the seed data.  Ideally, I will have 100 users, being a mix of People, Movies, TV Shows, Bands, and Games.  Each user will be following at least 25 other users, have left 25 comments, and made 25 unique posts.  Each user will have at least 4 pictures uploaded as well.
 
 ### Bonus Features (TBD)
-- [ ] Prettify transitions
+- [x] Prettify transitions
+- [ ] Notifications
 - [ ] More unique profile pages based on user type
 - [ ] Maps integration into businesses pages
 - [ ] Pagination / infinite scroll for Posts Index
