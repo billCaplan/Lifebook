@@ -223,31 +223,31 @@ Post.create({
 })
 #18
 Post.create({
+  body: "Just bought a new tent and sleeping bag.",
+  author_id: 10,
+  target_id: 10,
+  })
+  #19
+  Post.create({
+    body: "Looking like its going to be a beautiful weekend!",
+    author_id: 10,
+    target_id: 10,
+    })
+#20
+Post.create({
   body: "Can anyone give me a ride to the party this weekend?",
   author_id: 8,
   target_id: 8,
 })
-#19
+#21
 Post.create({
   body: "I think this site is the best!",
   author_id: 2,
   target_id: 2,
 })
-#20
-Post.create({
-  body: "Anyone want to go camping this weekend?",
-  author_id: 10,
-  target_id: 10,
-})
-#21
-Post.create({
-  body: "Just bought a new tent and sleeping bag.",
-  author_id: 10,
-  target_id: 10,
-})
 #22
 Post.create({
-  body: "Looking like its going to be a beautiful weekend!",
+  body: "Anyone want to go camping this weekend?",
   author_id: 10,
   target_id: 10,
 })
@@ -264,50 +264,50 @@ Post.create({
 
 # 1
 Comment.create({
-  body: "No",
+  body: "Awesome! What brand?",
   post_id: 18,
   author_id: 1
 })
 # 2
 Comment.create({
-  body: "No",
+  body: "Nice! I hope I get one for my birthday.",
   post_id: 18,
   author_id: 2
 })
 # 3
 Comment.create({
   body: "No",
-  post_id: 18,
+  post_id: 20,
   author_id: 3
 })
 # 4
 Comment.create({
   body: "No",
-  post_id: 18,
+  post_id: 20,
   author_id: 4
 })
 # 5
 Comment.create({
   body: "No",
-  post_id: 18,
+  post_id: 20,
   author_id: 5
 })
 # 6
 Comment.create({
-  body: "No",
-  post_id: 18,
+  body: "Yeah I'll pick you up.",
+  post_id: 20,
   author_id: 6
 })
 # 7
 Comment.create({
-  body: "No",
-  post_id: 18,
+  body: "We have had rain all week here.  Hope it clears up soon.",
+  post_id: 19,
   author_id: 7
 })
 # 8
 Comment.create({
-  body: "No",
-  post_id: 18,
+  body: "Looking like a great day for us too!",
+  post_id: 19,
   author_id: 8
 })
 # 9
@@ -330,7 +330,7 @@ Comment.create({
 })
 # 12
 Comment.create({
-  body: "No",
+  body: "Have a nice trip!",
   post_id: 15,
   author_id: 6
 })
@@ -341,12 +341,20 @@ Comment.create({
   author_id: 7
 })
 #14
-# 8
+
 Comment.create({
   body: "Yeah! Give me a call later.",
-  post_id: 20,
+  post_id: 22,
   author_id: 8
 })
+#15
+Comment.create({
+  body: "Would you like me to give you a ride home?",
+  post_id: 16,
+  author_id: 5
+})
+
+
 
 # Follows
 
@@ -488,6 +496,26 @@ Follow.create({
   author_id: 9,
   followed_user_id: 2
 })
+# 17
+Follow.create({
+  author_id: 10,
+  followed_user_id: 2
+})
+# 17
+Follow.create({
+  author_id: 10,
+  followed_user_id: 3
+})
+# 17
+Follow.create({
+  author_id: 10,
+  followed_user_id: 5
+})
+# 17
+Follow.create({
+  author_id: 10,
+  followed_user_id: 8
+})
 #
 # create_table "likes", force: :cascade do |t|
 #   t.integer  "author_id",  null: false
@@ -539,6 +567,11 @@ Like.create({
   author_id: 9,
   post_id: 5,
   like_type: "post"
+})
+Like.create({
+  author_id: 5,
+  post_id: 15,
+  like_type: "comment"
 })
 
 # create_table "images", force: :cascade do |t|

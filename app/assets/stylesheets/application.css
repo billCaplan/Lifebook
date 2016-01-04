@@ -36,6 +36,7 @@
 }
  .comment-user-name{
    cursor: pointer;
+   text-decoration: underline;
  }
  .following-user-name{
    cursor: pointer;
@@ -606,12 +607,15 @@ padding-right: 10px;
 
 .image-body-image{
   float: left;
-  border: 2px solid black;
+  border: 1px solid black;
   margin: 5px;
   height: auto;
   cursor: pointer;
   padding-bottom: 0px;
   margin-bottom: 0px;
+  height: 120px;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 

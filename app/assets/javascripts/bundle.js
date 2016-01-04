@@ -43495,7 +43495,6 @@
 	    }
 	    var finalTime = moment(time * 1000).fromNow();
 	    var that = this;
-	    debugger;
 	    return React.createElement(
 	      'div',
 	      { time: time,
@@ -43511,25 +43510,15 @@
 	    $('.' + comment.id).each(function () {
 	      $(this).text(date);
 	    });
-	
-	    // event.value===time;
 	  },
 	  mouseLeaveTime: function (time, comment) {
 	    $('.' + comment.id).each(function () {
 	      $(this).text(moment(time * 1000).fromNow());
 	    });
-	    // value===finalTime
 	  },
 	
 	  render: function () {
 	    var that = this;
-	    // var timeline;
-	    //
-	    // if (this.state.comment){
-	    //   timeline = this.getTimeFrame();
-	    // } else {
-	    //   timeline = <div>Loading</div>;
-	    // }
 	
 	    var Comments = this.state.comments.map(function (comment, i) {
 	      return React.createElement(
@@ -48310,7 +48299,7 @@
 	            ),
 	            React.createElement(
 	              'button',
-	              { onClick: this.closeModal },
+	              { className: 'button', onClick: this.closeModal },
 	              'close'
 	            ),
 	            React.createElement(ProfilePicChangeButton, { image: this.state.selectedImage }),

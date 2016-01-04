@@ -86,7 +86,6 @@ var Comment = React.createClass({
       }
       var finalTime = moment(time*1000).fromNow();
       var that = this;
-      debugger
       return <div time={time}
                   onMouseOver={this.mouseOverTime.bind(null, time, comment)}
                   onMouseOut={this.mouseLeaveTime.bind(null, time, comment)}
@@ -99,27 +98,17 @@ var Comment = React.createClass({
       $(this).text(date);
     });
 
-      // event.value===time;
+
     },
     mouseLeaveTime: function(time, comment){
       $(('.' + comment.id)).each(function() {
         $(this).text(moment(time*1000).fromNow());
     });
-      // value===finalTime
+
     },
 
     render: function(){
       var that=this;
-      // var timeline;
-      //
-      // if (this.state.comment){
-      //   timeline = this.getTimeFrame();
-      // } else {
-      //   timeline = <div>Loading</div>;
-      // }
-
-
-
 
       var Comments = this.state.comments.map(function (comment, i) {
         return(

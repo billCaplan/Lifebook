@@ -144,7 +144,7 @@ var ImagesBody = React.createClass({
                className="image-modal" >
 
                <h2>Picture</h2>
-               <button onClick={this.closeModal}>close</button>
+               <button className="button" onClick={this.closeModal}>close</button>
                <ProfilePicChangeButton image={this.state.selectedImage}/>
                {that._buttonRenderFunction(this.state.selectedImage)}
              <img src={that.buildModalUrl(that.state.selectedImage.image_path)} className="image-modal-image"></img>
