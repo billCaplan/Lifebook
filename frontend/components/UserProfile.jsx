@@ -120,14 +120,18 @@ var UserProfile = React.createClass({
 
     var placeholder = this.followButtonLogic();
     var followButton;
+    var uploadButton;
     var currentUser = UserStore.getCurrentUser();
 
     if (placeholder === true && parseInt(this.state.user_id) !== currentUser.id) {
       followButton = <UnfollowButton user={this.state.user} />;
+      uploadButton = <div className="empty-follow-button"></div>;
     } else if (placeholder === false && parseInt(this.state.user_id) !== currentUser.id) {
       followButton = <FollowButton user={this.state.user} />;
+      uploadButton = <div className="empty-follow-button"></div>;
     } else {
       followButton = <div className="empty-follow-button"></div>;
+      uploadButton = <UploadButton />;
     }
 
     if (this.state.showing === "posts"){
@@ -156,7 +160,7 @@ var UserProfile = React.createClass({
           <div>
             <Images user={this.state.user.id}/>
             <button className="button" onClick={this._setPicturePage}>View All Pictures</button>
-            <UploadButton />
+            {uploadButton}
           </div>
         </div>
         <div className="user-profile-new-post">

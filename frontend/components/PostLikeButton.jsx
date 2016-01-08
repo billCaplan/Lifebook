@@ -73,7 +73,16 @@ var PostLikeButton = React.createClass({
     return (
       <div>
         <div>
-          <i className="fa fa-thumbs-o-up"></i>
+          <span className="fa-stack fa-lg">
+            <i className="fa fa-thumbs-o-up"></i>
+              <i className="fa icon-thumbs-o-up fa-inverse"></i>
+
+          </span>
+
+          <span className="fa-stack fa-lg">
+            <i className="fa fa-square-o fa-stack-2x"></i>
+            <i className="fa icon-thumbs-up-alt fa-stack-1x"></i>
+          </span>
 
 
           <span>{properText}</span>

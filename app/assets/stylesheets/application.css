@@ -17,10 +17,18 @@
  /*textarea{
    resize: none;
  }*/
+.fa-arrow-right{
+  padding-left: 3px;
+  padding-right: 3px;
+}
+.fa-thumbs-up{
 
-.fa-thumbs-o-up{
-   background: #415E9B;
-   color: yellow;
+}
+.fa-square-o{
+  /*color: yellow;*/
+}
+.icon-thumbs-up-alt{
+  color: red;
 }
 
 .splash-input{

@@ -31810,7 +31810,7 @@
 	          { className: 'post-user-name', onClick: this.handleAuthorClick },
 	          authorName
 	        ),
-	        '--->>>',
+	        React.createElement('i', { className: 'fa fa-arrow-right' }),
 	        React.createElement(
 	          'span',
 	          { className: 'post-user-name', onClick: this.handleSubjectClick },
@@ -44020,7 +44020,18 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement('i', { className: 'fa fa-thumbs-o-up' }),
+	        React.createElement(
+	          'span',
+	          { className: 'fa-stack fa-lg' },
+	          React.createElement('i', { className: 'fa fa-thumbs-o-up' }),
+	          React.createElement('i', { className: 'fa icon-thumbs-o-up fa-inverse' })
+	        ),
+	        React.createElement(
+	          'span',
+	          { className: 'fa-stack fa-lg' },
+	          React.createElement('i', { className: 'fa fa-square-o fa-stack-2x' }),
+	          React.createElement('i', { className: 'fa icon-thumbs-up-alt fa-stack-1x' })
+	        ),
 	        React.createElement(
 	          'span',
 	          null,
@@ -45238,14 +45249,18 @@
 	
 	    var placeholder = this.followButtonLogic();
 	    var followButton;
+	    var uploadButton;
 	    var currentUser = UserStore.getCurrentUser();
 	
 	    if (placeholder === true && parseInt(this.state.user_id) !== currentUser.id) {
 	      followButton = React.createElement(UnfollowButton, { user: this.state.user });
+	      uploadButton = React.createElement('div', { className: 'empty-follow-button' });
 	    } else if (placeholder === false && parseInt(this.state.user_id) !== currentUser.id) {
 	      followButton = React.createElement(FollowButton, { user: this.state.user });
+	      uploadButton = React.createElement('div', { className: 'empty-follow-button' });
 	    } else {
 	      followButton = React.createElement('div', { className: 'empty-follow-button' });
+	      uploadButton = React.createElement(UploadButton, null);
 	    }
 	
 	    if (this.state.showing === "posts") {
@@ -45291,7 +45306,7 @@
 	              { className: 'button', onClick: this._setPicturePage },
 	              'View All Pictures'
 	            ),
-	            React.createElement(UploadButton, null)
+	            uploadButton
 	          )
 	        ),
 	        React.createElement(

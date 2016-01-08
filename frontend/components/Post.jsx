@@ -103,7 +103,7 @@ mouseLeaveTime: function(time){
     } else {
       nameLine = <div>
                     <span className="post-user-name" onClick={this.handleAuthorClick}>{authorName}</span>
-                     --->>>
+                      <i className="fa fa-arrow-right"></i>
                     <span className="post-user-name" onClick={this.handleSubjectClick}>{subjectName}</span>
                 </div>;
     }
