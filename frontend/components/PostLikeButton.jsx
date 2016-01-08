@@ -73,8 +73,9 @@ var PostLikeButton = React.createClass({
     return (
       <div>
         <div>
+          <i className="fa fa-thumbs-o-up"></i>
 
-          <img src="/assets/thumb.png" height="20" width="20" className={this.likeClass()} onClick={this.handleLikeSubmit}></img>
+
           <span>{properText}</span>
         </div>
         <div>

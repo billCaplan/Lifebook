@@ -40,7 +40,7 @@
     <p>
     Thank you for visiting Lifebook.  Enter your information to get started today.
     If you are already a User, plese Sign In above.
-    If you would like to continue as a Guest, please click either Guest Sign In as Sally, or Sign In as Mark.
+    If you would like to continue as a Guest, please click either Demo Sign In as Sally, or Demo Sign In as Mark.
     </p>
 
   </div>
@@ -62,7 +62,7 @@
       <input type="hidden" name="user[password]" id="user_password" value="password">
     </label>
 
-    <input type="submit" value="Guest Sign In as Mark">
+    <input type="submit" value="Demo Sign In as Mark">
   </form>
   </div>
 
@@ -84,25 +84,27 @@
       <input type="hidden" name="user[password]" id="user_password" value="password">
     </label>
 
-    <input type="submit" value="Guest Sign In as Sally">
+    <input type="submit" value="Demo Sign In as Sally">
   </form>
   </div>
 
   <div class="splash-page-sign-up">
-    <h1>Sign Up</h1>
+
     <form action="<%= users_url %>" method="post">
       <input type="hidden" name="authenticity_token"
              value="<%= form_authenticity_token %>">
       <label for="user_email">Email</label>
       <input
+        class="splash-input"
         type="email"
         name="user[email]"
         value="<%= @user.email %>"
         id="user_email">
         <br>
 
-      <label for="user_real_name">Real Name</label>
+      <label for="user_real_name">Name</label>
         <input
+        class="splash-input"
           type="text"
           name="user[real_name]"
           value="<%= @user.real_name %>"
@@ -111,6 +113,7 @@
 
       <label for="user_age">Age</label>
       <input
+      class="splash-input"
         type="text"
         name="user[age]"
         value="<%= @user.age %>"
@@ -119,6 +122,7 @@
 
       <label for="user_location">Location</label>
       <input
+      class="splash-input"
         type="text"
         name="user[location]"
         value="<%= @user.location %>"
@@ -128,12 +132,13 @@
 
       <label for="user_password">Password</label>
       <input
+      class="splash-input"
         type="password"
         name="user[password]"
         id="user_password">
 
         <input type="hidden" name="user[type_id]" value="1">
-
+        <br>
       <input type="submit" value="Create User">
     </form>
   </div>

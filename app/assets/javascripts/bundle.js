@@ -44020,7 +44020,7 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit }),
+	        React.createElement('i', { className: 'fa fa-thumbs-o-up' }),
 	        React.createElement(
 	          'span',
 	          null,
