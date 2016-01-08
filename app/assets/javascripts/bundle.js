@@ -31768,24 +31768,35 @@
 	      { time: time,
 	        onMouseOver: this.mouseOverTime.bind(null, time),
 	        onMouseOut: this.mouseLeaveTime.bind(null, time),
-	        className: that.props.post.id,
+	        id: that.props.post.id,
+	        className: 'dateline',
 	        text: 'WOrds' },
 	      finalTime
 	    );
 	  },
 	  mouseOverTime: function (time) {
 	    var date = moment(time * 1000).format('MMMM Do YYYY, h:mm:ss a');
-	    $('.' + this.props.post.id).each(function () {
+	    $('#' + this.props.post.id).each(function () {
 	      $(this).text(date);
 	    });
 	
 	    // event.value===time;
 	  },
 	  mouseLeaveTime: function (time) {
-	    $('.' + this.props.post.id).each(function () {
+	    $('#' + this.props.post.id).each(function () {
 	      $(this).text(moment(time * 1000).fromNow());
 	    });
 	    // value===finalTime
+	  },
+	  _buildUrl: function (image_path) {
+	    var publicID;
+	    if (!image_path) {
+	      publicID = "lifebook_default_pic.jpg";
+	    } else {
+	      publicID = image_path;
+	    }
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + publicID;
+	    return url;
 	  },
 	
 	  render: function () {
@@ -31794,6 +31805,7 @@
 	    var currentUser = UserStore.getCurrentUser();
 	    var subjectName = this.props.post.subject.real_name;
 	    var authorName = this.props.post.author.real_name;
+	    var profile_image = this.props.post.author.profile_image;
 	    var nameLine = {};
 	    if (subjectName === authorName) {
 	      nameLine = React.createElement(
@@ -31804,16 +31816,16 @@
 	    } else {
 	      nameLine = React.createElement(
 	        'div',
-	        null,
+	        { className: 'post-user-name' },
 	        React.createElement(
 	          'span',
-	          { className: 'post-user-name', onClick: this.handleAuthorClick },
+	          { onClick: this.handleAuthorClick },
 	          authorName
 	        ),
 	        React.createElement('i', { className: 'fa fa-arrow-right' }),
 	        React.createElement(
 	          'span',
-	          { className: 'post-user-name', onClick: this.handleSubjectClick },
+	          { onClick: this.handleSubjectClick },
 	          subjectName
 	        )
 	      );
@@ -31854,8 +31866,17 @@
 	        React.createElement(
 	          'div',
 	          { className: 'feed-post-body' },
-	          nameLine,
-	          timeline,
+	          React.createElement(
+	            'div',
+	            { className: 'post-info-line' },
+	            React.createElement('img', { className: 'post-profile-pic-actual-pic', src: this._buildUrl(profile_image) }),
+	            React.createElement(
+	              'div',
+	              { className: 'post-name-and-date' },
+	              nameLine,
+	              timeline
+	            )
+	          ),
 	          React.createElement(
 	            'div',
 	            { className: 'post-only-the-body' },
@@ -43990,6 +44011,7 @@
 	  // <img src="app/assets/images/thumb.png" ></img>
 	  render: function () {
 	    var people = this.getAllLikers();
+	    var count = people.length;
 	
 	    if (!people) {
 	      fellowLikers = React.createElement(
@@ -44020,27 +44042,17 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement(
-	          'span',
-	          { className: 'fa-stack fa-lg' },
-	          React.createElement('i', { className: 'fa fa-thumbs-o-up' }),
-	          React.createElement('i', { className: 'fa icon-thumbs-o-up fa-inverse' })
-	        ),
-	        React.createElement(
-	          'span',
-	          { className: 'fa-stack fa-lg' },
-	          React.createElement('i', { className: 'fa fa-square-o fa-stack-2x' }),
-	          React.createElement('i', { className: 'fa icon-thumbs-up-alt fa-stack-1x' })
-	        ),
+	        React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit }),
 	        React.createElement(
 	          'span',
 	          null,
-	          properText
+	          count,
+	          ' Likes'
 	        )
 	      ),
 	      React.createElement(
 	        'div',
-	        null,
+	        { className: 'liker-list' },
 	        fellowLikers
 	      )
 	    );

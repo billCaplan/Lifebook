@@ -57,6 +57,7 @@ var PostLikeButton = React.createClass({
   // <img src="app/assets/images/thumb.png" ></img>
   render: function(){
     var people = this.getAllLikers();
+    var count = people.length;
 
     if (!people){
       fellowLikers = <div>Loading</div>;
@@ -73,21 +74,10 @@ var PostLikeButton = React.createClass({
     return (
       <div>
         <div>
-          <span className="fa-stack fa-lg">
-            <i className="fa fa-thumbs-o-up"></i>
-              <i className="fa icon-thumbs-o-up fa-inverse"></i>
-
-          </span>
-
-          <span className="fa-stack fa-lg">
-            <i className="fa fa-square-o fa-stack-2x"></i>
-            <i className="fa icon-thumbs-up-alt fa-stack-1x"></i>
-          </span>
-
-
-          <span>{properText}</span>
+          <img src="/assets/thumb.png" height="20" width="20" className={this.likeClass()} onClick={this.handleLikeSubmit}></img>
+          <span>{count} Likes</span>
         </div>
-        <div>
+        <div className="liker-list">
         {fellowLikers}
         </div>
       </div>

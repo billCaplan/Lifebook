@@ -73,22 +73,33 @@ getTimeFrame: function(){
   return <div time={time}
               onMouseOver={this.mouseOverTime.bind(null, time)}
               onMouseOut={this.mouseLeaveTime.bind(null, time)}
-              className={that.props.post.id}
+              id={that.props.post.id}
+              className="dateline"
               text="WOrds">{finalTime}</div>;
 },
 mouseOverTime: function(time){
   var date = moment(time*1000).format('MMMM Do YYYY, h:mm:ss a');
-  $(('.' + this.props.post.id)).each(function() {
+  $(('#' + this.props.post.id)).each(function() {
   $(this).text(date);
 });
 
   // event.value===time;
 },
 mouseLeaveTime: function(time){
-  $(('.' + this.props.post.id)).each(function() {
+  $(('#' + this.props.post.id)).each(function() {
     $(this).text(moment(time*1000).fromNow());
 });
   // value===finalTime
+},
+_buildUrl: function(image_path){
+  var publicID;
+  if (!image_path){
+    publicID = "lifebook_default_pic.jpg";
+  } else {
+    publicID = image_path;
+  }
+  var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + publicID;
+  return url;
 },
 
   render: function(){
@@ -97,16 +108,18 @@ mouseLeaveTime: function(time){
     var currentUser = UserStore.getCurrentUser();
     var subjectName = this.props.post.subject.real_name;
     var authorName = this.props.post.author.real_name;
+    var profile_image = this.props.post.author.profile_image;
     var nameLine = {};
     if (subjectName === authorName){
       nameLine = <div className="post-user-name" onClick={this.handleAuthorClick}>{authorName}</div>;
     } else {
-      nameLine = <div>
-                    <span className="post-user-name" onClick={this.handleAuthorClick}>{authorName}</span>
+      nameLine = <div className="post-user-name">
+                    <span  onClick={this.handleAuthorClick}>{authorName}</span>
                       <i className="fa fa-arrow-right"></i>
-                    <span className="post-user-name" onClick={this.handleSubjectClick}>{subjectName}</span>
+                    <span  onClick={this.handleSubjectClick}>{subjectName}</span>
                 </div>;
     }
+
 
     // is like true or false
     var placeholder = this.likeButtonLogic();
@@ -134,7 +147,13 @@ mouseLeaveTime: function(time){
                               transitionLeaveTimeout={500}>
       <div className="whole-post">
         <div className="feed-post-body">
-         {nameLine}{timeline}
+          <div className="post-info-line">
+            <img className="post-profile-pic-actual-pic" src={this._buildUrl(profile_image)}></img>
+            <div className="post-name-and-date">
+              {nameLine}
+              {timeline}
+            </div>
+          </div>
          <div className="post-only-the-body">{this.props.post.body}</div>
          {likeButton}
        </div>
