@@ -43973,9 +43973,26 @@
 	  likeClass: function () {
 	    var likeClass = classNames({
 	      'like-button-liked': this.props.like,
-	      'like-button-unliked': this.props.like === false
+	      'like-button-unliked': this.props.like === false,
+	      'fa': true,
+	      'fa-thumbs-up': true
 	    });
 	    return likeClass;
+	  },
+	  mouseOver: function () {
+	    // var date = moment(time*1000).format('MMMM Do YYYY, h:mm:ss a');
+	
+	    $('#post-like-' + this.props.post.id).each(function () {
+	
+	      $(this).addClass("fellow-likers-show").removeClass("fellow-likers");
+	    });
+	  },
+	  mouseLeave: function () {
+	
+	    $('#post-like-' + this.props.post.id).each(function () {
+	
+	      $(this).removeClass("fellow-likers-show").addClass("fellow-likers");
+	    });
 	  },
 	  getAllLikers: function () {
 	    var otherPeople = LikeStore.getTheUsers(this.props.like);
@@ -43999,11 +44016,13 @@
 	  componentWillReceiveProps: function (newProps) {},
 	  buttonText: function () {
 	    var text;
+	    var people = this.getAllLikers();
+	    var count = people.length;
 	
-	    if (this.props.like) {
-	      text = "Unlike";
-	    } else {
+	    if (count === 1) {
 	      text = "Like";
+	    } else {
+	      text = "Likes";
 	    }
 	    return text;
 	  },
@@ -44012,6 +44031,9 @@
 	  render: function () {
 	    var people = this.getAllLikers();
 	    var count = people.length;
+	    var idLine;
+	
+	    idLine = "post-like-" + this.props.post.id;
 	
 	    if (!people) {
 	      fellowLikers = React.createElement(
@@ -44023,7 +44045,7 @@
 	      fellowLikers = people.map(function (person, i) {
 	        return React.createElement(
 	          'div',
-	          { key: i },
+	          { key: idLine },
 	          person.real_name
 	        );
 	      });
@@ -44036,23 +44058,32 @@
 	      this.buttonText()
 	    );
 	
+	    // <img src="/assets/thumb.png" height="20" width="20" className={this.likeClass()} onClick={this.handleLikeSubmit}></img>
+	    // <div className="liker-list">
+	    //   {fellowLikers}
+	    // </div>
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit }),
+	        React.createElement('i', { className: this.likeClass(),
+	          onClick: this.handleLikeSubmit,
+	          onMouseOver: this.mouseOver,
+	          onMouseOut: this.mouseLeave
+	        }),
 	        React.createElement(
 	          'span',
 	          null,
 	          count,
-	          ' Likes'
+	          ' ',
+	          properText
 	        )
 	      ),
 	      React.createElement(
 	        'div',
-	        { className: 'liker-list' },
+	        { id: idLine, className: 'fellow-likers' },
 	        fellowLikers
 	      )
 	    );

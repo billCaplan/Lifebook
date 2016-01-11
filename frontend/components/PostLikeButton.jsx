@@ -16,10 +16,29 @@ var PostLikeButton = React.createClass({
   likeClass: function(){
     var likeClass = classNames({
       'like-button-liked': this.props.like,
-      'like-button-unliked': this.props.like === false
+      'like-button-unliked': this.props.like === false,
+      'fa': true,
+      'fa-thumbs-up':true
     });
     return likeClass;
   },
+  mouseOver: function(){
+    // var date = moment(time*1000).format('MMMM Do YYYY, h:mm:ss a');
+
+    $(('#post-like-' + this.props.post.id)).each(function() {
+
+    $(this).addClass("fellow-likers-show").removeClass("fellow-likers");
+  });
+
+  },
+  mouseLeave: function(){
+
+    $(('#post-like-' + this.props.post.id)).each(function() {
+
+    $(this).removeClass("fellow-likers-show").addClass("fellow-likers");
+  });
+
+},
   getAllLikers: function(){
     var otherPeople = LikeStore.getTheUsers(this.props.like);
       return otherPeople;
@@ -45,11 +64,13 @@ var PostLikeButton = React.createClass({
   },
   buttonText: function(){
     var text;
+    var people = this.getAllLikers();
+    var count = people.length;
 
-    if (this.props.like){
-      text = "Unlike";
-    } else {
+    if (count === 1){
       text = "Like";
+    } else {
+      text = "Likes";
     }
   return text;
   },
@@ -58,27 +79,39 @@ var PostLikeButton = React.createClass({
   render: function(){
     var people = this.getAllLikers();
     var count = people.length;
+    var idLine;
+
+    idLine = "post-like-"+this.props.post.id;
+
 
     if (!people){
       fellowLikers = <div>Loading</div>;
     }
     else {
       fellowLikers = people.map(function (person, i) {
-        return <div key={i}>{person.real_name}</div>;
+        return <div key={idLine}>{person.real_name}</div>;
         });
     }
     var properText = this.buttonText();
     var properButton;
     properButton = <button  className={this.likeClass()} onClick={this.handleLikeSubmit}>{this.buttonText()}</button>;
 
+      // <img src="/assets/thumb.png" height="20" width="20" className={this.likeClass()} onClick={this.handleLikeSubmit}></img>
+      // <div className="liker-list">
+      //   {fellowLikers}
+      // </div>
     return (
       <div>
         <div>
-          <img src="/assets/thumb.png" height="20" width="20" className={this.likeClass()} onClick={this.handleLikeSubmit}></img>
-          <span>{count} Likes</span>
+          <i className={this.likeClass()}
+            onClick={this.handleLikeSubmit}
+            onMouseOver={this.mouseOver}
+            onMouseOut={this.mouseLeave}
+            ></i>
+          <span>{count} {properText}</span>
         </div>
-        <div className="liker-list">
-        {fellowLikers}
+        <div id={idLine} className="fellow-likers">
+          {fellowLikers}
         </div>
       </div>
     );

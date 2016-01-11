@@ -17,13 +17,30 @@
  /*textarea{
    resize: none;
  }*/
+ .fellow-likers{
+   visibility: collapse;
+   display: none;
+   background: blue;
+
+ }
+ .fellow-likers-show{
+   visibility: visible;
+   z-index: 2;
+   position: absolute;
+   background: white;
+   border: 1px;
+   border-radius: 5px;
+   padding: 3px;
+
+ }
 .fa-arrow-right{
   padding-left: 3px;
   padding-right: 3px;
   color: black;
 }
 .fa-thumbs-up{
-
+  padding-right: 5px;
+  color: #E5E5E5;
 }
 .fa-square-o{
   /*color: yellow;*/
@@ -178,18 +195,16 @@ visibility: hidden;
 /*Put A Comma in EACH like button after the names*/
 
  .like-button-liked{
-   background-color: #627CB4;
-   border: 0px;
-   border-radius: 5px;
-   overflow: hidden;
+   color: #627CB4;
+
 
  }
- .like-button-unliked{
+ /*.like-button-unliked{
    background-color: #F6F7F8;
    border: 0px;
    border-radius: 5px;
    overflow: hidden;
- }
+ }*/
 
   .sign-up-link{
     float: right;
@@ -211,7 +226,7 @@ visibility: hidden;
  .button{
     /*color: white;*/
     border-radius: 4px;
-
+    cursor: pointer;
     background: #f6f7f8;
  }
 
@@ -481,7 +496,7 @@ padding-right: 10px;
   padding: 3px;
   padding-bottom: 5px;
   top: 0px;
-  z-index: 1;
+  z-index: 3;
 }
 
 .header-bar-go-home{
