@@ -43654,6 +43654,28 @@
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
+	  likeClass: function () {
+	    var likeClass = classNames({
+	      'like-button-liked': this.props.like,
+	      'like-button-unliked': this.props.like === false,
+	      'fa': true,
+	      'fa-thumbs-up': true
+	    });
+	    return likeClass;
+	  },
+	  mouseOver: function () {
+	    // var date = moment(time*1000).format('MMMM Do YYYY, h:mm:ss a');
+	
+	    $('#comment-like-' + this.props.comment.id).each(function () {
+	      $(this).addClass("fellow-likers-show").removeClass("fellow-likers");
+	    });
+	  },
+	  mouseLeave: function () {
+	
+	    $('#comment-like-' + this.props.comment.id).each(function () {
+	      $(this).removeClass("fellow-likers-show").addClass("fellow-likers");
+	    });
+	  },
 	
 	  handleLikeSubmit: function (event) {
 	    event.preventDefault();
@@ -43672,11 +43694,13 @@
 	  componentWillReceiveProps: function (newProps) {},
 	  buttonText: function () {
 	    var text;
+	    var people = this.getAllLikers();
+	    var count = people.length;
 	
-	    if (this.props.like) {
-	      text = "Unlike";
-	    } else {
+	    if (count === 1) {
 	      text = "Like";
+	    } else {
+	      text = "Likes";
 	    }
 	    return text;
 	  },
@@ -43685,16 +43709,18 @@
 	    var otherPeople = LikeStore.getTheUsers(this.props.like);
 	    return otherPeople;
 	  },
-	  likeClass: function () {
-	    var likeClass = classNames({
-	      "like-button": true,
-	      'like-button-liked': this.props.like,
-	      'like-button-unliked': this.props.like === false
-	    });
-	    return likeClass;
-	  },
+	  // likeClass: function(){
+	  //   var likeClass = classNames({
+	  //     "like-button": true,
+	  //     'like-button-liked': this.props.like,
+	  //     'like-button-unliked': this.props.like === false
+	  //   });
+	  //   return likeClass;
+	  // },
 	  render: function () {
 	    var people = this.getAllLikers();
+	    var count = people.length;
+	    var idLine = "comment-like-" + this.props.comment.id;
 	
 	    if (!people) {
 	      fellowLikers = React.createElement(
@@ -43706,8 +43732,7 @@
 	      fellowLikers = people.map(function (person, i) {
 	        return React.createElement(
 	          'div',
-	          { className: 'liker-name',
-	            key: i },
+	          { key: idLine },
 	          person.real_name
 	        );
 	      });
@@ -43725,23 +43750,26 @@
 	
 	    return React.createElement(
 	      'div',
-	      { className: 'like-area' },
+	      null,
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement('img', { src: '/assets/thumb.png',
-	          height: '20', width: '20',
-	          className: this.likeClass(),
-	          onClick: this.handleLikeSubmit }),
+	        React.createElement('i', { className: this.likeClass(),
+	          onClick: this.handleLikeSubmit,
+	          onMouseOver: this.mouseOver,
+	          onMouseOut: this.mouseLeave
+	        }),
 	        React.createElement(
 	          'span',
 	          null,
+	          count,
+	          ' ',
 	          properText
 	        )
 	      ),
 	      React.createElement(
 	        'div',
-	        { className: 'liker-names' },
+	        { id: idLine, className: 'fellow-likers' },
 	        fellowLikers
 	      )
 	    );

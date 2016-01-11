@@ -11,6 +11,30 @@ var CommentLikeButton = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
+  likeClass: function(){
+    var likeClass = classNames({
+      'like-button-liked': this.props.like,
+      'like-button-unliked': this.props.like === false,
+      'fa': true,
+      'fa-thumbs-up':true
+    });
+    return likeClass;
+  },
+  mouseOver: function(){
+    // var date = moment(time*1000).format('MMMM Do YYYY, h:mm:ss a');
+
+    $(('#comment-like-' + this.props.comment.id)).each(function() {
+      $(this).addClass("fellow-likers-show").removeClass("fellow-likers");
+    });
+
+  },
+  mouseLeave: function(){
+
+    $(('#comment-like-' + this.props.comment.id)).each(function() {
+      $(this).removeClass("fellow-likers-show").addClass("fellow-likers");
+    });
+
+},
 
   handleLikeSubmit: function(event){
     event.preventDefault();
@@ -32,11 +56,13 @@ var CommentLikeButton = React.createClass({
   },
   buttonText: function(){
     var text;
+    var people = this.getAllLikers();
+    var count = people.length;
 
-    if (this.props.like){
-      text = "Unlike";
-    } else {
+    if (count === 1){
       text = "Like";
+    } else {
+      text = "Likes";
     }
   return text;
   },
@@ -45,24 +71,25 @@ var CommentLikeButton = React.createClass({
     var otherPeople = LikeStore.getTheUsers(this.props.like);
       return otherPeople;
   },
-  likeClass: function(){
-    var likeClass = classNames({
-      "like-button": true,
-      'like-button-liked': this.props.like,
-      'like-button-unliked': this.props.like === false
-    });
-    return likeClass;
-  },
+  // likeClass: function(){
+  //   var likeClass = classNames({
+  //     "like-button": true,
+  //     'like-button-liked': this.props.like,
+  //     'like-button-unliked': this.props.like === false
+  //   });
+  //   return likeClass;
+  // },
   render: function(){
     var people = this.getAllLikers();
+    var count = people.length;
+    var idLine = "comment-like-"+this.props.comment.id;
 
     if (!people){
       fellowLikers = <div>Loading</div>;
     }
     else {
       fellowLikers = people.map(function (person, i) {
-        return <div className="liker-name"
-                    key={i}>{person.real_name}</div>;
+        return <div key={idLine}>{person.real_name}</div>;
         });
     }
 
@@ -74,15 +101,16 @@ var CommentLikeButton = React.createClass({
                             {this.buttonText()}</button>;
 
     return (
-      <div className="like-area">
+      <div>
         <div>
-          <img src="/assets/thumb.png"
-              height="20" width="20"
-              className={this.likeClass()}
-              onClick={this.handleLikeSubmit}></img>
-            <span>{properText}</span>
+          <i className={this.likeClass()}
+            onClick={this.handleLikeSubmit}
+            onMouseOver={this.mouseOver}
+            onMouseOut={this.mouseLeave}
+            ></i>
+            <span>{count} {properText}</span>
         </div>
-        <div className="liker-names">
+        <div id={idLine} className="fellow-likers">
           {fellowLikers}
         </div>
       </div>
