@@ -27,8 +27,8 @@
    visibility: visible;
    z-index: 2;
    position: absolute;
-   background: white;
-   border: 1px;
+   background: lightgrey;
+   border: 5px black;
    border-radius: 5px;
    padding: 3px;
 
@@ -69,10 +69,20 @@
 .search-list-username{
   cursor: pointer;
 }
- .comment-user-name{
-   cursor: pointer;
-   text-decoration: underline;
- }
+
+
+  .comment-user-name{
+    /*text-decoration: underline;*/
+    cursor: pointer;
+    color: #3B5998;
+    font-weight: bold;
+    float: left;
+    padding-left: 5px;
+
+  }
+  .comment-date{
+    float:right;
+  }
  .following-user-name{
    cursor: pointer;
  }
@@ -157,7 +167,9 @@
    margin: 10px;
  }
  .comment-only-the-body{
-   margin: 10px;
+   margin-top: 40px;
+   padding: 10px;
+   display: block;
  }
 
 
@@ -415,6 +427,7 @@ padding-right: 10px;
    padding: 5px;
    width: 300px;
    margin-left: 15px;
+   display: block;
  }
  .feed-post-body{
    margin-left: 10px;

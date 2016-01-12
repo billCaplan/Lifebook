@@ -106,18 +106,46 @@ var Comment = React.createClass({
     });
 
     },
+    _buildUrl: function(image_path){
+      var publicID;
+      if (!image_path){
+        publicID = "lifebook_default_pic.jpg";
+      } else {
+        publicID = image_path;
+      }
+      var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + publicID;
+      return url;
+    },
+    profilePicFunction: function(comment){
+      var profilePicFunction;
+      var that = this;
+      if (comment){
+        profilePicFunction = <img className="post-profile-pic-actual-pic" src={that._buildUrl(comment.author.profile_image)}></img>;
+      } else {
+        profilePicFunction = <img className="post-profile-pic-actual-pic" src={that._buildUrl(false)}></img>;
+      }
+      return profilePicFunction;
+    },
 
     render: function(){
       var that=this;
+      // PROBLEM WHEN THIS IS UNDEFINED
+
+      // the rendering is happening in a map function so i have to handle it in the map
 
       var Comments = this.state.comments.map(function (comment, i) {
         return(
           <div key={comment.id} className="post-comment">
-            <div  className="comment-user-name"
-                  onClick={that.handleAuthorClick.bind(null, comment.author.id)}>
-                  {comment.author.real_name}
+            <div className="comment-header">
+              {that.profilePicFunction(comment)}
+              <div  className="comment-user-name"
+                    onClick={that.handleAuthorClick.bind(null, comment.author.id)}>
+                    {comment.author.real_name}
+              </div>
+              <div className="comment-date">
+                {that.getTimeFrame(comment)}
+              </div>
             </div>
-            {that.getTimeFrame(comment)}
             <div className="comment-only-the-body">{comment.body}</div>
             {that._buttonRenderFunction(comment)}
           </div>
