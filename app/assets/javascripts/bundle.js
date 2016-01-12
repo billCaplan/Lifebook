@@ -31884,6 +31884,7 @@
 	          ),
 	          likeButton
 	        ),
+	        React.createElement('div', { className: 'post-seperator-black' }),
 	        React.createElement(
 	          'div',
 	          null,
@@ -31893,8 +31894,7 @@
 	          'div',
 	          { className: 'feed-post-new-comment' },
 	          React.createElement(NewComment, { parentCommentId: this.props.post.id })
-	        ),
-	        React.createElement('div', { className: 'post-seperator-black' })
+	        )
 	      )
 	    );
 	  }
@@ -43580,7 +43580,7 @@
 	          ),
 	          React.createElement(
 	            'div',
-	            { className: 'comment-date' },
+	            { className: 'dateline-comment' },
 	            that.getTimeFrame(comment)
 	          )
 	        ),

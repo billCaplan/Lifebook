@@ -142,7 +142,7 @@ var Comment = React.createClass({
                     onClick={that.handleAuthorClick.bind(null, comment.author.id)}>
                     {comment.author.real_name}
               </div>
-              <div className="comment-date">
+              <div className="dateline-comment">
                 {that.getTimeFrame(comment)}
               </div>
             </div>

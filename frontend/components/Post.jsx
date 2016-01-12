@@ -157,13 +157,13 @@ _buildUrl: function(image_path){
          <div className="post-only-the-body">{this.props.post.body}</div>
          {likeButton}
        </div>
+           <div className="post-seperator-black"></div>
        <div>
           <Comment postId={this.props.post.id}/>
       </div>
       <div className="feed-post-new-comment">
           <NewComment parentCommentId={this.props.post.id}/>
       </div>
-      <div className="post-seperator-black"></div>
       </div>
     </ReactCSSTransitionGroup>
     );
