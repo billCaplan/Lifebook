@@ -40,7 +40,8 @@ var PostLikeButton = React.createClass({
 
 },
   getAllLikers: function(){
-    var otherPeople = LikeStore.getTheUsers(this.props.like);
+    var that=this;
+    var otherPeople = LikeStore.getTheUsers({like_type: "post", post_id:that.props.post.id });
       return otherPeople;
   },
 
@@ -81,6 +82,7 @@ var PostLikeButton = React.createClass({
     var count = people.length;
     var idLine;
 
+
     idLine = "post-like-"+this.props.post.id;
 
 
@@ -89,7 +91,7 @@ var PostLikeButton = React.createClass({
     }
     else {
       fellowLikers = people.map(function (person, i) {
-        return <div key={idLine}>{person.real_name}</div>;
+        return <div key={i}>{person.real_name}</div>;
         });
     }
     var properText = this.buttonText();
@@ -108,7 +110,7 @@ var PostLikeButton = React.createClass({
             onMouseOver={this.mouseOver}
             onMouseOut={this.mouseLeave}
             ></i>
-          <span>{count} {properText}</span>
+          <span className="like-span">{count} {properText}</span>
         </div>
         <div id={idLine} className="fellow-likers">
           {fellowLikers}

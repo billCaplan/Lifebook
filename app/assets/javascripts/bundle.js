@@ -43737,8 +43737,8 @@
 	    return text;
 	  },
 	  getAllLikers: function () {
-	
-	    var otherPeople = LikeStore.getTheUsers(this.props.like);
+	    var that = this;
+	    var otherPeople = LikeStore.getTheUsers({ like_type: "comment", post_id: that.props.comment.id });
 	    return otherPeople;
 	  },
 	  // likeClass: function(){
@@ -43764,7 +43764,7 @@
 	      fellowLikers = people.map(function (person, i) {
 	        return React.createElement(
 	          'div',
-	          { key: idLine },
+	          { key: i },
 	          person.real_name
 	        );
 	      });
@@ -43793,7 +43793,7 @@
 	        }),
 	        React.createElement(
 	          'span',
-	          null,
+	          { className: 'like-span' },
 	          count,
 	          ' ',
 	          properText
@@ -43912,6 +43912,7 @@
 	};
 	
 	LikeStore.getAllOtherLikers = function (like) {
+	
 	  var users = UserStore.all();
 	  var likes = LikeStore.all();
 	  var author_id = parseInt(like.author_id);
@@ -43929,6 +43930,7 @@
 	};
 	
 	LikeStore.getTheUsers = function (like) {
+	
 	  var relevantLikes = LikeStore.getAllOtherLikers(like);
 	  var relevantUsers = [];
 	  relevantLikes.forEach(function (like) {
@@ -44055,7 +44057,8 @@
 	    });
 	  },
 	  getAllLikers: function () {
-	    var otherPeople = LikeStore.getTheUsers(this.props.like);
+	    var that = this;
+	    var otherPeople = LikeStore.getTheUsers({ like_type: "post", post_id: that.props.post.id });
 	    return otherPeople;
 	  },
 	
@@ -44105,7 +44108,7 @@
 	      fellowLikers = people.map(function (person, i) {
 	        return React.createElement(
 	          'div',
-	          { key: idLine },
+	          { key: i },
 	          person.real_name
 	        );
 	      });
@@ -44135,7 +44138,7 @@
 	        }),
 	        React.createElement(
 	          'span',
-	          null,
+	          { className: 'like-span' },
 	          count,
 	          ' ',
 	          properText
@@ -45117,6 +45120,7 @@
 	    window.scrollTo(0, 0);
 	  },
 	  _setContent: function (results) {
+	    var glass = React.createElement('i', { 'class': 'fa fa-search' });
 	    return React.createElement(
 	      'div',
 	      null,
@@ -45125,7 +45129,10 @@
 	        null,
 	        'Search: '
 	      ),
-	      React.createElement('input', { onChange: this.handleInput, value: this.state.inputVal, size: '50' }),
+	      React.createElement('input', { onChange: this.handleInput,
+	        value: this.state.inputVal,
+	        size: '50'
+	      }),
 	      React.createElement(
 	        'ul',
 	        { className: this.listClass() },
@@ -45406,7 +45413,7 @@
 	            React.createElement(Images, { user: this.state.user.id }),
 	            React.createElement(
 	              'button',
-	              { className: 'button', onClick: this._setPicturePage },
+	              { className: 'button change-to-pic', onClick: this._setPicturePage },
 	              'View All Pictures'
 	            ),
 	            uploadButton
@@ -45465,8 +45472,8 @@
 	      'div',
 	      null,
 	      React.createElement(
-	        'h2',
-	        null,
+	        'div',
+	        { className: 'profile-info-user-name' },
 	        this.props.user.real_name
 	      ),
 	      React.createElement(
@@ -45477,18 +45484,23 @@
 	      React.createElement('div', null),
 	      React.createElement(
 	        'div',
-	        null,
-	        this.props.user.age
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.props.user.location
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.props.user.email
+	        { className: 'profile-user-info' },
+	        React.createElement(
+	          'div',
+	          null,
+	          'Age: ',
+	          this.props.user.age
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.user.location
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.user.email
+	        )
 	      )
 	    );
 	  }
@@ -45703,7 +45715,7 @@
 	var customStyles = {
 	  overlay: {
 	    position: 'fixed',
-	    backgroundColor: 'rgba(255, 255, 255, 0.90)',
+	    backgroundColor: '#161617',
 	    zIndex: 5
 	  },
 	  content: {
@@ -45712,7 +45724,7 @@
 	    right: 'auto',
 	    bottom: 'auto',
 	    height: '600px',
-	    width: '1200px',
+	    width: '900px',
 	    marginRight: '-50%',
 	    transform: 'translate(-50%, -50%)'
 	  }
@@ -45848,11 +45860,6 @@
 	              onRequestClose: this.closeModal,
 	              style: customStyles,
 	              className: 'image-modal' },
-	            React.createElement(
-	              'h2',
-	              null,
-	              'Picture'
-	            ),
 	            React.createElement(
 	              'button',
 	              { className: 'button', onClick: this.closeModal },
@@ -47824,7 +47831,7 @@
 	    var that = this;
 	
 	    likes.forEach(function (like) {
-	      if (like.post_id === current_comment.id && like.author_id === current_user.id && like.like_type === "comment") {
+	      if (like.post_id === current_comment.id && like.author_id === current_user.id && like.like_type === "image-comment") {
 	        liking = like;
 	      }
 	    });
@@ -47856,6 +47863,26 @@
 	
 	    return likeButton;
 	  },
+	  _buildUrl: function (image_path) {
+	    var publicID;
+	    if (!image_path) {
+	      publicID = "lifebook_default_pic.jpg";
+	    } else {
+	      publicID = image_path;
+	    }
+	    var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + publicID;
+	    return url;
+	  },
+	  profilePicFunction: function (comment) {
+	    var profilePicFunction;
+	    var that = this;
+	    if (comment) {
+	      profilePicFunction = React.createElement('img', { className: 'post-profile-pic-actual-pic', src: that._buildUrl(comment.author.profile_image) });
+	    } else {
+	      profilePicFunction = React.createElement('img', { className: 'post-profile-pic-actual-pic', src: that._buildUrl(false) });
+	    }
+	    return profilePicFunction;
+	  },
 	
 	  render: function () {
 	    var that = this;
@@ -47863,14 +47890,16 @@
 	      return React.createElement(
 	        'div',
 	        { key: comment.id, className: 'post-comment' },
+	        that.profilePicFunction(comment),
 	        React.createElement(
 	          'div',
-	          { onClick: that.handleAuthorClick.bind(null, comment.author.id) },
+	          { className: 'post-user-name',
+	            onClick: that.handleAuthorClick.bind(null, comment.author.id) },
 	          comment.author.real_name
 	        ),
 	        React.createElement(
 	          'div',
-	          null,
+	          { className: 'comment-only-the-body' },
 	          comment.body
 	        ),
 	        that._buttonRenderFunction(comment)
@@ -47905,13 +47934,37 @@
 	  contextTypes: {
 	    router: React.PropTypes.func
 	  },
+	  likeClass: function () {
+	    var likeClass = classNames({
+	      'like-button-liked': this.props.like,
+	      'like-button-unliked': this.props.like === false,
+	      'fa': true,
+	      'fa-thumbs-up': true
+	    });
+	    return likeClass;
+	  },
+	
+	  mouseOver: function () {
+	    // var date = moment(time*1000).format('MMMM Do YYYY, h:mm:ss a');
+	
+	    $('#image-comment-like-' + this.props.comment.id).each(function () {
+	      $(this).addClass("fellow-likers-show").removeClass("fellow-likers");
+	    });
+	  },
+	  mouseLeave: function () {
+	
+	    $('#image-comment-like-' + this.props.comment.id).each(function () {
+	      $(this).removeClass("fellow-likers-show").addClass("fellow-likers");
+	    });
+	  },
 	
 	  handleLikeSubmit: function (event) {
 	    event.preventDefault();
 	    var like = { author_id: this.props.currentUser.id,
-	      like_type: "comment",
+	      like_type: "image-comment",
 	      post_id: this.props.comment.id };
 	
+	    debugger;
 	    if (this.props.like) {
 	      var targetLike = LikeStore.getByLikeParties(like);
 	      ApiUtil.deleteLike(targetLike);
@@ -47922,27 +47975,26 @@
 	  componentWillReceiveProps: function (newProps) {},
 	  buttonText: function () {
 	    var text;
+	    var people = this.getAllLikers();
+	    var count = people.length;
 	
-	    if (this.props.like) {
-	      text = "Unlike";
-	    } else {
+	    if (count === 1) {
 	      text = "Like";
+	    } else {
+	      text = "Likes";
 	    }
 	    return text;
 	  },
-	  likeClass: function () {
-	    var likeClass = classNames({
-	      'like-button-liked': this.props.like,
-	      'like-button-unliked': this.props.like === false
-	    });
-	    return likeClass;
-	  },
+	
 	  getAllLikers: function () {
-	    var otherPeople = LikeStore.getTheUsers(this.props.like);
+	    var that = this;
+	    var otherPeople = LikeStore.getTheUsers({ like_type: "image-comment", post_id: that.props.comment.id });
 	    return otherPeople;
 	  },
 	  render: function () {
 	    var people = this.getAllLikers();
+	    var count = people.length;
+	    var idLine = "image-comment-like-" + this.props.comment.id;
 	
 	    if (!people) {
 	      fellowLikers = React.createElement(
@@ -47954,7 +48006,7 @@
 	      fellowLikers = people.map(function (person, i) {
 	        return React.createElement(
 	          'div',
-	          { key: i },
+	          { key: idLine },
 	          person.real_name
 	        );
 	      });
@@ -47974,16 +48026,22 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit }),
+	        React.createElement('i', { className: this.likeClass(),
+	          onClick: this.handleLikeSubmit,
+	          onMouseOver: this.mouseOver,
+	          onMouseOut: this.mouseLeave
+	        }),
 	        React.createElement(
 	          'span',
-	          null,
+	          { className: 'like-span' },
+	          count,
+	          ' ',
 	          properText
 	        )
 	      ),
 	      React.createElement(
 	        'div',
-	        { className: 'liker-names' },
+	        { id: idLine, className: 'fellow-likers' },
 	        fellowLikers
 	      )
 	    );
@@ -48144,30 +48202,52 @@
 	    }
 	  },
 	  componentWillReceiveProps: function (newProps) {},
+	  mouseOver: function () {
+	    // var date = moment(time*1000).format('MMMM Do YYYY, h:mm:ss a');
+	
+	    $('#image-like-' + this.props.image.id).each(function () {
+	
+	      $(this).addClass("fellow-likers-show").removeClass("fellow-likers");
+	    });
+	  },
+	  mouseLeave: function () {
+	
+	    $('#image-like-' + this.props.image.id).each(function () {
+	
+	      $(this).removeClass("fellow-likers-show").addClass("fellow-likers");
+	    });
+	  },
 	  buttonText: function () {
 	    var text;
+	    var people = this.getAllLikers();
+	    var count = people.length;
 	
-	    if (this.props.like) {
-	      text = "Unlike";
-	    } else {
+	    if (count === 1) {
 	      text = "Like";
+	    } else {
+	      text = "Likes";
 	    }
 	    return text;
 	  },
 	  likeClass: function () {
 	    var likeClass = classNames({
 	      'like-button-liked': this.props.like,
-	      'like-button-unliked': this.props.like === false
+	      'like-button-unliked': this.props.like === false,
+	      'fa': true,
+	      'fa-thumbs-up': true
 	    });
 	    return likeClass;
 	  },
 	  getAllLikers: function () {
-	
-	    var otherPeople = LikeStore.getTheUsers(this.props.like);
+	    var that = this;
+	    var otherPeople = LikeStore.getTheUsers({ like_type: "image", post_id: that.props.image.id });
 	    return otherPeople;
 	  },
 	  render: function () {
 	    var people = this.getAllLikers();
+	    var count = people.length;
+	
+	    var idLine = "image-like-" + this.props.image.id;
 	
 	    if (!people) {
 	      fellowLikers = React.createElement(
@@ -48196,8 +48276,27 @@
 	    return React.createElement(
 	      'div',
 	      null,
-	      React.createElement('img', { src: '/assets/thumb.png', height: '20', width: '20', className: this.likeClass(), onClick: this.handleLikeSubmit }),
-	      properText
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement('i', { className: this.likeClass(),
+	          onClick: this.handleLikeSubmit,
+	          onMouseOver: this.mouseOver,
+	          onMouseOut: this.mouseLeave
+	        }),
+	        React.createElement(
+	          'span',
+	          { className: 'like-span' },
+	          count,
+	          ' ',
+	          properText
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { id: idLine, className: 'fellow-likers' },
+	        fellowLikers
+	      )
 	    );
 	  }
 	});
@@ -48269,7 +48368,7 @@
 	var customStyles = {
 	  overlay: {
 	    position: 'fixed',
-	    backgroundColor: 'rgba(255, 255, 255, 0.75)',
+	    backgroundColor: '#161617',
 	    zIndex: 5
 	  },
 	  content: {
@@ -48278,7 +48377,7 @@
 	    right: 'auto',
 	    bottom: 'auto',
 	    height: '600px',
-	    width: '1200px',
+	    width: '900px',
 	    marginRight: '-50%',
 	    transform: 'translate(-50%, -50%)'
 	  }
@@ -48410,11 +48509,6 @@
 	              onRequestClose: this.closeModal,
 	              style: customStyles,
 	              className: 'image-modal' },
-	            React.createElement(
-	              'h2',
-	              null,
-	              'Picture'
-	            ),
 	            React.createElement(
 	              'button',
 	              { className: 'button', onClick: this.closeModal },

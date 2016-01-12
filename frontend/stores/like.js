@@ -39,6 +39,7 @@ LikeStore.getByLikeParties = function(like) {
 };
 
 LikeStore.getAllOtherLikers = function(like){
+
   var users = UserStore.all();
   var likes = LikeStore.all();
   var author_id = parseInt(like.author_id);
@@ -58,7 +59,9 @@ LikeStore.getAllOtherLikers = function(like){
 
 };
 
+
 LikeStore.getTheUsers = function(like){
+
   var relevantLikes = LikeStore.getAllOtherLikers(like);
   var relevantUsers = [];
   relevantLikes.forEach(function(like){

@@ -11,13 +11,39 @@ var ImageCommentLikeButton = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
+  likeClass: function(){
+    var likeClass = classNames({
+      'like-button-liked': this.props.like,
+      'like-button-unliked': this.props.like === false,
+      'fa': true,
+      'fa-thumbs-up':true
+    });
+    return likeClass;
+  },
+
+  mouseOver: function(){
+    // var date = moment(time*1000).format('MMMM Do YYYY, h:mm:ss a');
+
+    $(('#image-comment-like-' + this.props.comment.id)).each(function() {
+      $(this).addClass("fellow-likers-show").removeClass("fellow-likers");
+    });
+
+  },
+  mouseLeave: function(){
+
+    $(('#image-comment-like-' + this.props.comment.id)).each(function() {
+      $(this).removeClass("fellow-likers-show").addClass("fellow-likers");
+    });
+
+},
 
   handleLikeSubmit: function(event){
     event.preventDefault();
     var like = {author_id: this.props.currentUser.id,
-                  like_type: "comment",
+                  like_type: "image-comment",
                   post_id: this.props.comment.id};
 
+      debugger
     if (this.props.like){
       var targetLike = LikeStore.getByLikeParties(like);
       ApiUtil.deleteLike(targetLike);
@@ -31,34 +57,33 @@ var ImageCommentLikeButton = React.createClass({
   },
   buttonText: function(){
     var text;
+    var people = this.getAllLikers();
+    var count = people.length;
 
-    if (this.props.like){
-      text = "Unlike";
-    } else {
+    if (count === 1){
       text = "Like";
+    } else {
+      text = "Likes";
     }
   return text;
   },
-  likeClass: function(){
-    var likeClass = classNames({
-      'like-button-liked': this.props.like,
-      'like-button-unliked': this.props.like === false
-    });
-    return likeClass;
-  },
+
   getAllLikers: function(){
-    var otherPeople = LikeStore.getTheUsers(this.props.like);
+    var that = this;
+    var otherPeople = LikeStore.getTheUsers({like_type: "image-comment", post_id:that.props.comment.id});
       return otherPeople;
   },
   render: function(){
     var people = this.getAllLikers();
+    var count = people.length;
+    var idLine = "image-comment-like-"+this.props.comment.id;
 
     if (!people){
       fellowLikers = <div>Loading</div>;
     }
     else {
       fellowLikers = people.map(function (person, i) {
-        return <div key={i}>{person.real_name}</div>;
+        return <div key={idLine}>{person.real_name}</div>;
         });
     }
     var properText = this.buttonText();
@@ -69,10 +94,14 @@ var ImageCommentLikeButton = React.createClass({
     return (
       <div>
         <div>
-          <img src="/assets/thumb.png" height="20" width="20" className={this.likeClass()} onClick={this.handleLikeSubmit}></img>
-        <span>{properText}</span>
+          <i className={this.likeClass()}
+            onClick={this.handleLikeSubmit}
+            onMouseOver={this.mouseOver}
+            onMouseOut={this.mouseLeave}
+            ></i>
+        <span className="like-span">{count} {properText}</span>
       </div>
-        <div className="liker-names">
+        <div id={idLine} className="fellow-likers">
           {fellowLikers}
         </div>
     </div>

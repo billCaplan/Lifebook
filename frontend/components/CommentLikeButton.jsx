@@ -67,8 +67,8 @@ var CommentLikeButton = React.createClass({
   return text;
   },
   getAllLikers: function(){
-
-    var otherPeople = LikeStore.getTheUsers(this.props.like);
+    var that=this;
+    var otherPeople = LikeStore.getTheUsers({like_type: "comment", post_id:that.props.comment.id});
       return otherPeople;
   },
   // likeClass: function(){
@@ -89,7 +89,7 @@ var CommentLikeButton = React.createClass({
     }
     else {
       fellowLikers = people.map(function (person, i) {
-        return <div key={idLine}>{person.real_name}</div>;
+        return <div key={i}>{person.real_name}</div>;
         });
     }
 
@@ -108,7 +108,7 @@ var CommentLikeButton = React.createClass({
             onMouseOver={this.mouseOver}
             onMouseOut={this.mouseLeave}
             ></i>
-            <span>{count} {properText}</span>
+            <span className="like-span">{count} {properText}</span>
         </div>
         <div id={idLine} className="fellow-likers">
           {fellowLikers}

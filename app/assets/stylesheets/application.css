@@ -17,6 +17,22 @@
  /*textarea{
    resize: none;
  }*/
+ .change-to-pic{
+   bottom:20px;
+
+ }
+ .like-span{
+   font-size:14px;
+ }
+ .profile-info-user-name{
+   font-size: 25px;
+   font-weight: bold;
+   margin-bottom: 10px;
+
+ }
+ .profile-user-info{
+   font-size: 15px;
+ }
  .fellow-likers{
    visibility: collapse;
    display: none;
@@ -53,10 +69,12 @@
   float:right;
 }
 .follow-pic-header{
+  margin-top: 10px;
   font-weight: bold;
   font-size: large;
   padding-bottom: 5px;
-  text-decoration: underline;
+  font-size: 20px;
+
 }
 
 .empty-follow-button{
@@ -78,6 +96,7 @@
     font-weight: bold;
     float: left;
     padding-left: 5px;
+    font-size: 17px;
 
   }
   .comment-date{
@@ -85,6 +104,8 @@
   }
  .following-user-name{
    cursor: pointer;
+   color: #3B5998;
+
  }
 
 .splash-page{
@@ -165,11 +186,13 @@
 
  .post-only-the-body{
    margin: 10px;
+   font-size: 14px;
  }
  .comment-only-the-body{
-   margin-top: 40px;
+   margin-top: 50px;
    padding: 10px;
    display: block;
+    font-size: 14px;
  }
 
 
@@ -268,10 +291,12 @@ visibility: hidden;
    position: relative;
    z-index: 2;
 
+
  }
  .image-modal-outside{
    position: relative;
    z-index: 2;
+     background-color: #F6F7F8;
  }
  .image-modal:after {
    content: "";
@@ -279,6 +304,7 @@ visibility: hidden;
    clear: both;
    z-index: 2;
    position: relative;
+
  }
 
 .image-modal-image{
@@ -289,16 +315,17 @@ visibility: hidden;
 
 }
 .image-modal-image-comments{
-  float: left;
-  width: 100px;
-  right: 20px;
+
+
 }
 
 
 .image-post-comments{
   float:right;
   display: block;
-  padding-right: 10px;
+  padding-right: 150px;
+  width:200px;
+
 
 }
 .image-post-new-post{
@@ -354,7 +381,8 @@ padding-right: 10px;
  .feed-new-post{
    z-index: 1;
    display: block;
-   margin-left: 250px;
+   margin-left: 275px;
+   margin-top: 20px;
 
  }
 
@@ -383,10 +411,10 @@ padding-right: 10px;
    border-width: 1.5px;
    /*padding: 5px;*/
    margin-bottom: 13px;
-   box-shadow: 7px 7px 10px grey;
+
    background-color: #FFFFFF;
    width: auto;
-
+   box-shadow: 7px 7px 10px grey;
    -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
    -moz-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
    box-shadow: 0px 0px 10px rgba(0,0,0,.8);
@@ -400,15 +428,18 @@ padding-right: 10px;
    font-weight: bold;
    float: left;
    padding-left: 5px;
+   font-size: 17px;
 
  }
  .dateline{
    float:right;
    margin-right: 50px;
+   font-size: 12px;
  }
  .dateline-comment{
    float:right;
    margin-right: 60px;
+    font-size: 12px;
  }
 
  .post-profile-pic-actual-pic{
@@ -442,19 +473,19 @@ padding-right: 10px;
  .profile-friends-pane{
    height: auto;
    width: auto;
-   background-color: #F6F7F8;
-   border: 1px solid black;
+   background-color: #FFFFFF;
    padding: 3px;
+
  }
  .profile-images-pane {
    /*margin: 30px auto;*/
    /*min-width: 244px;*/
-   width: 242px;
-   border: 1px solid black;
+   width: 220px;
+   /*border: 1px solid black;*/
    float: left;
    display: block;
    min-height: 100px;
-   background-color: #F6F7F8;
+   background-color: #FFFFFF;
    padding: 3px;
 
    position:relative;
@@ -619,23 +650,27 @@ padding-right: 10px;
 
 
 .user-profile-info{
-  border: 1px solid #ccc;
-  width: 250px;
+  /*border: 1px solid #ccc;*/
+  width: 220px;
   float:left;
   margin-left: 20px;
   border-radius: 5px;
   border-color: grey;
-  padding: 3px;
+  padding: 10px;
   margin-top: 65px;
   background-color: #FFFFFF;
+  box-shadow: 7px 7px 10px grey;
+  -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+  -moz-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+  box-shadow: 0px 0px 10px rgba(0,0,0,.8);
 
 }
 .user-profile-new-post{
   margin-top: 65px;
   width: 500px;
   float:left;
-  left: 300px;
-  padding-left: 10px;
+  right: 375px;
+  padding-left: 120px;
 }
 
 .post-seperator-black{
@@ -668,8 +703,13 @@ padding-right: 10px;
 
 }
 .profile-pic{
-  margin-left: 30px;
+  margin-left: 20px;
   border-radius: 5px;
+  box-shadow: 1px 1px 1px grey;
+  -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+  -moz-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+  box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+  margin-bottom: 5px;
 }
 
 .user-profile-picture-content:after {

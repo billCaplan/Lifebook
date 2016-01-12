@@ -159,7 +159,7 @@ var UserProfile = React.createClass({
           </div>
           <div>
             <Images user={this.state.user.id}/>
-            <button className="button" onClick={this._setPicturePage}>View All Pictures</button>
+            <button className="button change-to-pic" onClick={this._setPicturePage}>View All Pictures</button>
             {uploadButton}
           </div>
         </div>

@@ -16,7 +16,7 @@ var React = require('react'),
     var customStyles = {
       overlay : {
        position          : 'fixed',
-       backgroundColor   : 'rgba(255, 255, 255, 0.75)',
+       backgroundColor   : '#161617',
        zIndex            : 5
    },
       content : {
@@ -25,7 +25,7 @@ var React = require('react'),
         right                 : 'auto',
         bottom                : 'auto',
         height                : '600px',
-        width                 : '1200px',
+        width                 : '900px',
         marginRight           : '-50%',
         transform             : 'translate(-50%, -50%)'
       }
@@ -143,7 +143,6 @@ var ImagesBody = React.createClass({
                style={customStyles}
                className="image-modal" >
 
-               <h2>Picture</h2>
                <button className="button" onClick={this.closeModal}>close</button>
                <ProfilePicChangeButton image={this.state.selectedImage}/>
                {that._buttonRenderFunction(this.state.selectedImage)}

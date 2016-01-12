@@ -30,30 +30,54 @@ var ImageLikeButton = React.createClass({
   componentWillReceiveProps: function(newProps){
 
   },
+  mouseOver: function(){
+    // var date = moment(time*1000).format('MMMM Do YYYY, h:mm:ss a');
+
+    $(('#image-like-' + this.props.image.id)).each(function() {
+
+    $(this).addClass("fellow-likers-show").removeClass("fellow-likers");
+  });
+
+  },
+  mouseLeave: function(){
+
+    $(('#image-like-' + this.props.image.id)).each(function() {
+
+    $(this).removeClass("fellow-likers-show").addClass("fellow-likers");
+  });
+
+},
   buttonText: function(){
     var text;
+    var people = this.getAllLikers();
+    var count = people.length;
 
-    if (this.props.like){
-      text = "Unlike";
-    } else {
+    if (count === 1){
       text = "Like";
+    } else {
+      text = "Likes";
     }
   return text;
   },
   likeClass: function(){
     var likeClass = classNames({
       'like-button-liked': this.props.like,
-      'like-button-unliked': this.props.like === false
+      'like-button-unliked': this.props.like === false,
+      'fa': true,
+      'fa-thumbs-up':true
     });
     return likeClass;
   },
   getAllLikers: function(){
-
-    var otherPeople = LikeStore.getTheUsers(this.props.like);
+    var that = this;
+    var otherPeople = LikeStore.getTheUsers({like_type: "image", post_id:that.props.image.id});
       return otherPeople;
   },
   render: function(){
     var people = this.getAllLikers();
+    var count = people.length;
+
+    var idLine = "image-like-"+this.props.image.id;
 
     if (!people){
       fellowLikers = <div>Loading</div>;
@@ -70,8 +94,17 @@ var ImageLikeButton = React.createClass({
 
     return (
       <div>
-      <img src="/assets/thumb.png" height="20" width="20" className={this.likeClass()} onClick={this.handleLikeSubmit}></img>
-      {properText}
+        <div>
+          <i className={this.likeClass()}
+            onClick={this.handleLikeSubmit}
+            onMouseOver={this.mouseOver}
+            onMouseOut={this.mouseLeave}
+            ></i>
+        <span className="like-span">{count} {properText}</span>
+      </div>
+      <div id={idLine} className="fellow-likers">
+        {fellowLikers}
+      </div>
     </div>
     );
   }

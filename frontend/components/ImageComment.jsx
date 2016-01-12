@@ -48,7 +48,7 @@ var ImageComment = React.createClass({
       likes.forEach(function(like){
         if (like.post_id === current_comment.id &&
             like.author_id === current_user.id &&
-            like.like_type === "comment"){
+            like.like_type === "image-comment"){
           liking = like;
         }
       });
@@ -76,6 +76,26 @@ var ImageComment = React.createClass({
 
       return likeButton;
     },
+    _buildUrl: function(image_path){
+      var publicID;
+      if (!image_path){
+        publicID = "lifebook_default_pic.jpg";
+      } else {
+        publicID = image_path;
+      }
+      var url = "http://res.cloudinary.com/lifebook/image/upload/c_scale,h_50,w_50/v1450463928/" + publicID;
+      return url;
+    },
+    profilePicFunction: function(comment){
+      var profilePicFunction;
+      var that = this;
+      if (comment){
+        profilePicFunction = <img className="post-profile-pic-actual-pic" src={that._buildUrl(comment.author.profile_image)}></img>;
+      } else {
+        profilePicFunction = <img className="post-profile-pic-actual-pic" src={that._buildUrl(false)}></img>;
+      }
+      return profilePicFunction;
+    },
 
 
     render: function(){
@@ -83,10 +103,12 @@ var ImageComment = React.createClass({
       var Comments = this.state.comments.map(function (comment, i) {
         return(
           <div key={comment.id} className="post-comment">
-            <div  onClick={that.handleAuthorClick.bind(null, comment.author.id)}>
+            {that.profilePicFunction(comment)}
+            <div  className="post-user-name"
+                  onClick={that.handleAuthorClick.bind(null, comment.author.id)}>
                   {comment.author.real_name}
             </div>
-            <div>{comment.body}</div>
+            <div className="comment-only-the-body">{comment.body}</div>
             {that._buttonRenderFunction(comment)}
           </div>
 
